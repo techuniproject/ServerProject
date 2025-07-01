@@ -17,6 +17,9 @@
     <Filter Include="소스 파일\Thread">
       <UniqueIdentifier>{0b6c239d-af05-4b0d-bc13-5f54551ac851}</UniqueIdentifier>
     </Filter>
+    <Filter Include="메모공간%28빌드제외%29">
+      <UniqueIdentifier>{0434ed25-0fca-45be-a44c-bafb88849276}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -39,6 +42,12 @@
     </ClCompile>
     <ClCompile Include="TestMain.cpp">
       <Filter>소스 파일\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="01.standard_thread.cpp">
+      <Filter>메모공간%28빌드제외%29</Filter>
+    </ClCompile>
+    <ClCompile Include="02.cpu_pipeline.cpp">
+      <Filter>메모공간%28빌드제외%29</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
