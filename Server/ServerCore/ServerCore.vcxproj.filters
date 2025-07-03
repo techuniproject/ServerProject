@@ -20,6 +20,12 @@
     <Filter Include="메모공간%28빌드제외%29">
       <UniqueIdentifier>{0434ed25-0fca-45be-a44c-bafb88849276}</UniqueIdentifier>
     </Filter>
+    <Filter Include="메모공간%28빌드제외%29\Section15%29 MultiThread">
+      <UniqueIdentifier>{2e164898-f29f-48bb-9195-0818c899a4bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="메모공간%28빌드제외%29\Section16%29 Network">
+      <UniqueIdentifier>{be0da092-c536-4dc1-b8d1-4cd6a4c2c82b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -44,10 +50,19 @@
       <Filter>소스 파일\Main</Filter>
     </ClCompile>
     <ClCompile Include="01.standard_thread.cpp">
-      <Filter>메모공간%28빌드제외%29</Filter>
+      <Filter>메모공간%28빌드제외%29\Section15%29 MultiThread</Filter>
     </ClCompile>
     <ClCompile Include="02.cpu_pipeline.cpp">
-      <Filter>메모공간%28빌드제외%29</Filter>
+      <Filter>메모공간%28빌드제외%29\Section15%29 MultiThread</Filter>
+    </ClCompile>
+    <ClCompile Include="01_1.socket_programming_client.cpp">
+      <Filter>메모공간%28빌드제외%29\Section16%29 Network</Filter>
+    </ClCompile>
+    <ClCompile Include="01_2.socket_programming_server.cpp">
+      <Filter>메모공간%28빌드제외%29\Section16%29 Network</Filter>
+    </ClCompile>
+    <ClCompile Include="03.shared_data.cpp">
+      <Filter>메모공간%28빌드제외%29\Section15%29 MultiThread</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -75,10 +90,5 @@
     <ClInclude Include="ThreadManager.h">
       <Filter>소스 파일\Thread</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="03.socket_programming.cpp">
-      <Filter>메모공간%28빌드제외%29</Filter>
-    </None>
   </ItemGroup>
 </Project>
