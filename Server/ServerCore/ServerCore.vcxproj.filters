@@ -76,4 +76,9 @@
       <Filter>소스 파일\Thread</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="03.socket_programming.cpp">
+      <Filter>메모공간%28빌드제외%29</Filter>
+    </None>
+  </ItemGroup>
 </Project>

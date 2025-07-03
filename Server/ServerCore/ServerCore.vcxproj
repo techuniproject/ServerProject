@@ -176,6 +176,12 @@
     <ClCompile Include="TestMain.cpp" />
     <ClCompile Include="ThreadManager.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="03.socket_programming.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
