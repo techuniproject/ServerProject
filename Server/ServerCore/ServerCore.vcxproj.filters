@@ -64,6 +64,9 @@
     <ClCompile Include="03.shared_data.cpp">
       <Filter>메모공간%28빌드제외%29\Section15%29 MultiThread</Filter>
     </ClCompile>
+    <ClCompile Include="02.cpu_schedule.cpp">
+      <Filter>메모공간%28빌드제외%29\Section15%29 MultiThread</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
