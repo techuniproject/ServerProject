@@ -26,6 +26,9 @@
     <Filter Include="메모공간%28빌드제외%29\Section16%29 Network">
       <UniqueIdentifier>{be0da092-c536-4dc1-b8d1-4cd6a4c2c82b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="메모공간%28빌드제외%29\Practice">
+      <UniqueIdentifier>{c7822110-1380-4f90-b75a-6d78eac90fcc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -65,6 +68,15 @@
       <Filter>메모공간%28빌드제외%29\Section15%29 MultiThread</Filter>
     </ClCompile>
     <ClCompile Include="02.cpu_schedule.cpp">
+      <Filter>메모공간%28빌드제외%29\Section15%29 MultiThread</Filter>
+    </ClCompile>
+    <ClCompile Include="PracticeWorkStation.cpp">
+      <Filter>메모공간%28빌드제외%29\Practice</Filter>
+    </ClCompile>
+    <ClCompile Include="04.Event_Conditional_Variable.cpp">
+      <Filter>메모공간%28빌드제외%29\Section15%29 MultiThread</Filter>
+    </ClCompile>
+    <ClCompile Include="05.SmartPointer.cpp">
       <Filter>메모공간%28빌드제외%29\Section15%29 MultiThread</Filter>
     </ClCompile>
   </ItemGroup>

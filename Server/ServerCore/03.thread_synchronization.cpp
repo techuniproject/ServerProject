@@ -259,10 +259,82 @@
 	   따로 스케줄링 없이 락 획득이 가능.
 
 
+------------------------------------------------
+		
+	[3] 세마포(Semaphore)
+
+	 정의) 세마포는 n개의 자원을 다수의 스레드가 공유하여 사용하도록 돕는 자원 관리 기법.
+
+	  - n개의 자원이 있는 상황에서 멀티스레드가 자원을 사용하려고 한다.
+	  - 자원이 모두 동날 때, 자원을 사용하려는 스레드는 기다려야 하고, 자원을 다 사용한 스레드는
+	     이를 알려 대기 중인 스레드가 자원을 사용할 수 있도록 관리하는 주체가 필요하다.
+	  -> 이를 바로 세마포가 이 일을 하도록 제안됨.
+	  
+	  [세마포의 역할] 
+	   1) 세마포는 자원의 개수 n을 알고
+	   2) 스레드의 요청을 받아 사용을 허락하고
+	   3) 자원이 모자랄 때 요청한 스레드는 대기큐에서 잠을 재우며
+	   4) 자원 사용을 끝낸 스레드가 세마포에게 알리면 세마포가 대기큐에서 잠을 자는 스레드를 깨워
+	       자원을 사용하도록 허락하는 방식
+
+	  [세모포 구성 요소]
+	   1) 자원 - n개
+	   2) 대기 큐 - 자원을 할당받지 못한 스레드가 잠자는 곳
+	   3) counter 변수 - 사용가능한 자원의 개수를 나타내는 정수형 변수로, 자원의 개수 n으로 초기화됨
+	                   - counter 변수가 음수이면 자원을 기다리는 스레드의 개수를 나타낸다.
+					   - 구현 방법에 따라 다르지만, 사용가능 자원이 없을 때 counter 변수를 계속 0으로 유지.
+	   4) P/V 연산 - P 연산은 자원 요청 시, V연산은 자원 반환 시 실행되는 연산
+
+	   [스레드의 목적]
+	   -> 보통 자원의 개수보다 스레드 개수가 많을 때 스레드들 사이에 자원을 할당하고 해제하는 등 자원 관리시 세마포 유용
+	   -> 뮤텍스나 스핀락은 여러 스레드가 임계구역에 진입하기 위해 경쟁할 때, 한 스레드에게 임계구역을
+	       배타적으로 사용하도록 하는데 목적이 있지만,
+		    세마포는 n개의 자원이 있고 여러 스레드들이 자원을 사용하고자 할 때 원활하게 관리하는 것이 목적.
+
+	  [P연산과 V연산]
+	   - P/V 연산은 wait/signal 연산으로도 불린다.
+	   - P연산으 스레드에게 자원 사용을 허가하는 과정이며, V연산은 스레드가 자원 사용이 끝났음을 세마포에게 알리는 과정.
+	   - P 연산은 counter 변수를 1 감소시키고, V 연산은 counter 변수를 1 증가시킨디.
+	   - counter 변수는 P, V 연산에 의해 공유되는 변수이므로 counter에 대한 접근은 원자적으로 처리되도록
+	      구현되며 여러 스레드가 동시에 P 연산을 수행할 수 없다. P, V 연산은 원자적으로 수행됨.
+	  - 세마포는 자원을 할당받지 못하는 스레드를 다루는 방법에 따라 2가지 종류로 나뉘며 P/V연산이 다르게 작동됨
+	    -> 수면 대기 (sleep-wait) 세마포
+		-> 바쁜 대기 (busy-waiting) 세마포
+	  
+	  1) 수면 대기 세마포
+	    -> P연산 중 자원 사용을 허가받지 못한 스레드를 대기큐에서 잠을 재우고
+		-> V 연산에서 사용가능한 자원이 생기면 스레드를 깨워 자원 사용을 허락하는 형태
+
+		P연산 { //wait
+		  counter--;
+		  if(counter<0){
+		  현재 스레드를 대기 큐에 삽입 //sleep-wait
+		  }
+		  // 통과하면 자원 획득
+		}
+
+		V 연산 { //signal
+		  counter++;
+		  if(counter<=0){
+		   기다리는 스레드 있는 경우
+		   대기 큐에서 한 스레드 깨움
+		   }
+		}
 
 
+	   2) 바쁜 대기 세마포
+	    -> P연산에서 가용 자원이 생길 때까지 무한 루프를 돌면서 검사하는 방식이다.
+		-> 그러다가 V 연산에 의해 가용 자원이 생기면, P 연산에서 자원을 획득하는 방식이다. (대기 큐 없음)
 
+		P연산 { //wait
+		  while(counter<=0){ //busy-wait
+		   counter--;
+		   }
+        }
 
+		V연산 { //signal
+		  counter++;
+		}
 
 
 
@@ -307,5 +379,94 @@ void increment() {
  4. condition_variable
 
 
+
+ class Lock 
+ { 
+ public:
+		void lock()
+	    {
+		    while(_flag){}
+
+			_flag = true; // 이 두 연산이 세트로 이루어지지 않으면 동시에 통과가능 -> CAS 연산으로 해결해야함
+		}
+
+		void unlock(){
+		   _flag=false;
+		}
+
+private: 
+	atomic<bool> _flag = false;
+
+}
+
+Lock m;
+vector<int> v;
+
+void Push(){
+
+		for(int i=0; i<10000; ++i)
+		{
+			std::lock_guard<Lock> lockGuard(m);
+
+			v.push_back(i);
+		}
+
+}
+
+int main(){
+	  v.reserve(1000000);
+
+	  thread t1(Push);
+	  thread t2(Push);
+
+	  t1.join();
+	  t2.join();
+
+	  cout<<v.size();
+}
+
+
+ class Lock
+ {
+ public:
+		void lock()
+		{
+			while(_flag){}
+
+			_flag = true; // 이 두 연산이 세트로 이루어지지 않으면 동시에 통과가능 -> CAS 연산으로 해결해야함
+		}
+
+		void unlock(){
+		   _flag=false;
+		}
+
+		-> 수정) while(flag.compare_exchange_strong(OUT expected,desired)==false)
+					{
+					exptected = false //flag가 false이어서 통과할 스레드가 있는지 확인해야하는데,
+									 // 저 함수 반환이 false면 expected에 flag값넣는데 그 때 flag는 잠김 상태이므로
+									 // 1로 채워놔서 다시 expected에 false넣어줘야함 매 루프 확인할때 마다
+					};
+		->의사코드
+		bool expected = false;
+		bool desired =true;
+
+		if(flag ==expected)
+		{
+		 flag =desired;
+		  return true;
+		}
+		else {
+		  expected = _flag;
+		  return false;
+		}
+
+private:
+	atomic<bool> _flag = false;
+
+}
+
+
 */
+
+
 
