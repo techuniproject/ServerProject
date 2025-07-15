@@ -2,7 +2,7 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>C:\Users\USER\Desktop\ServerProject\Server\Binaries\x64\Server.exe</FullPath>
+      <FullPath>C:\Users\서정원\Desktop\ServerClient\ServerProject\Server\Binaries\x64\Server.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles />
