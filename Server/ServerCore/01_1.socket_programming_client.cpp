@@ -24,6 +24,7 @@ int main()
 	serverAddr.sin_family = AF_INET;
 	// serverAddr.sin_addr.s_addr = ::htonl(INADDR_ANY);
 	::inet_pton(AF_INET, "127.0.0.1", &serverAddr.sin_addr); // "127.0.0.1": 루프백 주소(자신의 주소)
+	// IP주소 127.0.0.1은 루프백 주소로 로컬환경에서 스스로 통신할 때 사용
 	serverAddr.sin_port = ::htons(7777); // 80 : HTTP
 
 	if (::connect(clientSocket, (SOCKADDR*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR)
@@ -43,6 +44,11 @@ int main()
 		int32 resultCode = ::send(clientSocket, sendBuffer, sizeof(sendBuffer), 0);
 		if (resultCode == SOCKET_ERROR)
 			return 0;
+		/*작성 서정원*/
+		// send를 보내지만, 서버에서 recv를 안하면 커널에서의 상대 recv버퍼 용량이 다 찰때까진
+		// sendbuffer에 데이터 복사되어 성공하여 넘어가지지만, recv 버퍼 용량이 먼저 다 차고 OS는 못받는 상태로
+		// TCP 패킷으로 알려주면서 recv버퍼에 전송을 멈추고, 나의 send버퍼가 다 찰때까진 send가 이루어져 다 차면
+		// send가 block되어 error나타나면서 멈추게됨.
 
 		// 서버가 에코로 보낸 것을 받는 것
 		char recvBuffer[100];

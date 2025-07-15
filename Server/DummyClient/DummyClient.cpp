@@ -42,13 +42,7 @@ int main()
 		int32 resultCode = ::send(clientSocket, sendBuffer, sizeof(sendBuffer), 0);
 		if (resultCode == SOCKET_ERROR)
 			return 0;
-		// send를 보내지만, 서버에서 recv를 안하면 커널에서의 상대 recv버퍼 용량이 다 찰때까진
-		// sendbuffer에 데이터 복사되어 성공하여 넘어가지지만, recv 버퍼 용량이 먼저 다 차고 OS는 못받는 상태로
-		// TCP 패킷으로 알려주면서 recv버퍼에 전송을 멈추고, 나의 send버퍼가 다 찰때까진 send가 이루어져 다 차면
-		// send가 block되어 error나타나면서 멈추게됨.
-		
-
-		//에코 서버 형태로 내가 보내준 데이터를 서버에서 다시 받아 클라에서 출력
+	
 		char recvBuffer[100];
 		int32 recvLen = ::recv(clientSocket, recvBuffer, sizeof(recvBuffer), 0);
 		if (recvLen <= 0)
