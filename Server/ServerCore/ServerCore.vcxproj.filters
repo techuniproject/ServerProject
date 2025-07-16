@@ -58,10 +58,10 @@
     <ClCompile Include="02.cpu_pipeline.cpp">
       <Filter>메모공간%28빌드제외%29\Section15%29 MultiThread</Filter>
     </ClCompile>
-    <ClCompile Include="01_1.socket_programming_client.cpp">
+    <ClCompile Include="01_1.socket_TCP_client.cpp">
       <Filter>메모공간%28빌드제외%29\Section16%29 Network</Filter>
     </ClCompile>
-    <ClCompile Include="01_2.socket_programming_server.cpp">
+    <ClCompile Include="01_2.socket_TCP_server.cpp">
       <Filter>메모공간%28빌드제외%29\Section16%29 Network</Filter>
     </ClCompile>
     <ClCompile Include="03.thread_synchronization.cpp">
@@ -80,6 +80,12 @@
       <Filter>메모공간%28빌드제외%29\Section15%29 MultiThread</Filter>
     </ClCompile>
     <ClCompile Include="00.NetworkBaseKnowledge.cpp">
+      <Filter>메모공간%28빌드제외%29\Section16%29 Network</Filter>
+    </ClCompile>
+    <ClCompile Include="02_1.socket_UDP_client.cpp">
+      <Filter>메모공간%28빌드제외%29\Section16%29 Network</Filter>
+    </ClCompile>
+    <ClCompile Include="02_2.socket_UDP_server.cpp">
       <Filter>메모공간%28빌드제외%29\Section16%29 Network</Filter>
     </ClCompile>
   </ItemGroup>
