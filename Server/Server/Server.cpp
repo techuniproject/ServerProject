@@ -28,7 +28,31 @@ int main()
 	if (listenSocket == INVALID_SOCKET) // 오류 반환값이 아니라면 통과
 		return 0;
 	
+
+	///
+
+	// setsockopt 소켓의 동작 방식을 커널에 지시하기 위한 함수
+	// int setsockopt(int socket, int level, int option_name,
+	//                 const void* option_value, socklen_t option_len);
+	// 1) level (SOL_SOCKET, IPPROTO_IP, IPPROTO_TCP) : 옵션의 범위 (SOL_SOCKET, IPPROTO_TCP, 등)
+	// 2) opt_name : 수정하고 싶은 옵션 
+	// 3) opt_value : 수정하고 싶은 옵션값
+	// 4) opt_len : value 크기
 	
+	
+	//setsockopt는 listen() 호출 전에 해야 효과가 있음 (특히 SO_REUSEADDR)
+	//int 값 넘길 때 포인터로 넘겨야 함
+	
+	// SO_KEEPALIVE :[TCP기반] 주기적으로 연결 상태확인하여 일정시간 무응답이면 커넥션 끊음
+	bool enable = true;
+	::setsockopt(listenSocket, SOL_SOCKET, SO_KEEPALIVE, (char*)&enable, sizeof(enable));
+
+	// SO_LINGER : 지연하다 (TCP소켓이 close될때 어떻게 닫을것인지)
+	// SO_SNDBUF : 송신 버퍼 크기 설정
+	// SO_RCVBUF : 수신 버퍼 크기 설정
+
+
+
 
 	// 2) 주소/포트 번호 설정 (bind)
 	SOCKADDR_IN serverAddr;
