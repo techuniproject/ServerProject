@@ -183,6 +183,7 @@ int main()
 	// 3) 업무 개시 (listen)
 	if (::listen(listenSocket, SOMAXCONN) == SOCKET_ERROR)
 		return 0;
+	// block 안됨, 그냥 대기열 생성
 	// SOMAXCONN: 대기할 수 있는 숫자 관련 옵션 - 최대치
 
 	//-> 이제부터 이 소켓은 연결 요청을 기다릴 준비가 됐다
@@ -198,7 +199,8 @@ int main()
 		int32 addrLen = sizeof(clientAddr);
 
 		// 상대방 쪽 소켓
-		// accept는 입장한 손님이 없으면 멈춤
+		// accept는 입장한 손님(connect)이 없으면 멈춤(blocked)
+		
 		SOCKET clientSocket = ::accept(listenSocket, (SOCKADDR*)&clientAddr, &addrLen);
 		if (clientSocket == INVALID_SOCKET)
 			return 0;
@@ -240,7 +242,7 @@ int main()
 			int32 recvLen = ::recv(clientSocket, recvBuffer, sizeof(recvBuffer), 0);
 			if (recvLen <= 0)
 				return 0;
-
+			//recv는 받을 데이터 없으면 블록
 			/*작성 서정원*/
 			// [중요!!] 소켓에는 커널영역에 커널 RecvBuffer와 SendBuffer이 존재함.
 			// send를 하는것은 SendBuffer에 데이터를 복사하는 것
@@ -254,6 +256,7 @@ int main()
 
 			// 에코 서버 - 상대방이 보내준 메세지를 그대로 토스 (거울)
 			// 받은 것을 다시 send
+			// send는 버퍼가 꽉 차면 블록
 			int32 resultCode = ::send(clientSocket, recvBuffer, recvLen, 0);
 			if (resultCode == SOCKET_ERROR)
 				return 0;

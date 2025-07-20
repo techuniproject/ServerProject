@@ -6,7 +6,6 @@
 // 2) 서버에 연결 요청
 // 3) 통신
 
-
 int main()
 {
 	// 1) 소켓 생성
@@ -55,5 +54,6 @@ int main()
 	}
 	::closesocket(clientSocket);
 	::WSACleanup();
+	
 }
 
