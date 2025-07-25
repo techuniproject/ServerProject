@@ -8,105 +8,82 @@ using namespace std;
 #include <windows.h>
 #include "TestMain.h"
 #include "ThreadManager.h"
+#include "SocketUtils.h"
 
-//UDP 서버
-// 1) 새로운 소켓 생성
-// 2) 소켓에 IP주소/ 포트번호 설정(bind)
-// -------
-// 3) 클라와 통신
+
 
 int main()
 {
-	// 1) 소켓 생성
-	WSADATA wsaData;
-	if (::WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
-		return 0;
-	
-
-	// ipv4 버전, TCP 방식
-	SOCKET listenSocket = ::socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-	if (listenSocket == INVALID_SOCKET) // 오류 반환값이 아니라면 통과
-		return 0;
-	
-
-	///
-
-	// setsockopt 소켓의 동작 방식을 커널에 지시하기 위한 함수
-	// int setsockopt(int socket, int level, int option_name,
-	//                 const void* option_value, socklen_t option_len);
-	// 1) level (SOL_SOCKET, IPPROTO_IP, IPPROTO_TCP) : 옵션의 범위 (SOL_SOCKET, IPPROTO_TCP, 등)
-	// 2) opt_name : 수정하고 싶은 옵션 
-	// 3) opt_value : 수정하고 싶은 옵션값
-	// 4) opt_len : value 크기
-	
-	
-	//setsockopt는 listen() 호출 전에 해야 효과가 있음 (특히 SO_REUSEADDR)
-	//int 값 넘길 때 포인터로 넘겨야 함
-	
-	// SO_KEEPALIVE :[TCP기반] 주기적으로 연결 상태확인하여 일정시간 무응답이면 커넥션 끊음
-	bool enable = true;
-	::setsockopt(listenSocket, SOL_SOCKET, SO_KEEPALIVE, (char*)&enable, sizeof(enable));
-
-	// SO_LINGER : 지연하다 (TCP소켓이 close될때 어떻게 닫을것인지)
-	// SO_SNDBUF : 송신 버퍼 크기 설정
-	// SO_RCVBUF : 수신 버퍼 크기 설정
-
-
-
-
-	// 2) 주소/포트 번호 설정 (bind)
-	SOCKADDR_IN serverAddr;
-	::memset(&serverAddr, 0, sizeof(serverAddr)); //0으로 밀어 초기화
-	serverAddr.sin_family = AF_INET; //전송 주소의 주소 패밀리(체계) : 항상 AF_INET(IPv4)으로 설정
-	serverAddr.sin_addr.s_addr = ::htonl(INADDR_ANY); // 0.0.0.0 서버가 가지고 있는 모든 IP주소에서의 요청을 받는 뜻
-	serverAddr.sin_port = ::htons(7777); // 80까지는 HTTP가 사용 중 - 사용할 포트 번호를 지정 -7777
-
-	if (::bind(listenSocket, (SOCKADDR*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR)
-		return 0;
-
-
-	//// 3) 업무 개시 (listen)
-	//if (::listen(listenSocket, SOMAXCONN) == SOCKET_ERROR)
+	SocketUtils::Init();
+	//// 1) 소켓 생성
+	//WSADATA wsaData;
+	//if (::WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
 	//	return 0;
-	//TCP에선 클라의 listening 소켓이 연결을 기다리지만, UDP는 없음
 	
-	while (true)
-	{
+
+	SOCKET listenSocket = ::socket(AF_INET, SOCK_STREAM, 0);
+	if (listenSocket == INVALID_SOCKET)
+		return 0;
+
+	//논 블로킹
+	u_long on = 1;
+	if (::ioctlsocket(listenSocket, FIONBIO, &on) == INVALID_SOCKET)
+		return 0;
+
+	SocketUtils::SetReuseAddress(listenSocket, true);
+
+	if (SocketUtils::BindAnyAddress(listenSocket, 7777) == false)
+		return 0;
+
+	if (SocketUtils::Listen(listenSocket) == false)
+		return 0;//클라는 socket열고 connect인데, 서버 listen전 connect하면 클라 소켓 오류
+
+	//클라가 connect 하고 서버가 accept나중에하면, 클라 커널이 3-way 핸드셰이크 후 커널의 완료 큐에서 대기
+	// 서버가 먼저 accept 하고 클라가 connect안하면 커널의 완료 큐가 비었기 때문에 block 상태
+
+	while (true) {
+		//Non-Blocking 소켓의 비동기 accept 방식 (비동기: 함수 호출 후 곧바로 리턴, 완료는 나중/기다리지 않고 처리 후 완성을 나중에)
 		SOCKADDR_IN clientAddr;
-		::memset(&clientAddr, 0, sizeof(clientAddr));
-		int32 addrLen = sizeof(clientAddr); //상대 클라의 주소를 저장하기 위함
-
-		//SOCKET clientSocket = ::accept(listenSocket, (SOCKADDR*)&clientAddr, &addrLen);
-		//if (clientSocket == INVALID_SOCKET)
-		//	return 0;
-
-		////----여기까진 이제 상대 클라와 직접 통신할 소켓 만들어져 상대 클라와 통신 가능 상태
-
-		//char ip[16];
-		//::inet_ntop(AF_INET, &clientAddr.sin_addr, ip, sizeof(ip)); // ip추출 함수
-		//cout << "Client Connected! IP = " << ip << endl;
-		//TCP에서 connect 기반 맺는 과정 UDP에선 없음
-
+		int32 addrLen = sizeof(clientAddr);
+		SOCKET clientSocket = ::accept(listenSocket, (SOCKADDR*)&clientAddr, &addrLen);
+		//여기선 원래 클라가 연결하길 기다리지만, 연결이 없으면 accept()는 INVALID_SOCKET을 리턴
+		if (clientSocket == INVALID_SOCKET) {
+			//원래 블로킹이 되어야 하는데, 논블로킹으로 설정했잖아
+			// WSAGetLastError호출하면 WSAEWOULDBLOCK 오류 코드 나옴 이상황에서, 지금은 연결이 없으니 나중에 다시 시도하라는 의미.
+			if (::WSAGetLastError() == WSAEWOULDBLOCK)
+				continue; //현재 클라가 연결을 안했으면 이 오류가 뜸 논블로킹 소켓일 경우
 		
-		// 패킷
-		char recvBuffer[100];
-
+		// 하지만 이 방식도 continue로 계속 cpu 타임슬라이스 동안 할당받아 수행하므로, 완전한 비동기는 아니고
+	    // 타임슬라이스 끝날 때까지 계속 루프 / 효율 안좋음 / 스레드 스케줄링 계속 ready 상태
+		// 블록 소켓은 블록한번되면 입출력 처리가 되기전까진 cpu할당 못받으니 절대적으로 cpu할당 계속 받는 
+		// 논블로킹 루프형이 컨텍스트 스위칭 횟수가 많음
+		}
 		
-		int32 recvLen = ::recvfrom(listenSocket, recvBuffer, sizeof(recvBuffer), 0, (SOCKADDR*)&clientAddr, &addrLen);
-		if (recvLen <= 0)
-			return 0;
+		cout << "Client Connected!" << endl;
 
-		//int32 recvLen = ::recv(clientSocket, recvBuffer, sizeof(recvBuffer), 0);
-		//if (recvLen <= 0)
-		//	return 0; //TCP형식
-		
-		cout << "Recv Data : " << recvBuffer << endl;
-		cout << "Recv Data Len: " << recvLen << endl;
+		//Recv
+		while (true) {
 
-		this_thread::sleep_for(chrono::seconds(1));
-		
+			char recvBuffer[100];
+			int32 recvLen = ::recv(clientSocket, recvBuffer, sizeof(recvBuffer), 0); //최대 recvBuffer만큼 받을수있는
+			//recvLen은 얼마만큼 커널 recvBuf에서 읽어왔는지
+			
+			if (recvLen == SOCKET_ERROR) {
+				
+				if(::WSAGetLastError()==WSAEWOULDBLOCK)
+				continue;
+				//뭔가 잘못되어 -1 반환되었으면 마찬가지로 원랜 블록이지만
+				//아직 상대가 send를 하지 않아 대기하는게 아닌 그냥 넘어가게함
+				
+				//TODO
+				break;
+			}
+			cout << "Recv Data : " << recvBuffer << endl;
+			cout << "Recv Len : " << recvLen << endl;
+		}
 	}
 
-	::closesocket(listenSocket);
-	::WSACleanup(); //WSAStartUp 호출 시 호출해야 하는 함수
+	SocketUtils::Clear();
+	//::closesocket(listenSocket);
+	//::WSACleanup(); //WSAStartUp 호출 시 호출해야 하는 함수
 }

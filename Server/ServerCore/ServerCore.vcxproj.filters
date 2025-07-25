@@ -88,7 +88,7 @@
     <ClCompile Include="02_2.socket_UDP_server.cpp">
       <Filter>메모공간%28빌드제외%29\Section16%29 Network</Filter>
     </ClCompile>
-    <ClCompile Include="03_1.non-block_socket_server.cpp">
+    <ClCompile Include="03_2.non-block_socket_server.cpp">
       <Filter>메모공간%28빌드제외%29\Section16%29 Network</Filter>
     </ClCompile>
     <ClCompile Include="00.Thread_memory_sharing.cpp">
@@ -99,6 +99,9 @@
     </ClCompile>
     <ClCompile Include="01.PagingMemoryManagement.cpp">
       <Filter>메모공간%28빌드제외%29</Filter>
+    </ClCompile>
+    <ClCompile Include="SocketUtils.cpp">
+      <Filter>소스 파일\Network</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -125,6 +128,9 @@
     </ClInclude>
     <ClInclude Include="ThreadManager.h">
       <Filter>소스 파일\Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="SocketUtils.h">
+      <Filter>소스 파일\Network</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
