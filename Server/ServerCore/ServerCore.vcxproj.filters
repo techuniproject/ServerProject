@@ -103,7 +103,19 @@
     <ClCompile Include="SocketUtils.cpp">
       <Filter>소스 파일\Network</Filter>
     </ClCompile>
-    <ClCompile Include="3_1.non_block_client.cpp">
+    <ClCompile Include="03_1.non_block_client.cpp">
+      <Filter>메모공간%28빌드제외%29\Section16%29 Network</Filter>
+    </ClCompile>
+    <ClCompile Include="04_1.select_client.cpp">
+      <Filter>메모공간%28빌드제외%29\Section16%29 Network</Filter>
+    </ClCompile>
+    <ClCompile Include="04_2.select_server.cpp">
+      <Filter>메모공간%28빌드제외%29\Section16%29 Network</Filter>
+    </ClCompile>
+    <ClCompile Include="05_1.WSAEventSelect_client.cpp">
+      <Filter>메모공간%28빌드제외%29\Section16%29 Network</Filter>
+    </ClCompile>
+    <ClCompile Include="05_2.WSAEventSelect_server.cpp">
       <Filter>메모공간%28빌드제외%29\Section16%29 Network</Filter>
     </ClCompile>
   </ItemGroup>
