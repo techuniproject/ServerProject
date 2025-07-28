@@ -29,6 +29,9 @@
     <Filter Include="메모공간%28빌드제외%29\Practice">
       <UniqueIdentifier>{c7822110-1380-4f90-b75a-6d78eac90fcc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="메모공간%28빌드제외%29\Operation">
+      <UniqueIdentifier>{34861947-b8b6-4098-83c6-e55a087bb4fe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -117,6 +120,9 @@
     </ClCompile>
     <ClCompile Include="05_2.WSAEventSelect_server.cpp">
       <Filter>메모공간%28빌드제외%29\Section16%29 Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Operation.cpp">
+      <Filter>메모공간%28빌드제외%29\Operation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
