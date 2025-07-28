@@ -10,31 +10,69 @@ using namespace std;
 #include "ThreadManager.h"
 #include "SocketUtils.h"
 
-// WSAEventSelect = WSAEventSelect가 핵심이 되는 (Windows 전용)
-// 소켓과 관련된 네트워크 이벤트를 [이벤트 객체]를 통해 감지.
-// 소켓마다 1개의 이벤트 객체 연결, 소켓과 이벤트는 1:1 매핑 구조
-// 이벤트 발생 여부는 커널 레벨에서 감지
-// 
-// 클라이언트 접속 요청 : select(FD_ISSET(listenSocket)->accept()), WSAEventSelect(FD_ACCEPT이벤트 발생))
-// 클라이언트 데이터 보냄 : select(FD_ISSET(sock)->recv(), WSAEventSelect(FD_READ 이벤트 발생)
-// 클라이언트 연결 끊음 : select(recv()->0반환), WSAEventSelect(FD_CLOSE 이벤트 발생)
-// 
-// 생성 : WSACreateEvent (수동 리셋 Manual-Reset + Non-Signaled 상태 시작)
-// 삭제 : WSACloseEvent 
-// 신호 상태 감지 : WSAWaitForMultipleEvents
-// 구체적인 네트워크 이벤트 알아내기 : WSAEnumNetworkEvents
+// Overlapped I/O (비동기 + 논블로킹)
+// Overlapped + Callback 방식
 
 
+/*
+추가 공부
+
+시스템 호출 시
+-> I/O 작업을 요청하는 시스템 호출 시(사용자가 커널 영역 사용) 상황에 따라 블록 상태로 바꾸고 컨텍스트 스위칭
+	또는 논 블로킹후 계속 CPU점유(타이머 인터럽트 전)
+
+- 일반 소켓 + recv() -> 블로킹 되는 시스템 콜
+- 논블로킹 소켓 + recv -> 논블로킹 되는 시스템 콜
+- Overlapeed소켓 + WSARecv() -> 논 블로킹되는 시스템 콜
+
+인터럽트
+-> I/O 장치로부터 I/O완료가 되어 인터럽트 발생하여 해당 스레드(블록된걸)를 준비 큐로 옮기거나
+	우선순위(스케줄링)에 따라 컨텍스트 스위칭
+-> 타임 슬라이스 다 사용 시, 타이머 인터럽트 발생하여 준비 리스트에 넣고 컨텍스트 스위칭
+
+*/
+/*========이거 다시 공부=======
+static_cast<Session*>(overlapped)
+-> 컴파일 타임에 타입 안전성 검사를 수행
+단, 이건 overlapped가 Session에서 파생된 클래스일 때만 유효함
+ex) Base* -> Derived*처럼
+그러므로 이 경우 static_cast는 컴파일 에러남
+
+reinterpret_cast<Session*>(overlapped)
+-> 타입 상관없이 포인터를 강제로 변환
+-> C언어 식의 캐스팅과 흡사 안전성 보장없음
+
+*/
 
 const int32 BUF_SIZE = 1000;
 
 struct Session
 {
+	WSAOVERLAPPED overlapped = {};
+	//***수정사항 무조건 Session 구조체 첫번째 인자로 배치
 	SOCKET socket = INVALID_SOCKET;
 	char recvBuffer[BUF_SIZE] = {};
 	int32 recvBytes = 0;
 };
+/*
+우리가 wsaBuf에 어디에 데이터를 채워 넣을지를 알려주고, overlapped는 작업 상태를 담고 있는 구조체 포인터를 넘김
+그리고 콜백도 같이 넘겨 커널은 우리가 넘겨준 WSAOVERLAPPED포인터를 저장해놓고 있다가 반환
+우리가 이 포인터를 접근하여 다른 멤버를 접근하려면 WSAOVERLAPPED가 첫 멤버변수여야 다른 멤버를 시작주소 기반으로 접근가능
+만약 overlapped가 두번째 인자면 Session*로 캐스팅하면 해당 주소로부터 Session크기만큼 참조하는 포인터이므로 유효하지 않음
+*/
 
+void CALLBACK RecvCallback(DWORD error, DWORD recvLen, LPWSAOVERLAPPED overlapped, DWORD flags)
+{
+	cout << "Data Recv Len Callback = " << recvLen << endl;
+	//TODO
+
+	// 여기서 recvBuffer의 데이터를 알려면 overlapped로 알아야하는데,
+	// overlapped를 캐스팅을 하려면 overlapped가 첫 인자로 와야 포인터로 캐스팅 할 수 있기때문
+	Session* session = (Session*)overlapped;
+	cout << session->recvBuffer << endl;
+	// 이렇게 하면 
+
+}
 
 int main()
 {
@@ -58,81 +96,60 @@ int main()
 		return 0;
 
 
-	vector<WSAEVENT> wsaEvents;
-	vector<Session>sessions;
-	sessions.reserve(100);
-
-	WSAEVENT listenEvent = ::WSACreateEvent();
-	wsaEvents.push_back(listenEvent);
-	sessions.push_back(Session{ listenSocket });
-	// DummySession(listenSocket매핑) 을 추가. Session과 이벤트 1:1로 가져가는데 인덱스 맞추기 위함
-
-	if (::WSAEventSelect(listenSocket, listenEvent, FD_ACCEPT | FD_CLOSE) == SOCKET_ERROR)
-		return 0;
 
 	while (true) {
-	
-		
 
-			int32 index=::WSAWaitForMultipleEvents(wsaEvents.size(), &wsaEvents[0], FALSE, WSA_INFINITE, FALSE);
-			
-			// 이벤트가 여러개 발생해도,다수를 감지하긴 하지만, 한번의 호출에서는 가장 먼저 발생한 하나의 이벤트의 인덱스 반환
-			if (index == WSA_WAIT_FAILED)
+		SOCKADDR_IN clientAddr;
+		int32 addrLen = sizeof(clientAddr);
+
+		SOCKET clientSocket;
+		while (true) {
+			clientSocket = ::accept(listenSocket, (SOCKADDR*)&clientAddr, &addrLen);
+
+			if (clientSocket != INVALID_SOCKET)
+				break;
+
+			if (::WSAGetLastError() == WSAEWOULDBLOCK)
 				continue;
 
-			index -= WSA_WAIT_EVENT_0;
-			// 이걸 반환 index값에서 빼면 시작 위치 알 수 있음.
-			// 배열에서의 이벤트의 시작 위치
-		
-			WSANETWORKEVENTS networkEvents;
-			if(::WSAEnumNetworkEvents(sessions[index].socket, wsaEvents[index], &networkEvents )== SOCKET_ERROR)
-				continue;
+			return 0;
+		}
 
-			if (networkEvents.lNetworkEvents & FD_ACCEPT)
+		//Overlapped 회신을 이벤트 방식
+		Session session = Session{ clientSocket };
+
+		cout << "Client Connected" << endl;
+
+		while (true)
+		{
+			WSABUF wsaBuf;
+			wsaBuf.buf = session.recvBuffer;
+			wsaBuf.len = BUF_SIZE;
+
+			DWORD recvLen = 0;
+			DWORD flags = 0;
+
+			// 완료 통지시 함수포인터로 넣어준 함수를 호출하기를 기입한 것임
+			if (::WSARecv(clientSocket, &wsaBuf, 1,/*Out*/&recvLen,/*Out*/ &flags, &session.overlapped, RecvCallback) == SOCKET_ERROR)
 			{
-				//Error-Check
-				if (networkEvents.iErrorCode[FD_ACCEPT_BIT] != 0)
-					continue;
-				
-				SOCKADDR_IN clientAddr;
-				int32 addrLen = sizeof(clientAddr);
-				SOCKET clientSocket = ::accept(listenSocket, (SOCKADDR*)&clientAddr, &addrLen);
-				
-				if (clientSocket != INVALID_SOCKET)
+				if (::WSAGetLastError() == WSA_IO_PENDING)
 				{
-					if (::WSAGetLastError() == WSAEWOULDBLOCK)
-						continue;
-
-					cout << "Client Connected" << endl;
-					WSAEVENT clientEvent = ::WSACreateEvent();
-					wsaEvents.push_back(clientEvent);
-					sessions.push_back(Session{ clientSocket });
-
-					if (::WSAEventSelect(clientSocket, clientEvent, FD_READ| FD_WRITE | FD_CLOSE) == SOCKET_ERROR)
-						return 0;
+					//TODO
+					//...
+				   // Alertable Wait
+				   // 잠에 들긴하지만, 콜백함수가 호출되는 상황오면 깨어나면서 해당 함수 호출
+				   // 입출력이 완료되면 커널이 인터럽트를 발생하고 스레드는 꺠어나서 등록한 콜백 함수 호출
+					::SleepEx(INFINITE, TRUE);
+					// 두번째 인자가 TRUE여야 Alertable 상태가 되어 IO완료시 콜백이 호출됨
+				}
+				else
+				{// 여기로 들어오면 문제가 있는 것
+					//TODO
+					break;
 				}
 			}
-			//Client Session 소켓 체크
-			if (networkEvents.lNetworkEvents & FD_READ)
-			{
-				if (networkEvents.iErrorCode[FD_READ_BIT] != 0)
-					continue;
-
-				Session& s = sessions[index];
-
-				//Read
-				int32 recvLen = ::recv(s.socket, s.recvBuffer, BUF_SIZE, 0);
-				if (recvLen == SOCKET_ERROR && ::WSAGetLastError() != WSAEWOULDBLOCK)
-				{
-					if (recvLen <= 0)
-						continue;
-				}
-				cout << "RecvData = " << s.recvBuffer << endl;
-				cout << "RecvLen = " << recvLen << endl;
-			}
-		
-		// 하나의 이벤트를 하나의 루프에서 처리하므로, select방식보다 느릴 수 있음
-	
+			cout << "Data Recv = " << session.recvBuffer << endl;
+		}
 
 	}
 

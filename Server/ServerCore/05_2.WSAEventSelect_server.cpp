@@ -24,6 +24,8 @@ using namespace std;
 // 신호 상태 감지 : WSAWaitForMultipleEvents
 // 구체적인 네트워크 이벤트 알아내기 : WSAEnumNetworkEvents
 
+// 이 방식도 비동기 이벤트 모델이지만, 명시적 블로킹이 WSAWaitForMultipleEvents를 통해 일어남
+// recv는 논블로킹 소켓이므로 블록이 안되지만, 블로킹 함수를 사용하므로 블록이 되는 부분이 있음
 
 
 const int32 BUF_SIZE = 1000;
@@ -75,7 +77,7 @@ int main()
 
 
 		int32 index = ::WSAWaitForMultipleEvents(wsaEvents.size(), &wsaEvents[0], FALSE, WSA_INFINITE, FALSE);
-
+		//여기서 블로킹 됨
 		// 이벤트가 여러개 발생해도,다수를 감지하긴 하지만, 한번의 호출에서는 가장 먼저 발생한 하나의 이벤트의 인덱스 반환
 		if (index == WSA_WAIT_FAILED)
 			continue;

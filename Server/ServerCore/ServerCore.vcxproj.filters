@@ -127,6 +127,12 @@
     <ClCompile Include="OS_History.cpp">
       <Filter>메모공간%28빌드제외%29\Operation</Filter>
     </ClCompile>
+    <ClCompile Include="06_1.Overlapped_Event_Server.cpp">
+      <Filter>메모공간%28빌드제외%29\Section16%29 Network</Filter>
+    </ClCompile>
+    <ClCompile Include="06_2.Overlapped_Callback_server.cpp">
+      <Filter>메모공간%28빌드제외%29\Section16%29 Network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
