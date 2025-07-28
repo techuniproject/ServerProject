@@ -62,76 +62,75 @@ int main()
 	vector<Session>sessions;
 	sessions.reserve(100);
 
+	WSAEVENT listenEvent = ::WSACreateEvent();
+	wsaEvents.push_back(listenEvent);
+	sessions.push_back(Session{ listenSocket });
+	// DummySession(listenSocket매핑) 을 추가. Session과 이벤트 1:1로 가져가는데 인덱스 맞추기 위함
+
+	if (::WSAEventSelect(listenSocket, listenEvent, FD_ACCEPT | FD_CLOSE) == SOCKET_ERROR)
+		return 0;
 
 	while (true) {
 
-		WSAEVENT listenEvent = ::WSACreateEvent();
-		wsaEvents.push_back(listenEvent);
-		sessions.push_back(Session{ listenSocket });
-		// DummySession(listenSocket매핑) 을 추가. Session과 이벤트 1:1로 가져가는데 인덱스 맞추기 위함
 
-		if (::WSAEventSelect(listenSocket, listenEvent, FD_ACCEPT | FD_CLOSE) == SOCKET_ERROR)
-			return 0;
 
-		while (true)
+		int32 index = ::WSAWaitForMultipleEvents(wsaEvents.size(), &wsaEvents[0], FALSE, WSA_INFINITE, FALSE);
+
+		// 이벤트가 여러개 발생해도,다수를 감지하긴 하지만, 한번의 호출에서는 가장 먼저 발생한 하나의 이벤트의 인덱스 반환
+		if (index == WSA_WAIT_FAILED)
+			continue;
+
+		index -= WSA_WAIT_EVENT_0;
+		// 이걸 반환 index값에서 빼면 시작 위치 알 수 있음.
+		// 배열에서의 이벤트의 시작 위치
+
+		WSANETWORKEVENTS networkEvents;
+		if (::WSAEnumNetworkEvents(sessions[index].socket, wsaEvents[index], &networkEvents) == SOCKET_ERROR)
+			continue;
+
+		if (networkEvents.lNetworkEvents & FD_ACCEPT)
 		{
-			int32 index = ::WSAWaitForMultipleEvents(wsaEvents.size(), &wsaEvents[0], FALSE, WSA_INFINITE, FALSE);
-
-			// 이벤트가 여러개 발생해도,다수를 감지하긴 하지만, 한번의 호출에서는 가장 먼저 발생한 하나의 이벤트의 인덱스 반환
-			if (index == WSA_WAIT_FAILED)
+			//Error-Check
+			if (networkEvents.iErrorCode[FD_ACCEPT_BIT] != 0)
 				continue;
 
-			index -= WSA_WAIT_EVENT_0;
-			// 이걸 반환 index값에서 빼면 시작 위치 알 수 있음.
-			// 배열에서의 이벤트의 시작 위치
+			SOCKADDR_IN clientAddr;
+			int32 addrLen = sizeof(clientAddr);
+			SOCKET clientSocket = ::accept(listenSocket, (SOCKADDR*)&clientAddr, &addrLen);
 
-			WSANETWORKEVENTS networkEvents;
-			if (::WSAEnumNetworkEvents(sessions[index].socket, wsaEvents[index], &networkEvents) == SOCKET_ERROR)
-				continue;
-
-			if (networkEvents.lNetworkEvents & FD_ACCEPT)
+			if (clientSocket != INVALID_SOCKET)
 			{
-				//Error-Check
-				if (networkEvents.iErrorCode[FD_ACCEPT_BIT] != 0)
+				if (::WSAGetLastError() == WSAEWOULDBLOCK)
 					continue;
 
-				SOCKADDR_IN clientAddr;
-				int32 addrLen = sizeof(clientAddr);
-				SOCKET clientSocket = ::accept(listenSocket, (SOCKADDR*)&clientAddr, &addrLen);
+				cout << "Client Connected" << endl;
+				WSAEVENT clientEvent = ::WSACreateEvent();
+				wsaEvents.push_back(clientEvent);
+				sessions.push_back(Session{ clientSocket });
 
-				if (clientSocket != INVALID_SOCKET)
-				{
-					if (::WSAGetLastError() == WSAEWOULDBLOCK)
-						continue;
-
-					cout << "Client Connected" << endl;
-					WSAEVENT clientEvent = ::WSACreateEvent();
-					wsaEvents.push_back(clientEvent);
-					sessions.push_back(Session{ clientSocket });
-
-					if (::WSAEventSelect(clientSocket, clientEvent, FD_READ | FD_WRITE | FD_CLOSE) == SOCKET_ERROR)
-						return 0;
-				}
-			}
-			//Client Session 소켓 체크
-			if (networkEvents.lNetworkEvents & FD_READ)
-			{
-				if (networkEvents.iErrorCode[FD_READ_BIT] != 0)
-					continue;
-
-				Session& s = sessions[index];
-
-				//Read
-				int32 recvLen = ::recv(s.socket, s.recvBuffer, BUF_SIZE, 0);
-				if (recvLen == SOCKET_ERROR && ::WSAGetLastError() != WSAEWOULDBLOCK)
-				{
-					if (recvLen <= 0)
-						continue;
-				}
-				cout << "RecvData = " << s.recvBuffer << endl;
-				cout << "RecvLen = " << recvLen << endl;
+				if (::WSAEventSelect(clientSocket, clientEvent, FD_READ | FD_WRITE | FD_CLOSE) == SOCKET_ERROR)
+					return 0;
 			}
 		}
+		//Client Session 소켓 체크
+		if (networkEvents.lNetworkEvents & FD_READ)
+		{
+			if (networkEvents.iErrorCode[FD_READ_BIT] != 0)
+				continue;
+
+			Session& s = sessions[index];
+
+			//Read
+			int32 recvLen = ::recv(s.socket, s.recvBuffer, BUF_SIZE, 0);
+			if (recvLen == SOCKET_ERROR && ::WSAGetLastError() != WSAEWOULDBLOCK)
+			{
+				if (recvLen <= 0)
+					continue;
+			}
+			cout << "RecvData = " << s.recvBuffer << endl;
+			cout << "RecvLen = " << recvLen << endl;
+		}
+
 		// 하나의 이벤트를 하나의 루프에서 처리하므로, select방식보다 느릴 수 있음
 
 
