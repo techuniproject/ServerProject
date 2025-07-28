@@ -121,7 +121,10 @@
     <ClCompile Include="05_2.WSAEventSelect_server.cpp">
       <Filter>메모공간%28빌드제외%29\Section16%29 Network</Filter>
     </ClCompile>
-    <ClCompile Include="Operation.cpp">
+    <ClCompile Include="OS_Definition.cpp">
+      <Filter>메모공간%28빌드제외%29\Operation</Filter>
+    </ClCompile>
+    <ClCompile Include="OS_History.cpp">
       <Filter>메모공간%28빌드제외%29\Operation</Filter>
     </ClCompile>
   </ItemGroup>
