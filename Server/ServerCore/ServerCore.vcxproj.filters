@@ -133,6 +133,9 @@
     <ClCompile Include="06_2.Overlapped_Callback_server.cpp">
       <Filter>메모공간%28빌드제외%29\Section16%29 Network</Filter>
     </ClCompile>
+    <ClCompile Include="07.1.IOCP_Overlapped_server.cpp">
+      <Filter>메모공간%28빌드제외%29\Section16%29 Network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
