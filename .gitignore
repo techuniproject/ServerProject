@@ -3,6 +3,10 @@
 *.obj
 *.lib
 *.dll
+*.exp
+*.ilk
+*.pdb
+*.idb
 
 # Visual Studio 관련
 .vscode/
@@ -10,8 +14,22 @@
 *.suo
 *.user
 *.vcxproj.user
-*.ipch
+*.VC.db
+*.VC.opendb
+*.ipch/
+*.cache/
+*.tlog/
+*.aps
+*.ncb
+*.opendb
+*.sdf
 
 # 로그, 임시 파일
 *.log
 *.tmp
+
+# 기타 임시/백업 파일
+*.bak
+*.old
+*.orig
+*.db
