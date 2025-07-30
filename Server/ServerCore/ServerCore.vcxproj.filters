@@ -136,6 +136,9 @@
     <ClCompile Include="07.1.IOCP_Overlapped_server.cpp">
       <Filter>메모공간%28빌드제외%29\Section16%29 Network</Filter>
     </ClCompile>
+    <ClCompile Include="OS_System_Hardware.cpp">
+      <Filter>메모공간%28빌드제외%29\Operation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
