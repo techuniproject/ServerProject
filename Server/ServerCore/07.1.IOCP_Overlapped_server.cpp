@@ -199,6 +199,7 @@ void WorkerThreadMain(HANDLE iocpHandle)
 		// sleep상태에 가까운 효율적인 상태로 대기하며 CPU 리소스 거의 소모 안함
 		// 이벤트 기반 wait함수이므로 스레드는 wait상태로 전환되고 해당 IOCP 큐에 작업 생기면 커널이 이벤트 발생시켜 깨운다.
 		bool ret = ::GetQueuedCompletionStatus(iocpHandle, &bytesTransferred, (ULONG_PTR*)&session, (LPOVERLAPPED*)&overlappedEx, INFINITE);
+		// LPOVERLAPPED는 typedef struct *LPOVERLAPPED로도 정의되어있어 OVERLAPPED*로 대체된게 LPOVERLAPPED이므로 LPOVERLAPPED*는 OVERLAPPED*를 가리키는 포인터
 		//WSARecv가 완료되면 이 코드가 성공적으로 진행될것임
 		// 사용자 레벨에서 key와 overlapped 정보를 넣어줄 수 있어 이를 잘 활용하여야 함
 		// CreateIoCompletionPort에서 넣어준 key와 WSARecv에 넣어준 overlapped포인터 값으로 

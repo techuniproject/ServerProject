@@ -1,5 +1,6 @@
 #pragma once
-
+//#include "NetAddress.h"
+class NetAddress;
 /*----------------
 	SocketUtils
 -----------------*/
@@ -26,6 +27,7 @@ public:
 	static bool SetTcpNoDelay(SOCKET socket, bool flag);
 	static bool SetUpdateAcceptSocket(SOCKET socket, SOCKET listenSocket);
 
+	static bool Bind(SOCKET socket, NetAddress netAddr);
 	static bool Bind(SOCKET socket, SOCKADDR_IN netAddr);
 	static bool BindAnyAddress(SOCKET socket, uint16 port);
 	static bool Listen(SOCKET socket, int32 backlog = SOMAXCONN);

@@ -52,9 +52,6 @@
     <ClCompile Include="ThreadManager.cpp">
       <Filter>소스 파일\Thread</Filter>
     </ClCompile>
-    <ClCompile Include="TestMain.cpp">
-      <Filter>소스 파일\Main</Filter>
-    </ClCompile>
     <ClCompile Include="01.standard_thread.cpp">
       <Filter>메모공간%28빌드제외%29\Section15%29 MultiThread</Filter>
     </ClCompile>
@@ -139,6 +136,21 @@
     <ClCompile Include="OS_System_Hardware.cpp">
       <Filter>메모공간%28빌드제외%29\Operation</Filter>
     </ClCompile>
+    <ClCompile Include="IocpCore.cpp">
+      <Filter>소스 파일\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="IocpEvent.cpp">
+      <Filter>소스 파일\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Listener.cpp">
+      <Filter>소스 파일\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="NetAddress.cpp">
+      <Filter>소스 파일\Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Session.cpp">
+      <Filter>소스 파일\Network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -159,13 +171,25 @@
     <ClInclude Include="CorePch.h">
       <Filter>소스 파일\Main</Filter>
     </ClInclude>
-    <ClInclude Include="TestMain.h">
-      <Filter>소스 파일\Main</Filter>
-    </ClInclude>
     <ClInclude Include="ThreadManager.h">
       <Filter>소스 파일\Thread</Filter>
     </ClInclude>
     <ClInclude Include="SocketUtils.h">
+      <Filter>소스 파일\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="IocpCore.h">
+      <Filter>소스 파일\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="IocpEvent.h">
+      <Filter>소스 파일\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Listener.h">
+      <Filter>소스 파일\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="NetAddress.h">
+      <Filter>소스 파일\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Session.h">
       <Filter>소스 파일\Network</Filter>
     </ClInclude>
   </ItemGroup>
