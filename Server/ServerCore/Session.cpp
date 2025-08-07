@@ -23,5 +23,6 @@ HANDLE Session::GetHandle()
 
 void Session::Dispatch(IocpEvent* iocpEvent, int32 numOfBytes)
 {
+	
 	// TODO
 }

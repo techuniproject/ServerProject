@@ -20,7 +20,7 @@ ThreadManager::~ThreadManager()
 
 void ThreadManager::Launch(function<void(void)> callback)
 {
-	LockGuard guard(_lock);
+	LockGuard guard(_lock); // 공유된 vector에서 push_back때문에 락
 
 	_threads.push_back(thread([=]()
 		{
