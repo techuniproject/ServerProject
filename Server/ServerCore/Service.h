@@ -13,8 +13,19 @@ enum class ServiceType : uint8
 /*-------------
 	Service
 --------------*/
-
+//나중에 GameSession과 같이 클라에서 만드는 다양한 정보를 가미한 Session상속한 객체를
+//생성 또는 제어를 엔진의 변화없이 하기 위해 콜백함수로 받아 엔진에선 어느 Session인지만 정해주고
+// 클라에선 Session의 정보 및 제어를 바꾸어 엔진에서 해당 Session으로 동작하도록 바꾸기 위해 콜백함수 사용
 using SessionFactory = function<SessionRef(void)>;
+/*
+SessionRef MySessionCreator();
+SessionFactory factory = []() -> SessionRef {
+	return make_shared<Session>();
+};
+
+이런 유형의 함수 받을 수 있는 함수 객체
+
+*/
 
 class Service : public enable_shared_from_this<Service>
 {

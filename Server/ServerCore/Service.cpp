@@ -25,7 +25,7 @@ void Service::CloseService()
 SessionRef Service::CreateSession()
 {
 	SessionRef session = _sessionFactory();
-
+	session->SetService(shared_from_this());
 	if (_iocpCore->Register(session) == false)
 		return nullptr;
 
@@ -79,6 +79,8 @@ bool ServerService::Start()
 	if (_listener == nullptr)
 		return false;
 
+	// ServerService는 Service를 상속받는데 enabled_shared_from_this는 Service에 있기때문에 shared_from_this호출 시
+	// Service*형태로 반환하므로 이를 스마트 포인터 캐스팅을 위한 static_pointer_cast로 해주면 됨
 	ServerServiceRef service = static_pointer_cast<ServerService>(shared_from_this());
 	if (_listener->StartAccept(service) == false)
 		return false;

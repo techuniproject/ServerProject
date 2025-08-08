@@ -32,5 +32,14 @@ struct IocpEvent : public OVERLAPPED
 
 	EventType		type;
 	IocpObjectRef	owner = nullptr;
-	SessionRef		session = nullptr; // Accept Only	
+	//owner은 weak_ptr로 관리해야하지 않나?
+	//shared_ptr로 owner관리하면, 보통 session의 주소를 owner로 줄텐데,
+	//owner에 session을 가리키게 해놓고 이 event를 iocp에 등록한 이후, 해당 session이 제거되면,
+	//shared_ptr로 관리 시, refcount가 0이 되지않아 제거가 안돼 만료한 세션 상대로 무언가 처리하는 상황생김
+	//원래같으면 더이상 유효하지 않으므로 더이상 진행안하는게 정석이므로 weak_ptr로 owner관리하여
+	// 만약 owner도 유효하지 않으면 lock()으로 확인해서, 더이상 진행 x
+	SessionRef		session = nullptr; // Accept Only
+
+	// TEMP
+	vector<BYTE> buffer;
 };

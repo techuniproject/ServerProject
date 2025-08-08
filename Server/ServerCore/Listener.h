@@ -32,6 +32,6 @@ private:
 protected:
 	SOCKET _socket = INVALID_SOCKET;
 	vector<IocpEvent*> _acceptEvents;
-	ServerServiceRef _service;
+	ServerServiceRef _service;// 리스너가 현재 실행하고 있는 서비스 알기 위함.
 };
 
