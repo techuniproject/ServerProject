@@ -29,6 +29,28 @@ bool IocpCore::Register(IocpObjectRef iocpObject)
 	// key방식은 weak_from_this().lock() 등으로 직접 refcount관리 해야하지만, owner은 등록해주고 수명관리 보장받아 안전함 
 }
 
+/*
+EventType	누가 owner로 설정됨	어떤 Dispatch가 호출됨
+Accept	Listener	Listener::Dispatch() → ProcessAccept()
+Connect	Session	Session::Dispatch() → ProcessConnect()
+Recv	Session	Session::Dispatch() → ProcessRecv()
+Send	Session	Session::Dispatch() → ProcessSend()
+Disconnect	Session	Session::Dispatch() → ProcessDisconnect()
+
+1) Accept 순간
+AcceptEx 완료 → Listener::Dispatch() → ProcessAccept()
+여기서 SO_UPDATE_ACCEPT_CONTEXT 하고 session->ProcessConnect()를 호출함.
+
+2) 첫 수신 예약
+session->ProcessConnect() 안에서 RegisterRecv()를 호출해서 첫 WSARecv를 등록함.
+(즉, WSARecv는 Listener가 직접 거는 게 아니라, 세션 쪽에서 등록돼.)
+
+3) 이후 I/O는 전부 세션이 처리
+클라가 데이터를 보내면 Session::Dispatch(Recv) → ProcessRecv() → 다시 RegisterRecv()
+보내기도 마찬가지: Session::Dispatch(Send) → ProcessSend()
+끊기도: Session::Dispatch(Disconnect) → ProcessDisconnect()
+*/
+
 bool IocpCore::Dispatch(uint32 timeoutMs)
 {
 	DWORD numOfBytes = 0;

@@ -57,7 +57,17 @@ ClientService::ClientService(NetAddress targetAddress, IocpCoreRef core, Session
 
 bool ClientService::Start()
 {
-	// TODO
+	if (CanStart() == false)
+		return false;
+
+	const int32 sessionCount = GetMaxSessionCount();
+	for (int32 i = 0; i < sessionCount; i++)
+	{
+		SessionRef session = CreateSession();
+		if (session->Connect() == false)
+			return false;
+	}
+
 	return true;
 }
 
@@ -72,7 +82,7 @@ ServerService::ServerService(NetAddress address, IocpCoreRef core, SessionFactor
 
 bool ServerService::Start()
 {
-	if (CanStart() == false)
+	if (CanStart() == false) //SessionFactory nullptr인지 확인
 		return false;
 
 	_listener = make_shared<Listener>();
