@@ -99,3 +99,25 @@ private:
 	IocpEvent		_sendEvent{ EventType::Send };
 };
 
+/*-----------------
+	PacketSession
+------------------*/
+
+struct PacketHeader
+{
+	uint16 size;
+	uint16 id; // 프로토콜ID (ex. 1=로그인, 2=이동요청)
+};
+
+class PacketSession : public Session
+{
+public:
+	PacketSession();
+	virtual ~PacketSession();
+
+	PacketSessionRef	GetPacketSessionRef() { return static_pointer_cast<PacketSession>(shared_from_this()); }
+
+protected:
+	virtual int32		OnRecv(BYTE* buffer, int32 len)override final; //final/sealed->나 이후로 상속하는 걔는 이걸 더이상 못쓴다
+	virtual void		OnRecvPacket(BYTE* buffer, int32 len) = 0;
+};

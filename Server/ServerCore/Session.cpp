@@ -389,3 +389,41 @@ void Session::HandleError(int32 errorCode)
 		break;
 	}
 }
+
+/*-----------------
+	PacketSession
+------------------*/
+
+PacketSession::PacketSession()
+{
+}
+
+PacketSession::~PacketSession()
+{
+}
+
+// [size(2)][id(2)][data....][size(2)][id(2)][data....]
+int32 PacketSession::OnRecv(BYTE* buffer, int32 len)
+{
+	int32 processLen = 0;
+
+	while (true)
+	{
+		int32 dataSize = len - processLen;
+		// 최소한 헤더는 파싱할 수 있어야 한다
+		if (dataSize < sizeof(PacketHeader))
+			break;//패킷을 읽기위한 헤더만큼의 크기도 아직 읽어오지못한 경우
+
+		PacketHeader header = *(reinterpret_cast<PacketHeader*>(&buffer[processLen]));
+		// 헤더에 기록된 패킷 크기를 파싱할 수 있어야 한다
+		if (dataSize < header.size)
+			break; //읽어온데이터가 아직 완성 패킷의 크기보다 작을때 탈출
+
+		// 패킷 조립 성공
+		OnRecvPacket(&buffer[processLen], header.size);//컨텐츠에서 이제 패킷을 처리
+		
+		processLen += header.size;
+	}
+
+	return processLen;
+}

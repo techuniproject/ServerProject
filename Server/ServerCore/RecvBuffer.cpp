@@ -34,7 +34,7 @@ void RecvBuffer::Clean()
 		}
 	}
 }
-
+//_writePos°¡ ¿À¸¥, _readpos°¡ ¿Þ
 bool RecvBuffer::OnRead(int32 numOfBytes)
 {
 	if (numOfBytes > DataSize())
