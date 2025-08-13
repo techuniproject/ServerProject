@@ -11,7 +11,7 @@ void ServerPacketHandler::HandlePacket(BYTE* buffer, int32 len)
 	PacketHeader header;
 	br.Peek(&header);
 
-	switch (header.id)//4바이트 중 id분석후 분기처리
+	switch (header.id)
 	{
 	default:
 		break;
@@ -20,25 +20,28 @@ void ServerPacketHandler::HandlePacket(BYTE* buffer, int32 len)
 
 SendBufferRef ServerPacketHandler::Make_S_TEST(uint64 id, uint32 hp, uint16 attack, vector<BuffData> buffs)
 {
-	SendBufferRef sendBuffer = make_shared<SendBuffer>(4096);
+	Protocol::S_TEST pkt;
 
-	BufferWriter bw(sendBuffer->Buffer(), sendBuffer->Capacity());
+	pkt.set_id(10);
+	pkt.set_hp(100);
+	pkt.set_attack(10);
 
-	PacketHeader* header = bw.Reserve<PacketHeader>();
-	// id(uint64), 체력(uint32), 공격력(uint16)
-	bw << id << hp << attack;
-
-	// 가변 데이터
-	bw << (uint16)buffs.size();
-	for (BuffData& buff : buffs)
 	{
-		bw << buff.buffId << buff.remainTime;
+		Protocol::BuffData* data = pkt.add_buffs();
+		data->set_buffid(100);
+		data->set_remaintime(1.2f);
+		{
+			data->add_victims(10);
+		}
+	}
+	{
+		Protocol::BuffData* data = pkt.add_buffs();
+		data->set_buffid(200);
+		data->set_remaintime(2.2f);
+		{
+			data->add_victims(20);
+		}
 	}
 
-	header->size = bw.WriteSize();
-	header->id = S_TEST; // 1 : Test Msg
-
-	sendBuffer->Close(bw.WriteSize());
-
-	return sendBuffer;
+	return MakeSendBuffer(pkt, S_TEST);
 }

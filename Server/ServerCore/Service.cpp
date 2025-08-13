@@ -31,7 +31,8 @@ SessionRef Service::CreateSession()
 
 	return session;
 }
-
+//service에서 session을 set으로 스마트포인터로 관리하여 수명을 보장시키는 것
+//이벤트 처리되는 과정속에서 포인터가 소실되지 않도록 보장.
 void Service::AddSession(SessionRef session)
 {
 	WRITE_LOCK;

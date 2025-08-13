@@ -9,24 +9,48 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="소스 파일\Main">
+      <UniqueIdentifier>{bbcd103d-465e-4132-8d34-ae31b4353a02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Protocol">
+      <UniqueIdentifier>{e0cd865f-6e8c-4955-aefc-f73b5d1cd5c4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ClientPacketHandler.cpp">
+      <Filter>소스 파일\Main</Filter>
+    </ClCompile>
     <ClCompile Include="DummyClient.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\Main</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\Main</Filter>
     </ClCompile>
-    <ClCompile Include="ClientPacketHandler.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="..\..\..\..\4-13)+Protobuf\Server\DummyClient\Enum.pb.cc">
+      <Filter>소스 파일\Protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\4-13)+Protobuf\Server\DummyClient\Protocol.pb.cc">
+      <Filter>소스 파일\Protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\4-13)+Protobuf\Server\DummyClient\Struct.pb.cc">
+      <Filter>소스 파일\Protocol</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="pch.h">
-      <Filter>소스 파일</Filter>
-    </ClInclude>
     <ClInclude Include="ClientPacketHandler.h">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>소스 파일\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\4-13)+Protobuf\Server\DummyClient\Enum.pb.h">
+      <Filter>소스 파일\Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\4-13)+Protobuf\Server\DummyClient\Protocol.pb.h">
+      <Filter>소스 파일\Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\4-13)+Protobuf\Server\DummyClient\Struct.pb.h">
+      <Filter>소스 파일\Protocol</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

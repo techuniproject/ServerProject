@@ -36,6 +36,7 @@ control block ¼Ò¸ê Á¶°Ç -> refcount==0 && weakcount==0
 class IocpObject : public enable_shared_from_this<IocpObject>
 {
 public:
+	virtual ~IocpObject() {};
 	virtual HANDLE GetHandle() abstract;
 	virtual void Dispatch(struct IocpEvent* iocpEvent, int32 numOfBytes = 0) abstract;
 };

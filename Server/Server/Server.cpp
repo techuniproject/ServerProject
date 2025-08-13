@@ -93,7 +93,7 @@ int main()
 			});
 	}
 
-	while (1)//컨텐츠 들어갈곳
+	while (true)//컨텐츠 들어갈곳
 	{
 		vector<BuffData> buffs{ BuffData{100,1.5f},BuffData{200,2.3f},BuffData{300,0.7f} };
 

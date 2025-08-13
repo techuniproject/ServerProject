@@ -148,9 +148,6 @@
     <ClCompile Include="NetAddress.cpp">
       <Filter>소스 파일\Network</Filter>
     </ClCompile>
-    <ClCompile Include="Session.cpp">
-      <Filter>소스 파일\Network</Filter>
-    </ClCompile>
     <ClCompile Include="Service.cpp">
       <Filter>소스 파일\Network</Filter>
     </ClCompile>
@@ -160,10 +157,13 @@
     <ClCompile Include="SendBuffer.cpp">
       <Filter>소스 파일\Network</Filter>
     </ClCompile>
-    <ClCompile Include="BufferReader.cpp">
-      <Filter>소스 파일\Network</Filter>
-    </ClCompile>
     <ClCompile Include="BufferWriter.cpp">
+      <Filter>소스 파일\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="BufferReader.cpp">
+      <Filter>소스 파일\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Session.cpp">
       <Filter>소스 파일\Network</Filter>
     </ClCompile>
   </ItemGroup>
@@ -217,10 +217,10 @@
       <Filter>소스 파일\Network</Filter>
     </ClInclude>
     <ClInclude Include="BufferReader.h">
-      <Filter>소스 파일\Network</Filter>
+      <Filter>소스 파일\Utils</Filter>
     </ClInclude>
     <ClInclude Include="BufferWriter.h">
-      <Filter>소스 파일\Network</Filter>
+      <Filter>소스 파일\Utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

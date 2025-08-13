@@ -43,7 +43,12 @@ bool Listener::StartAccept(ServerServiceRef service)
 
 	if (_service->GetIocpCore()->Register(shared_from_this()) == false)
 		return false;
-
+	//전에는 iocp에 listensocket등록안했지만, 비동기 acceptex사용하려면,
+	//accept도 비동기로 패킷받아오므로, 완료 패킷 받아오기 위해서 리스너 소켓도 iocp등록해야함
+	// 그래야 GetQueuedCompletionStatus로 새로운 연결완료 이벤트를 꺼낼 수 있음
+	//구체적으로 AcceptEx의 완료 통지는 리스너 소켓과 연결된 포트로 들어옴
+	//GQCS가 리스너의 completion key와 overlapped반환
+	//그 이후엔 accepted된 소켓을 iocp에 등록 후 wsarecv를 처음으로 등록
 	if (SocketUtils::SetReuseAddress(_socket, true) == false)
 		return false;
 
@@ -102,6 +107,9 @@ void Listener::Dispatch(IocpEvent* acceptEvent, int32 numOfBytes)
 void Listener::RegisterAccept(IocpEvent* acceptEvent)
 {
 	SessionRef session = _service->CreateSession(); // Register IOCP
+	//여기서 session을 sessionFactory로 만듦 -> session만들면서 socket만듦
+	//그리고 iocpcore에 그 session의 socket핸들을 사용해서 등록
+	//미리 accept될 소켓(클라)를 만들어 해당 소켓에 연결된정보를 받아 다시 iocp에 등록
 
 	//클라의 입출력용 session을 여기서 만듦
 	acceptEvent->Init();
@@ -122,6 +130,8 @@ void Listener::RegisterAccept(IocpEvent* acceptEvent)
 
 void Listener::ProcessAccept(IocpEvent* acceptEvent)//클라연결시 트리거 iocp->dispatch를 통해
 {
+	//이전과 달라진건 원래 우리가 accept(블로킹)함수로 얻어온 클라소켓을 기반으로
+	//wsarecv하였지만, 이젠 먼저 소켓을 만들어 걸어놓고 사용.
 	SessionRef session = acceptEvent->session;
 
 	if (false == SocketUtils::SetUpdateAcceptSocket(session->GetSocket(), _socket))
@@ -143,5 +153,5 @@ void Listener::ProcessAccept(IocpEvent* acceptEvent)//클라연결시 트리거 iocp->di
 
 	session->SetNetAddress(NetAddress(sockAddress));
 	session->ProcessConnect(); //여기서 wsarecv첫 세팅 및 호출 이후 클라 io기다림
-	RegisterAccept(acceptEvent);
+	RegisterAccept(acceptEvent);//다른 클라 acceptex를 위해서
 }

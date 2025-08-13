@@ -127,7 +127,7 @@ public:
 
 int main()
 {
-	this_thread::sleep_for(1s);
+	//this_thread::sleep_for(1s);
 
 	SocketUtils::Init();
 
