@@ -11,6 +11,8 @@
 # Visual Studio 관련
 .vscode/
 .vs/
+*.pch
+*.ipch
 *.suo
 *.user
 *.vcxproj.user
