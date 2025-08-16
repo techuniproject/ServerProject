@@ -4,6 +4,12 @@ class Actor;
 class Creature;
 class UI;
 
+/*
+추상 클래스는 인스턴스를 만들 수 없다.
+그렇기 때문에 Scene같은 추상 클래스는 값으로 반환을 할 수 없다.
+값으로 반환하는건 
+*/
+
 class Scene
 {
 public:

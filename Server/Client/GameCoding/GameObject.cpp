@@ -6,8 +6,9 @@
 #include "ResourceManager.h"
 #include "Flipbook.h"
 #include "CameraComponent.h"
-#include "SceneManager.h"
 #include "DevScene.h"
+#include "SceneManager.h"
+
 
 GameObject::GameObject()
 {
@@ -73,7 +74,10 @@ bool GameObject::HasReachedDest()
 
 bool GameObject::CanGo(Vec2Int cellPos)
 {
-	DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+	//DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+	DevScene* scene = dynamic_cast<DevScene*>(&GET_SINGLE(SceneManager)->GetCurrentScene());
+	//DevScene* scene = GET_SINGLE(SceneManager)->GetCurrentScene<DevScene>();
+
 	if (scene == nullptr)
 		return false;
 
@@ -97,7 +101,10 @@ void GameObject::SetCellPos(Vec2Int cellPos, bool teleport /*= false*/)
 {
 	_cellPos = cellPos;
 
-	DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+	//DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+	DevScene* scene = dynamic_cast<DevScene*>(&GET_SINGLE(SceneManager)->GetCurrentScene());
+	//DevScene* scene = GET_SINGLE(SceneManager)->GetCurrentScene<DevScene>();
+
 	if (scene == nullptr)
 		return;
 

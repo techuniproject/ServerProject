@@ -1,7 +1,11 @@
 #include "pch.h"
-#include "SceneManager.h"
+#include "Scene.h"
 #include "DevScene.h"
 #include "EditScene.h"
+#include "SceneManager.h"
+
+
+DEFINE_DEFAULT_DESTRUCTOR(SceneManager)
 
 void SceneManager::Init()
 {
@@ -22,7 +26,8 @@ void SceneManager::Render(HDC hdc)
 
 void SceneManager::Clear()
 {
-	SAFE_DELETE(_scene);
+	//SAFE_DELETE(_scene);
+	_scene.reset();
 }
 
 void SceneManager::ChangeScene(SceneType sceneType)
@@ -35,17 +40,20 @@ void SceneManager::ChangeScene(SceneType sceneType)
 	switch (sceneType)
 	{
 		case SceneType::DevScene:
-			newScene = new DevScene();
+			_scene = make_unique<DevScene>();
+			//newScene = new DevScene();
 			break;
 		case SceneType::EditScene:
-			newScene = new EditScene();
+			_scene = make_unique<EditScene>();
+			//newScene = new EditScene();
 			break;
 	}
 
-	SAFE_DELETE(_scene);
+	//SAFE_DELETE(_scene);
 
-	_scene = newScene;
+	//_scene = newScene;
 	_sceneType = sceneType;
+	_scene->Init();
 
-	newScene->Init();
+	
 }

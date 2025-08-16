@@ -43,7 +43,11 @@ void Arrow::Render(HDC hdc)
 
 void Arrow::TickIdle()
 {
-	DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+	//DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+	//DevScene* scene = dynamic_cast<DevScene*>(&GET_SINGLE(SceneManager)->GetCurrentScene());
+	//DevScene& scene = dynamic_cast<DevScene&>(GET_SINGLE(SceneManager)->GetCurrentScene());
+	
+	DevScene* scene = GET_SINGLE(SceneManager)->GetCurrentScene<DevScene>();
 	if (scene == nullptr)
 		return;
 

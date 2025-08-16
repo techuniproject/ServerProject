@@ -10,6 +10,7 @@
 #include "Player.h"
 #include "HitEffect.h"
 
+
 Monster::Monster()
 {
 	_flipbookMove[DIR_UP] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_SnakeUp");
@@ -46,7 +47,10 @@ void Monster::Render(HDC hdc)
 
 void Monster::TickIdle()
 {
-	DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+	DevScene* scene = dynamic_cast<DevScene*>(&GET_SINGLE(SceneManager)->GetCurrentScene());
+	//DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+	//DevScene* scene = GET_SINGLE(SceneManager)->GetCurrentScene<DevScene>();
+
 	if (scene == nullptr)
 		return;
 
@@ -134,7 +138,10 @@ void Monster::TickSkill()
 	}
 
 	{
-		DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+		//DevScene* scene = dynamic_cast<DevScene*>(&GET_SINGLE(SceneManager)->GetCurrentScene());
+		//DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+		DevScene* scene = GET_SINGLE(SceneManager)->GetCurrentScene<DevScene>();
+
 		if (scene == nullptr)
 			return;
 

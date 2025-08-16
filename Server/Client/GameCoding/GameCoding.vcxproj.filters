@@ -321,4 +321,9 @@
       <Filter>소스 파일\03. Objects\Game\Effect</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="smart_pointer.txt">
+      <Filter>소스 파일\00. MainGame</Filter>
+    </Text>
+  </ItemGroup>
 </Project>

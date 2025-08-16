@@ -10,6 +10,7 @@
 #include "Arrow.h"
 #include "HitEffect.h"
 
+
 Player::Player()
 {
 	_flipbookIdle[DIR_UP] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_IdleUp");
@@ -182,7 +183,10 @@ void Player::TickSkill()
 	// TODO : Damage?
 	if (IsAnimationEnded())
 	{
-		DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+		//DevScene* scene = dynamic_cast<DevScene*>(&GET_SINGLE(SceneManager)->GetCurrentScene());
+		//DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
+		DevScene* scene = GET_SINGLE(SceneManager)->GetCurrentScene<DevScene>();
+
 		if (scene == nullptr)
 			return;
 

@@ -38,6 +38,8 @@ void Game::Init(HWND hwnd)
 	GET_SINGLE(ResourceManager)->Init(hwnd, fs::path(L"C:\\Users\\¼­Á¤¿ø\\Desktop\\ServerClient\\ServerProject\\Server\\Client\\Resources"));
 	GET_SINGLE(SoundManager)->Init(hwnd);
 
+	//SceneManager* ms=new SceneManager();
+
 	GET_SINGLE(SceneManager)->ChangeScene(SceneType::DevScene);
 }
 

@@ -6,6 +6,7 @@
 #include "Enums.h"
 #include "Utils.h"
 
+
 #include <windows.h>
 #include <vector>
 #include <list>
@@ -41,3 +42,6 @@ namespace fs = std::filesystem;
 #include <dsound.h>
 #pragma comment (lib, "winmm.lib")
 #pragma comment (lib, "dsound.lib")
+
+//자주 쓰이는 헤더
+#include "Scene.h"

@@ -26,8 +26,10 @@ void HitEffect::Tick()
 
 	if (IsAnimationEnded())
 	{
-		Scene* scene = GET_SINGLE(SceneManager)->GetCurrentScene();
-		scene->RemoveActor(this);
+		//Scene* scene = GET_SINGLE(SceneManager)->GetCurrentScene();
+		/*Scene* scene = &GET_SINGLE(SceneManager)->GetCurrentScene();
+		scene->RemoveActor(this);*/
+		GET_SINGLE(SceneManager)->GetCurrentScene().RemoveActor(this);
 	}
 }
 

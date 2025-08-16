@@ -1,0 +1,203 @@
+﻿// Scene* 그대로 deduce
+auto GetCurrentScene() noexcept {
+    return _scene.get();              // 반환형: Scene*
+}
+
+// 참조를 보존하려면 반드시 & 명시!
+auto& GetCurrentSceneRef() {
+    assert(_scene && "null scene");
+    return *_scene;                   // 반환형: Scene&
+}
+
+// _scene.get()의 타입(Scene*)을 그대로
+decltype(auto) GetCurrentScene() noexcept {
+    return _scene.get();              // 반환형: Scene*
+}
+
+// *_scene의 타입(Scene&)을 그대로
+decltype(auto) GetCurrentSceneRef() {
+    assert(_scene && "null scene");
+    return *_scene;                   // 반환형: Scene&
+}
+
+// 멤버 함수 안에서:
+auto getCurrentScene    = [this]() noexcept -> Scene* { return _scene.get(); };
+auto getCurrentSceneRef = [this]()              -> Scene& { 
+    assert(_scene && "null scene"); 
+    return *_scene; 
+};
+
+// 또는 참조/const 그대로 보존하고 싶으면
+auto getRefKeepCV = [this]() -> decltype(auto) {
+    assert(_scene && "null scene");
+    return *_scene;                   // Scene& 또는 const Scene&
+};
+
+[noexcept 관련]
+std::vector 같은 표준 컨테이너는 이동 생성자가 noexcept일 때만 재할당 시 move를 적극 사용합니다. 아니면 강한 예외 보장을 위해 copy로 돌아설 수 있어요 → 성능 차이 큼
+
+
+
+
+1. 값반환 RVO 기본 개념
+
+값 반환 시 중간 임시 객체를 만들지 않고, 호출자가 결과 객체를 저장할 공간을 미리 확보하여 함수가 그 자리에서 직접 생성하는 최적화.
+
+목표: 불필요한 복사/이동 생성 제거 → 성능과 메모리 효율 향상.
+
+종류
+
+RVO: 익명 임시(return Foo();) 반환 최적화
+
+NRVO: 이름 있는 지역 변수(return temp;) 반환 최적화
+
+---
+2. RVO 전과 후의 차이
+
+(RVO 없음)
+호출자 obj
+    ▲  (복사/이동)
+임시 객체(retVal)
+    ▲  (복사/이동)
+피호출자 temp
+
+생성자 1 + 복사/이동 2회 발생 가능
+
+temp → retVal → obj 경로
+---
+(RVO 있음, C++17 이후 강제)
+생성자 1회, 복사/이동 0회
+
+temp는 obj 메모리에서 바로 생성됨
+
+
+
+3. 메모리/스택 프레임 관점
+
+RVO 없음: temp는 피호출자 스택 프레임에 위치, 리턴 시 obj로 복사/이동
+
+호출자 스택 프레임       피호출자 스택 프레임
+┌───────────────┐     ┌───────────────┐
+│ obj (결과)    │     │ temp           │
+│               │     │ ...            │
+│               │     │                │
+└───────────────┘     └───────────────┘
+temp는 피호출자 함수 내부 스택에 생성
+
+return temp; 시 → 복사/이동으로 obj에 옮김
+
+
+RVO 있음: temp는 사실상 호출자의 obj → 메모리는 호출자 스택 프레임에 있음
+
+구현 방식: 호출자가 obj 메모리 주소를 **숨은 포인터(sret)**로 함수에 전달 → 함수는 그 위치에서 객체 생성
+
+
+호출자 스택 프레임
+┌───────────────┐
+│ obj (결과)    │  ← 호출자가 미리 메모리 확보
+└───────────────┘
+호출자가 obj의 메모리 주소를 피호출자에게 전달
+
+피호출자는 자기 스택에 temp를 만들지 않고, obj 자리에서 바로 생성
+
+그래서 temp 이름이 붙어도 실제로는 obj 메모리를 쓰는 것
+
+
+
+4. 숨은 포인터(sret) 규칙
+
+리턴 타입이 포인터/참조 → sret 필요 없음
+
+작은 POD/스칼라 타입 → 보통 레지스터 반환
+
+큰/복잡한 타입 → sret 사용 가능
+
+RVO/NRVO 적용 시에도 내부 구현이 sret 방식일 수 있음
+
+std::move로 반환 시 RVO 깨지고 이동 생성 호출 → sret 경로도 사라질 수 있음
+
+
+Foo obj;
+make(&obj); // obj 주소를 함수에 넘김
+
+// 피호출자 측
+void make(Foo* result) {
+    new (result) Foo(); // obj 자리에서 생성자 호출
+}
+
+5. prvalue / lvalue 반환 차이
+
+prvalue 반환: 새 객체 생성, 문장 끝에서 소멸
+예: make().func(); → func 끝나면 소멸
+
+lvalue 반환: 기존 객체 참조, 원본 수명에 종속
+예: make_lvalue().func(); → 원본 객체는 계속 존재
+
+RVO 적용 시 prvalue라도 호출자 메모리에 직접 생성되어 복사/이동이 없음
+
+6. make().함수() 패턴
+
+prvalue라면 함수 호출이 끝나는 순간 소멸
+
+RVO 적용 시 호출자 메모리에 직접 생성되지만, 여전히 문장 끝에서 소멸
+
+lvalue 반환이면 원본 객체가 유지되므로 소멸 시점은 원본 수명에 따름
+
+RVO 적용 여부 표 (C++17 기준)
+코드 패턴	RVO 적용 여부	설명
+지역 변수 단일 반환	✅ 보장	함수 안에서 새로 만든 지역 변수를 그대로 반환하는 경우
+익명 객체 직접 반환	✅ 보장	return Foo(); 처럼 생성과 반환이 한 번에 이루어지는 경우
+조건 없이 단일 지역 반환	✅ 보장	단 하나의 지역 객체를 반환하는 경우 (if 없이)
+std::move 사용	❌ 불가	return std::move(x);는 이동 생성자 호출, RVO 깨짐
+매개변수 반환	❌ 불가	return param;은 호출자 프레임에 없는 객체
+다수 지역 변수 조건부 반환	❌ 보장 아님	if 등 분기에서 서로 다른 변수를 반환하면 컴파일러 최적화에 의존
+글로벌/정적 객체 반환	❌ 불가	전역/정적 객체는 호출자 프레임에 만들 수 없어서 복사/이동 필요
+참조/포인터 반환	❌ 해당 없음	값 반환이 아니므로 RVO 개념 자체 적용 안 됨
+
+
+
+=-----------------------
+
+
+1. prvalue 반환 (임시 객체)
+
+T make(); // prvalue 반환
+
+make().func();  // 임시 객체(func 끝나면 소멸)
+
+임시 객체를 반환
+
+그 문장 끝에서 소멸
+
+const& 또는 &&에 바인딩하면 수명 연장 가능
+
+2. lvalue 반환
+
+T global;
+
+T& make_lvalue() { return global; }
+
+make_lvalue().func();  // global 객체의 멤버 호출
+
+여기서 make_lvalue()는 lvalue 참조를 반환
+
+이때 반환되는 건 이미 존재하는 객체 (global)
+
+임시 객체 아님 → 호출 끝나도 안 사라짐
+
+수명은 그 원본 객체(global)에 의해 결정
+
+3. 차이 비교
+반환 타입	반환값 종류	수명	예시
+T	prvalue	문장 끝에서 소멸	make().func();
+T&	lvalue	원본 객체 수명	make_lvalue().func();
+const T&	lvalue	원본 객체 수명	make_const_ref().func();
+T&&	xvalue	문장 끝에서 소멸	make_rvalue_ref().func();
+
+4. 핵심 요약
+
+prvalue → 새 객체(임시), 문장 끝 소멸
+
+lvalue → 기존 객체 참조, 임시 아님, 원본 수명에 종속
+
+xvalue → “이동 가능한” lvalue 비슷, 문장 끝 소멸
