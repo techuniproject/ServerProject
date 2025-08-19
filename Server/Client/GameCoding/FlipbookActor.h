@@ -14,13 +14,13 @@ public:
 	virtual void Tick() override;
 	virtual void Render(HDC hdc) override;
 
-	void SetFlipbook(Flipbook* flipbook);
+	void SetFlipbook(shared_ptr<Flipbook> flipbook);
 	void Reset();
 
 	bool IsAnimationEnded();
 
 protected:
-	Flipbook* _flipbook = nullptr;
+	shared_ptr<Flipbook> _flipbook = nullptr;
 	float _sumTime = 0.f;
 	int32 _idx = 0;
 };

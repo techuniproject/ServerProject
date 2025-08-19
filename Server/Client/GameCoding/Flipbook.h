@@ -5,7 +5,7 @@ class Texture;
 
 struct FlipbookInfo
 {
-	Texture* texture = nullptr;
+	shared_ptr<Texture> texture;
 	wstring name;
 	Vec2Int size = {};
 	int32 start = 0;

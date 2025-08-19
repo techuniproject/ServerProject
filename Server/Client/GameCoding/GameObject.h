@@ -12,6 +12,8 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick() override;
 	virtual void Render(HDC hdc) override;
+	
+	virtual void AttatchDefaultComponent() {};
 
 	virtual void TickIdle() {}
 	virtual void TickMove() {}

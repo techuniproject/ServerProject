@@ -19,17 +19,17 @@ public:
 	void SetLayer(LAYER_TYPE layer) { _layer = layer; }
 	LAYER_TYPE GetLayer() { return _layer; }
 
-	void AddComponent(Component* component);
-	void RemoveComponent(Component* component);
+	void AddComponent(shared_ptr<Component> component);
+	void RemoveComponent(shared_ptr<Component> component);
 
 	// OnCollisionEnter2D / OnCollisionExit2D
-	virtual void OnComponentBeginOverlap(Collider* collider, Collider* other);
-	virtual void OnComponentEndOverlap(Collider* collider, Collider* other);
+	virtual void OnComponentBeginOverlap(shared_ptr<Collider> collider, shared_ptr<Collider> other);
+	virtual void OnComponentEndOverlap(shared_ptr<Collider> collider, shared_ptr<Collider> other);
 
 protected:
 	Vec2 _pos = {0, 0};
 	Vec2 _destPos = {0, 0};
 	LAYER_TYPE _layer = LAYER_OBJECT;
-	vector<Component*> _components;
+	vector<shared_ptr<Component>> _components;
 };
 

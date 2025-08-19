@@ -25,15 +25,15 @@ public:
 	virtual void Render(HDC hdc) override;
 
 	void	SetSize(Vec2Int size) { _size = size; }
-	Sprite* GetSprite(ButtonState state) { return _sprites[state]; }
+	shared_ptr<Sprite> GetSprite(ButtonState state) { return _sprites[state]; }
 
-	void SetCurrentSprite(Sprite* sprite) { _currentSprite = sprite; }
-	void SetSprite(Sprite* sprite, ButtonState state) { _sprites[state] = sprite; }
+	void SetCurrentSprite(shared_ptr<Sprite> sprite) { _currentSprite = sprite; }
+	void SetSprite(shared_ptr<Sprite> sprite, ButtonState state) { _sprites[state] = sprite; }
 	void SetButtonState(ButtonState state);
 
 protected:
-	Sprite* _currentSprite = nullptr;
-	Sprite* _sprites[BS_MaxCount] = {};
+	shared_ptr<Sprite> _currentSprite = nullptr;
+	shared_ptr<Sprite> _sprites[BS_MaxCount] = {};
 	ButtonState _state = BS_Default;
 	// ...
 	float _sumTime = 0.f;

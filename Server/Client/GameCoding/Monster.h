@@ -27,9 +27,9 @@ private:
 	virtual void UpdateAnimation() override;
 
 private:
-	Flipbook* _flipbookMove[4] = {};
+	shared_ptr<Flipbook> _flipbookMove[4] = {};
 	float _waitSeconds = 0.f;
 
-	Player* _target = nullptr; // TEMP
+	shared_ptr<Player> _target = nullptr; // TEMP
 };
 

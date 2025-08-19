@@ -30,7 +30,7 @@ void HitEffect::Tick()
 		//Scene* scene = GET_SINGLE(SceneManager)->GetCurrentScene();
 		/*Scene* scene = &GET_SINGLE(SceneManager)->GetCurrentScene();
 		scene->RemoveActor(this);*/
-		GET_SINGLE(GameInstance)->GetCurrentScene().RemoveActor(this);
+		GET_SINGLE(GameInstance)->GetCurrentScene().RemoveActor(shared_from_this());
 	}
 }
 

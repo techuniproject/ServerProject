@@ -14,10 +14,10 @@ public:
 	virtual void Tick();
 	virtual void Render(HDC hdc);
 
-	void		AddChild(UI* ui);
-	bool		RemoveChild(UI* ui);
+	void		AddChild(shared_ptr<UI> ui);
+	bool		RemoveChild(shared_ptr<UI> ui);
 
 private:
-	vector<UI*> _children;
+	vector<shared_ptr<UI>> _children;
 };
 

@@ -44,8 +44,8 @@ void TilemapActor::Render(HDC hdc)
 
 	vector<vector<Tile>>& tiles = _tilemap->GetTiles();
 
-	Sprite* spriteO = GET_SINGLE(GameInstance)->GetSprite(L"TileO");
-	Sprite* spriteX = GET_SINGLE(GameInstance)->GetSprite(L"TileX");
+	shared_ptr<Sprite> spriteO = GET_SINGLE(GameInstance)->GetSprite(L"TileO");
+	shared_ptr<Sprite> spriteX = GET_SINGLE(GameInstance)->GetSprite(L"TileX");
 	Vec2Int size = spriteO->GetSize();
 	Vec2 cameraPos = GET_SINGLE(GameInstance)->GetCameraPos();
 

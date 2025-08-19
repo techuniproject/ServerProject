@@ -36,7 +36,7 @@ void Creature::Render(HDC hdc)
 	Super::Render(hdc);
 }
 
-void Creature::OnDamaged(Creature* attacker)
+void Creature::OnDamaged(shared_ptr<Creature>  attacker)
 {
 	if (attacker == nullptr)
 		return;
@@ -56,7 +56,7 @@ void Creature::OnDamaged(Creature* attacker)
 		{
 			scene->RemoveActor(this);
 		}*/
-		GET_SINGLE(GameInstance)->GetCurrentScene().RemoveActor(this);
+		GET_SINGLE(GameInstance)->GetCurrentScene().RemoveActor(shared_from_this());
 		//GET_SINGLE(SceneManager)->GetCurrentScene()->RemoveActor(this);
 	}
 }

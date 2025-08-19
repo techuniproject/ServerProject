@@ -29,7 +29,7 @@ void SoundManager::Init(HWND hwnd)
 
 void SoundManager::Play(const wstring& key, bool loop /*= false*/)
 {
-	Sound* sound = GET_SINGLE(GameInstance)->GetSound(key);
+	shared_ptr<Sound> sound = GET_SINGLE(GameInstance)->GetSound(key);
 	if (sound == nullptr)
 		return;
 

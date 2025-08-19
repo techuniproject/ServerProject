@@ -39,9 +39,10 @@ Player::Player()
 	_flipbookStaff[DIR_LEFT] = GET_SINGLE(GameInstance)->GetFlipbook(L"FB_StaffLeft");
 	_flipbookStaff[DIR_RIGHT] = GET_SINGLE(GameInstance)->GetFlipbook(L"FB_StaffRight");
 
-	CameraComponent* camera = new CameraComponent();
-	AddComponent(camera);
-
+	//shared_ptr<CameraComponent> camera = make_shared<CameraComponent>();
+	//AddComponent(camera);//여기서 shared_from_this 호출되어 문제
+	
+	
 	_stat.attack = 100;
 }
 
@@ -49,6 +50,19 @@ Player::~Player()
 {
 
 }
+
+void Player::AttatchDefaultComponent()
+{	/*
+	shared_from_this()는 이미 이 객체를 소유하고 있는 shared_ptr이 존재한다는 전제 하에서만 동작합니다.
+	그런데 make_shared<T>()로 객체를 만들면:
+	T의 생성자가 먼저 호출됨
+	생성자가 끝난 뒤에야, 그 객체를 소유하는 shared_ptr<T>가 완성됨
+	즉, 생성자 실행 중에는 아직 shared_ptr이 객체를 소유하지 않음 → shared_from_this()는 내부적으로 약한 참조(weak_ptr)를 찾는데, 등록된 게 없으니 bad_weak_ptr 예외를 던집니다.
+	*/
+	shared_ptr<CameraComponent> camera = make_shared<CameraComponent>();
+	AddComponent(camera);
+}
+
 
 void Player::BeginPlay()
 {
@@ -70,6 +84,7 @@ void Player::Render(HDC hdc)
 	Super::Render(hdc);
 
 }
+
 
 void Player::TickIdle()
 {
@@ -192,16 +207,16 @@ void Player::TickSkill()
 
 		if (_weaponType == WeaponType::Sword)
 		{
-			Creature* creature = scene->GetCreatureAt(GetFrontCellPos());
+			shared_ptr<Creature> creature = scene->GetCreatureAt(GetFrontCellPos());
 			if (creature)
 			{
 				scene->SpawnObject<HitEffect>(GetFrontCellPos());
-				creature->OnDamaged(this);
+				creature->OnDamaged(dynamic_pointer_cast<Creature>(shared_from_this()));
 			}
 		}
 		else if (_weaponType == WeaponType::Bow)
 		{
-			Arrow* arrow = scene->SpawnObject<Arrow>(_cellPos);
+			shared_ptr<Arrow> arrow = scene->SpawnObject<Arrow>(_cellPos);
 			arrow->SetDir(_dir);	
 		}
 

@@ -20,11 +20,16 @@ void CameraComponent::BeginPlay()
 
 void CameraComponent::TickComponent()
 {
-	if (_owner == nullptr)
+
+	Vec2 pos;
+	if (shared_ptr<Actor>owner = _owner.lock()) {
+		pos = owner->GetPos();
+	}
+	else {
 		return;
+	}
 
-	Vec2 pos = _owner->GetPos();
-
+	
 	// TEMP
 	pos.x = ::clamp(pos.x, 400.f, 3024.f - 400.f);
 	pos.y = ::clamp(pos.y, 300.f, 2064.f - 300.f);

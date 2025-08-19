@@ -24,6 +24,11 @@ public:
 	DECLARE_SINGLE(GameInstance)
 	DECLARE_DEFAULT_CONSTRUCTOR(GameInstance);
 	DECLARE_DEFAULT_DESTRUCTOR(GameInstance)
+	/*
+	unique_ptr을 사용 시, 헤더에 생성자/소멸자 정의하면 delete와 같은 메모리 구현부에서
+	직접 ptr타입을 알아야하므로 헤더가 추가되어야하지만, 정의를 cpp에서 하면 문제 방지.
+	*/
+
 
 public:
 	void Init(HWND hwnd);
@@ -61,21 +66,21 @@ public:
 public:
 	//ResourceManager
 	const fs::path& GetResourcePath();
-	Texture* GetTexture(const wstring& key);
-	Texture* LoadTexture(const wstring& key, const wstring& path, uint32 transparent = RGB(255, 0, 255));
-	Sprite* GetSprite(const wstring& key);
-	Sprite* CreateSprite(const wstring& key, Texture* texture, int32 x = 0, int32 y = 0, int32 cx = 0, int32 cy = 0);
+	shared_ptr<Texture> GetTexture(const wstring& key);
+	shared_ptr<Texture> LoadTexture(const wstring& key, const wstring& path, uint32 transparent = RGB(255, 0, 255));
+	shared_ptr<Sprite> GetSprite(const wstring& key);
+	shared_ptr<Sprite> CreateSprite(const wstring& key, shared_ptr<Texture> texture, int32 x = 0, int32 y = 0, int32 cx = 0, int32 cy = 0);
 
-	Flipbook* GetFlipbook(const wstring& key);
-	Flipbook* CreateFlipbook(const wstring& key);
+	shared_ptr<Flipbook> GetFlipbook(const wstring& key);
+	shared_ptr<Flipbook> CreateFlipbook(const wstring& key);
 
-	Tilemap* GetTilemap(const wstring& key);
-	Tilemap* CreateTilemap(const wstring& key);
+	shared_ptr<Tilemap> GetTilemap(const wstring& key);
+	shared_ptr<Tilemap> CreateTilemap(const wstring& key);
 	void SaveTilemap(const wstring& key, const wstring& path);
-	Tilemap* LoadTilemap(const wstring& key, const wstring& path);
+	shared_ptr<Tilemap> LoadTilemap(const wstring& key, const wstring& path);
 
-	Sound* GetSound(const wstring& key);
-	Sound* LoadSound(const wstring& key, const wstring& path);
+	shared_ptr<Sound> GetSound(const wstring& key);
+	shared_ptr<Sound> LoadSound(const wstring& key, const wstring& path);
 public:
 		//SoundManager
 	void Play(const wstring& key, bool loop = false);

@@ -143,11 +143,11 @@ void Monster::TickSkill()
 		if (scene == nullptr)
 			return;
 
-		Creature* creature = scene->GetCreatureAt(GetFrontCellPos());
+		shared_ptr<Creature> creature = scene->GetCreatureAt(GetFrontCellPos());
 		if (creature)
 		{
 			scene->SpawnObject<HitEffect>(GetFrontCellPos());
-			creature->OnDamaged(this);
+			creature->OnDamaged(dynamic_pointer_cast<Creature>(shared_from_this()));
 		}
 
 		SetState(ObjectState::Idle);

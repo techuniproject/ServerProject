@@ -89,22 +89,22 @@ void DevScene::Render(HDC hdc)
 
 }
 
-void DevScene::AddActor(Actor* actor)
+void DevScene::AddActor(shared_ptr<Actor> actor)
 {
 	Super::AddActor(actor);
 
-	Monster* creature = dynamic_cast<Monster*>(actor);
+	shared_ptr<Monster> creature = dynamic_pointer_cast<Monster>(actor);
 	if (creature)
 	{
 		_monsterCount++;
 	}
 }
 
-void DevScene::RemoveActor(Actor* actor)
+void DevScene::RemoveActor(shared_ptr<Actor> actor)
 {
 	Super::RemoveActor(actor);
 
-	Monster* creature = dynamic_cast<Monster*>(actor);
+	shared_ptr<Monster> creature = dynamic_pointer_cast<Monster>(actor);
 	if (creature)
 	{
 		_monsterCount--;
@@ -113,9 +113,9 @@ void DevScene::RemoveActor(Actor* actor)
 
 void DevScene::LoadMap()
 {
-	Sprite* sprite = GET_SINGLE(GameInstance)->GetSprite(L"Stage01");
+	shared_ptr<Sprite> sprite = GET_SINGLE(GameInstance)->GetSprite(L"Stage01");
 
-	SpriteActor* background = new SpriteActor();
+	shared_ptr<SpriteActor> background = make_shared<SpriteActor>();
 	background->SetSprite(sprite);
 	background->SetLayer(LAYER_BACKGROUND);
 	const Vec2Int size = sprite->GetSize();
@@ -128,107 +128,107 @@ void DevScene::LoadPlayer()
 {
 	// IDLE
 	{
-		Texture* texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerUp");
-		Flipbook* fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_IdleUp");
-		fb->SetInfo({ texture, L"FB_MoveUp", {200, 200}, 0, 9, 0, 0.5f });
+		shared_ptr<Texture> texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerUp");
+		shared_ptr<Flipbook> fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_IdleUp");
+		fb->SetInfo({ texture, L"FB_MoveUp", {200, 200}, 0, 9, 0, 0.5f});
 	}
 	{
-		Texture* texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerDown");
-		Flipbook* fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_IdleDown");
+		shared_ptr<Texture> texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerDown");
+		shared_ptr<Flipbook> fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_IdleDown");
 		fb->SetInfo({ texture, L"FB_MoveDown", {200, 200}, 0, 9, 0, 0.5f });
 	}
 	{
-		Texture* texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerLeft");
-		Flipbook* fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_IdleLeft");
+		shared_ptr<Texture> texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerLeft");
+		shared_ptr<Flipbook> fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_IdleLeft");
 		fb->SetInfo({ texture, L"FB_MoveLeft", {200, 200}, 0, 9, 0, 0.5f });
 	}
 	{
-		Texture* texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerRight");
-		Flipbook* fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_IdleRight");
+		shared_ptr<Texture> texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerRight");
+		shared_ptr<Flipbook> fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_IdleRight");
 		fb->SetInfo({ texture, L"FB_MoveRight", {200, 200}, 0, 9, 0, 0.5f });
 	}
 	// MOVE
 	{
-		Texture* texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerUp");
-		Flipbook* fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_MoveUp");
+		shared_ptr<Texture> texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerUp");
+		shared_ptr<Flipbook> fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_MoveUp");
 		fb->SetInfo({ texture, L"FB_MoveUp", {200, 200}, 0, 9, 1, 0.5f });
 	}
 	{
-		Texture* texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerDown");
-		Flipbook* fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_MoveDown");
+		shared_ptr<Texture> texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerDown");
+		shared_ptr<Flipbook> fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_MoveDown");
 		fb->SetInfo({ texture, L"FB_MoveDown", {200, 200}, 0, 9, 1, 0.5f });
 	}
 	{
-		Texture* texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerLeft");
-		Flipbook* fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_MoveLeft");
+		shared_ptr<Texture> texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerLeft");
+		shared_ptr<Flipbook> fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_MoveLeft");
 		fb->SetInfo({ texture, L"FB_MoveLeft", {200, 200}, 0, 9, 1, 0.5f });
 	}
 	{
-		Texture* texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerRight");
-		Flipbook* fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_MoveRight");
+		shared_ptr<Texture> texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerRight");
+		shared_ptr<Flipbook> fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_MoveRight");
 		fb->SetInfo({ texture, L"FB_MoveRight", {200, 200}, 0, 9, 1, 0.5f });
 	}
 	// SKILL
 	{
-		Texture* texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerUp");
-		Flipbook* fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_AttackUp");
+		shared_ptr<Texture> texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerUp");
+		shared_ptr<Flipbook> fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_AttackUp");
 		fb->SetInfo({ texture, L"FB_MoveUp", {200, 200}, 0, 7, 3, 0.5f, false });
 	}
 	{
-		Texture* texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerDown");
-		Flipbook* fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_AttackDown");
+		shared_ptr<Texture> texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerDown");
+		shared_ptr<Flipbook> fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_AttackDown");
 		fb->SetInfo({ texture, L"FB_MoveDown", {200, 200}, 0, 7, 3, 0.5f, false });
 	}
 	{
-		Texture* texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerLeft");
-		Flipbook* fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_AttackLeft");
+		shared_ptr<Texture> texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerLeft");
+		shared_ptr<Flipbook> fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_AttackLeft");
 		fb->SetInfo({ texture, L"FB_MoveLeft", {200, 200}, 0, 7, 3, 0.5f, false });
 	}
 	{
-		Texture* texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerRight");
-		Flipbook* fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_AttackRight");
+		shared_ptr<Texture> texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerRight");
+		shared_ptr<Flipbook> fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_AttackRight");
 		fb->SetInfo({ texture, L"FB_MoveRight", {200, 200}, 0, 7, 3, 0.5f, false });
 	}
 	// BOW
 	{
-		Texture* texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerUp");
-		Flipbook* fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_BowUp");
+		shared_ptr<Texture> texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerUp");
+		shared_ptr<Flipbook> fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_BowUp");
 		fb->SetInfo({ texture, L"FB_BowUp", {200, 200}, 0, 7, 5, 0.5f, false });
 	}
 	{
-		Texture* texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerDown");
-		Flipbook* fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_BowDown");
+		shared_ptr<Texture> texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerDown");
+		shared_ptr<Flipbook> fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_BowDown");
 		fb->SetInfo({ texture, L"FB_BowDown", {200, 200}, 0, 7, 5, 0.5f, false });
 	}
 	{
-		Texture* texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerLeft");
-		Flipbook* fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_BowLeft");
+		shared_ptr<Texture> texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerLeft");
+		shared_ptr<Flipbook> fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_BowLeft");
 		fb->SetInfo({ texture, L"FB_BowLeft", {200, 200}, 0, 7, 5, 0.5f, false });
 	}
 	{
-		Texture* texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerRight");
-		Flipbook* fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_BowRight");
+		shared_ptr<Texture> texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerRight");
+		shared_ptr<Flipbook> fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_BowRight");
 		fb->SetInfo({ texture, L"FB_BowRight", {200, 200}, 0, 7, 5, 0.5f, false });
 	}
 	// STAFF
 	{
-		Texture* texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerUp");
-		Flipbook* fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_StaffUp");
+		shared_ptr<Texture> texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerUp");
+		shared_ptr<Flipbook> fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_StaffUp");
 		fb->SetInfo({ texture, L"FB_StaffUp", {200, 200}, 0, 10, 6, 0.5f, false });
 	}
 	{
-		Texture* texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerDown");
-		Flipbook* fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_StaffDown");
+		shared_ptr<Texture> texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerDown");
+		shared_ptr<Flipbook> fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_StaffDown");
 		fb->SetInfo({ texture, L"FB_StaffDown", {200, 200}, 0, 10, 6, 0.5f, false });
 	}
 	{
-		Texture* texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerLeft");
-		Flipbook* fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_StaffLeft");
+		shared_ptr<Texture> texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerLeft");
+		shared_ptr<Flipbook> fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_StaffLeft");
 		fb->SetInfo({ texture, L"FB_StaffLeft", {200, 200}, 0, 10, 6, 0.5f, false });
 	}
 	{
-		Texture* texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerRight");
-		Flipbook* fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_StaffRight");
+		shared_ptr<Texture> texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerRight");
+		shared_ptr<Flipbook> fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_StaffRight");
 		fb->SetInfo({ texture, L"FB_StaffRight", {200, 200}, 0, 10, 6, 0.5f, false });
 	}
 
@@ -238,23 +238,23 @@ void DevScene::LoadMonster()
 {
 	// MOVE
 	{
-		Texture* texture = GET_SINGLE(GameInstance)->GetTexture(L"Snake");
-		Flipbook* fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_SnakeUp");
+		shared_ptr<Texture> texture = GET_SINGLE(GameInstance)->GetTexture(L"Snake");
+		shared_ptr<Flipbook> fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_SnakeUp");
 		fb->SetInfo({ texture, L"FB_SnakeUp", {100, 100}, 0, 3, 3, 0.5f });
 	}
 	{
-		Texture* texture = GET_SINGLE(GameInstance)->GetTexture(L"Snake");
-		Flipbook* fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_SnakeDown");
+		shared_ptr<Texture> texture = GET_SINGLE(GameInstance)->GetTexture(L"Snake");
+		shared_ptr<Flipbook> fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_SnakeDown");
 		fb->SetInfo({ texture, L"FB_SnakeDown", {100, 100}, 0, 3, 0, 0.5f });
 	}
 	{
-		Texture* texture = GET_SINGLE(GameInstance)->GetTexture(L"Snake");
-		Flipbook* fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_SnakeLeft");
+		shared_ptr<Texture> texture = GET_SINGLE(GameInstance)->GetTexture(L"Snake");
+		shared_ptr<Flipbook> fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_SnakeLeft");
 		fb->SetInfo({ texture, L"FB_SnakeLeft", {100, 100}, 0, 3, 2, 0.5f });
 	}
 	{
-		Texture* texture = GET_SINGLE(GameInstance)->GetTexture(L"Snake");
-		Flipbook* fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_SnakeRight");
+		shared_ptr<Texture> texture = GET_SINGLE(GameInstance)->GetTexture(L"Snake");
+		shared_ptr<Flipbook> fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_SnakeRight");
 		fb->SetInfo({ texture, L"FB_SnakeRight", {100, 100}, 0, 3, 1, 0.5f });
 	}
 }
@@ -263,23 +263,23 @@ void DevScene::LoadProjectiles()
 {
 	// MOVE
 	{
-		Texture* texture = GET_SINGLE(GameInstance)->GetTexture(L"Arrow");
-		Flipbook* fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_ArrowUp");
+		shared_ptr<Texture> texture = GET_SINGLE(GameInstance)->GetTexture(L"Arrow");
+		shared_ptr<Flipbook> fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_ArrowUp");
 		fb->SetInfo({ texture, L"FB_ArrowUp", {100, 100}, 0, 0, 3, 0.5f });
 	}
 	{
-		Texture* texture = GET_SINGLE(GameInstance)->GetTexture(L"Arrow");
-		Flipbook* fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_ArrowDown");
+		shared_ptr<Texture> texture = GET_SINGLE(GameInstance)->GetTexture(L"Arrow");
+		shared_ptr<Flipbook> fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_ArrowDown");
 		fb->SetInfo({ texture, L"FB_ArrowDown", {100, 100}, 0, 0, 0, 0.5f });
 	}
 	{
-		Texture* texture = GET_SINGLE(GameInstance)->GetTexture(L"Arrow");
-		Flipbook* fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_ArrowLeft");
+		shared_ptr<Texture> texture = GET_SINGLE(GameInstance)->GetTexture(L"Arrow");
+		shared_ptr<Flipbook> fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_ArrowLeft");
 		fb->SetInfo({ texture, L"FB_ArrowLeft", {100, 100}, 0, 0, 1, 0.5f });
 	}
 	{
-		Texture* texture = GET_SINGLE(GameInstance)->GetTexture(L"Arrow");
-		Flipbook* fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_ArrowRight");
+		shared_ptr<Texture> texture = GET_SINGLE(GameInstance)->GetTexture(L"Arrow");
+		shared_ptr<Flipbook> fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_ArrowRight");
 		fb->SetInfo({ texture, L"FB_ArrowRight", {100, 100}, 0, 0, 2, 0.5f });
 	}
 }
@@ -287,20 +287,20 @@ void DevScene::LoadProjectiles()
 void DevScene::LoadEffect()
 {
 	{
-		Texture* texture = GET_SINGLE(GameInstance)->GetTexture(L"Hit");
-		Flipbook* fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_Hit");
-		fb->SetInfo({ texture, L"FB_Hit", {50, 47}, 0, 5, 0, 0.5f, false });
+		shared_ptr<Texture> texture = GET_SINGLE(GameInstance)->GetTexture(L"Hit");
+		shared_ptr<Flipbook> fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_Hit");
+		fb->SetInfo({ texture, L"FB_Hit", {50, 47}, 0, 5, 0, 0.5f, false});
 	}
 }
 
 void DevScene::LoadTilemap()
 {
-	TilemapActor* actor = new TilemapActor();
+	shared_ptr<TilemapActor> actor = make_shared<TilemapActor>();
 	AddActor(actor);
 
 	_tilemapActor = actor;
 	{
-		auto* tm = GET_SINGLE(GameInstance)->CreateTilemap(L"Tilemap_01");
+		shared_ptr<Tilemap> tm = GET_SINGLE(GameInstance)->CreateTilemap(L"Tilemap_01");
 		tm->SetMapSize({ 63, 43 });
 		tm->SetTileSize(48);
 
@@ -311,14 +311,14 @@ void DevScene::LoadTilemap()
 	}
 }
 
-Player* DevScene::FindClosestPlayer(Vec2Int pos)
+shared_ptr<Player> DevScene::FindClosestPlayer(Vec2Int pos)
 {
 	float best = FLT_MAX;
-	Player* ret = nullptr;
+	shared_ptr<Player> ret = nullptr;
 
-	for (Actor* actor : _actors[LAYER_OBJECT])
+	for (shared_ptr<Actor> actor : _actors[LAYER_OBJECT])
 	{
-		Player* player = dynamic_cast<Player*>(actor);
+		shared_ptr<Player> player = dynamic_pointer_cast<Player>(actor);
 		if (player)
 		{
 			Vec2Int dir = pos - player->GetCellPos();
@@ -462,7 +462,7 @@ bool DevScene::CanGo(Vec2Int cellPos)
 	if (_tilemapActor == nullptr)
 		return false;
 
-	Tilemap* tm = _tilemapActor->GetTilemap();
+	shared_ptr<Tilemap>  tm = _tilemapActor->GetTilemap();
 	if (tm == nullptr)
 		return false;
 
@@ -484,7 +484,7 @@ Vec2 DevScene::ConvertPos(Vec2Int cellPos)
 	if (_tilemapActor == nullptr)
 		return ret;
 
-	Tilemap* tm = _tilemapActor->GetTilemap();
+	shared_ptr<Tilemap>  tm = _tilemapActor->GetTilemap();
 	if (tm == nullptr)
 		return ret;
 
@@ -504,7 +504,7 @@ Vec2Int DevScene::GetRandomEmptyCellPos()
 	if (_tilemapActor == nullptr)
 		return ret;
 
-	Tilemap* tm = _tilemapActor->GetTilemap();
+	shared_ptr<Tilemap>  tm = _tilemapActor->GetTilemap();
 	if (tm == nullptr)
 		return ret;
 

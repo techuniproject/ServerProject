@@ -30,8 +30,8 @@ public:
 	virtual void Update() override;
 	virtual void Render(HDC hdc) override;
 
-	virtual void AddActor(Actor* actor) override;
-	virtual void RemoveActor(Actor* actor) override;
+	virtual void AddActor(shared_ptr<Actor> actor) override;
+	virtual void RemoveActor(shared_ptr<Actor> actor) override;
 
 	void LoadMap();
 	void LoadPlayer();
@@ -41,28 +41,28 @@ public:
 	void LoadTilemap();	
 
 	template<typename T>
-	T* SpawnObject(Vec2Int pos)
+	shared_ptr<T> SpawnObject(Vec2Int pos)
 	{
 		auto isGameObject = std::is_convertible_v<T*, GameObject*>;
 		assert(isGameObject);
 
-		T* ret = new T();
+		shared_ptr<T> ret = make_shared<T>();
 		ret->SetCellPos(pos, true);
 		AddActor(ret);
-
+		ret->AttatchDefaultComponent();
 		ret->BeginPlay();
 
 		return ret;
 	} 
 
 	template<typename T>
-	T* SpawnObjectAtRandomPos()
+	shared_ptr<T> SpawnObjectAtRandomPos()
 	{
 		Vec2Int randPos = GetRandomEmptyCellPos();
 		return SpawnObject<T>(randPos);
 	}
 
-	Player* FindClosestPlayer(Vec2Int pos);
+	shared_ptr<Player> FindClosestPlayer(Vec2Int pos);
 
 	bool FindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int32 maxDepth = 10);
 
@@ -74,7 +74,7 @@ private:
 	void TickMonsterSpawn();
 
 	const int32 DESIRED_COUNT = 30;
-	class TilemapActor* _tilemapActor = nullptr;
+	shared_ptr<class TilemapActor> _tilemapActor = nullptr;
 	int32 _monsterCount = 0;
 };
 

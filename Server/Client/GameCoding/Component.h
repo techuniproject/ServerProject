@@ -12,10 +12,10 @@ public:
 	virtual void TickComponent() {}
 	virtual void Render(HDC hdc) { }
 
-	void SetOwner(Actor* owner) { _owner = owner; }
-	Actor* GetOwner() { return _owner; }
-
+	void SetOwner(weak_ptr<Actor> owner) { _owner = move(owner); }
+	shared_ptr<Actor> GetOwner()const;
+	
 protected:
-	Actor* _owner;
+	weak_ptr<Actor> _owner;
 };
 

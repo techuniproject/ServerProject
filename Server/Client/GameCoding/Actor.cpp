@@ -9,13 +9,13 @@ Actor::Actor()
 
 Actor::~Actor()
 {
-	for (Component* component : _components)
-		SAFE_DELETE(component);
+	/*for (shared_ptr<Component> component : _components)
+		SAFE_DELETE(component);*/
 }
 
 void Actor::BeginPlay()
 {
-	for (Component* component : _components)
+	for (shared_ptr<Component>& component : _components)
 	{
 		component->BeginPlay();
 	}
@@ -23,7 +23,7 @@ void Actor::BeginPlay()
 
 void Actor::Tick()
 {
-	for (Component* component : _components)
+	for (shared_ptr<Component>& component : _components)
 	{
 		component->TickComponent();
 	}
@@ -31,22 +31,23 @@ void Actor::Tick()
 
 void Actor::Render(HDC hdc)
 {
-	for (Component* component : _components)
+	for (shared_ptr<Component>& component : _components)
 	{
 		component->Render(hdc);
 	}
 }
 
-void Actor::AddComponent(Component* component)
+void Actor::AddComponent(shared_ptr<Component> component)
 {
 	if (component == nullptr)
 		return;
 
-	component->SetOwner(this);
+	//생성자에서 shared_from_this쓰면 안됨 컨트록 블록과 연결 전임
+	component->SetOwner(weak_from_this());
 	_components.push_back(component);
 }
 
-void Actor::RemoveComponent(Component* component)
+void Actor::RemoveComponent(shared_ptr<Component> component)
 {
 	auto findIt = std::find(_components.begin(), _components.end(), component);
 	if (findIt == _components.end())
@@ -55,12 +56,12 @@ void Actor::RemoveComponent(Component* component)
 	_components.erase(findIt);
 }
 
-void Actor::OnComponentBeginOverlap(Collider* collider, Collider* other)
+void Actor::OnComponentBeginOverlap(shared_ptr<Collider> collider, shared_ptr<Collider> other)
 {
 
 }
 
-void Actor::OnComponentEndOverlap(Collider* collider, Collider* other)
+void Actor::OnComponentEndOverlap(shared_ptr<Collider> collider, shared_ptr<Collider> other)
 {
 
 }

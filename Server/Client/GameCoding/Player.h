@@ -18,6 +18,7 @@ public:
 	virtual void Tick() override;
 	virtual void Render(HDC hdc) override;
 
+	virtual void AttatchDefaultComponent()override;
 private:
 	virtual void TickIdle() override;
 	virtual void TickMove() override;
@@ -27,13 +28,13 @@ private:
 
 	void SetWeaponType(WeaponType weaponType) { _weaponType = weaponType; }
 	WeaponType GetWeaponType() { return _weaponType; }
-
+	
 private:
-	Flipbook* _flipbookIdle[4] = {};
-	Flipbook* _flipbookMove[4] = {};
-	Flipbook* _flipbookAttack[4] = {};
-	Flipbook* _flipbookBow[4] = {};
-	Flipbook* _flipbookStaff[4] = {};
+	shared_ptr<Flipbook> _flipbookIdle[4] = {};
+	shared_ptr<Flipbook> _flipbookMove[4] = {};
+	shared_ptr<Flipbook> _flipbookAttack[4] = {};
+	shared_ptr<Flipbook> _flipbookBow[4] = {};
+	shared_ptr<Flipbook> _flipbookStaff[4] = {};
 
 	bool _keyPressed = false;
 	WeaponType _weaponType = WeaponType::Sword;

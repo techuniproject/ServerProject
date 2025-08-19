@@ -26,12 +26,14 @@ public:
 	virtual void Tick() override;
 	virtual void Render(HDC hdc) override;
 
+	virtual void AttatchDefaultComponent()override {}
+
 	virtual void TickIdle() override {}
 	virtual void TickMove() override {}
 	virtual void TickSkill() override {}
 	virtual void UpdateAnimation() override {}
 
-	virtual void OnDamaged(Creature* attacker);
+	virtual void OnDamaged(shared_ptr<Creature> attacker);
 
 	bool IsDead() { return _stat.hp <= 0; }
 

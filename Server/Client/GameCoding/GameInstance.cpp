@@ -147,43 +147,43 @@ const fs::path& GameInstance::GetResourcePath()
 	return  _ResourceManager->GetResourcePath();
 }
 
-Texture* GameInstance::GetTexture(const wstring& key)
+shared_ptr<Texture> GameInstance::GetTexture(const wstring& key)
 {
 	return  _ResourceManager->GetTexture(key);
 
 }
 
-Texture* GameInstance::LoadTexture(const wstring& key, const wstring& path, uint32 transparent /*= RGB(255, 0, 255)*/)
+shared_ptr<Texture> GameInstance::LoadTexture(const wstring& key, const wstring& path, uint32 transparent /*= RGB(255, 0, 255)*/)
 {
 	return  _ResourceManager->LoadTexture(key,path,transparent);
 }
 
-Sprite* GameInstance::GetSprite(const wstring& key)
+shared_ptr<Sprite> GameInstance::GetSprite(const wstring& key)
 {
 	return  _ResourceManager->GetSprite(key);
 }
 
-Sprite* GameInstance::CreateSprite(const wstring& key, Texture* texture, int32 x, int32 y, int32 cx, int32 cy)
+shared_ptr<Sprite> GameInstance::CreateSprite(const wstring& key, shared_ptr<Texture> texture, int32 x, int32 y, int32 cx, int32 cy)
 {
-	return  _ResourceManager->CreateSprite(key, texture,x,y,cx,cy);
+	return  _ResourceManager->CreateSprite(key, texture, x, y, cx, cy);
 }
 
-Flipbook* GameInstance::GetFlipbook(const wstring& key)
+shared_ptr<Flipbook> GameInstance::GetFlipbook(const wstring& key)
 {
 	return  _ResourceManager->GetFlipbook(key);
 }
 
-Flipbook* GameInstance::CreateFlipbook(const wstring& key)
+shared_ptr<Flipbook> GameInstance::CreateFlipbook(const wstring& key)
 {
 	return _ResourceManager->CreateFlipbook(key);
 }
 
-Tilemap* GameInstance::GetTilemap(const wstring& key) 
+shared_ptr<Tilemap> GameInstance::GetTilemap(const wstring& key)
 {
 	return _ResourceManager->GetTilemap(key);
 }
 
-Tilemap* GameInstance::CreateTilemap(const wstring& key)
+shared_ptr<Tilemap> GameInstance::CreateTilemap(const wstring& key)
 {
 	return _ResourceManager->CreateTilemap(key);
 }
@@ -193,18 +193,17 @@ void GameInstance::SaveTilemap(const wstring& key, const wstring& path)
 	 _ResourceManager->SaveTilemap(key, path);
 }
 
-Tilemap* GameInstance::LoadTilemap(const wstring& key, const wstring& path)
+shared_ptr<Tilemap> GameInstance::LoadTilemap(const wstring& key, const wstring& path)
 {
 	return _ResourceManager->LoadTilemap(key, path);
 }
 
-Sound* GameInstance::GetSound(const wstring& key)
+shared_ptr<Sound> GameInstance::GetSound(const wstring& key)
 {
 	return _ResourceManager->GetSound(key);
 }
 
-
-Sound* GameInstance::LoadSound(const wstring& key, const wstring& path)
+shared_ptr<Sound> GameInstance::LoadSound(const wstring& key, const wstring& path)
 {
 	return _ResourceManager->LoadSound(key, path);
 }

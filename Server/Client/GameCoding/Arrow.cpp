@@ -59,14 +59,14 @@ void Arrow::TickIdle()
 	}
 	else
 	{
-		Creature* creature = scene->GetCreatureAt(nextPos);
+		shared_ptr<Creature> creature = scene->GetCreatureAt(nextPos);
 		if (creature)
 		{
 			scene->SpawnObject<HitEffect>(nextPos);			
 			//creature->OnDamaged(this);
 		}
 
-		scene->RemoveActor(this);
+		scene->RemoveActor(shared_from_this());
 	}
 }
 
