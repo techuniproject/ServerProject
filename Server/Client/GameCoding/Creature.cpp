@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "GameInstance.h"
 #include "Creature.h"
 #include "InputManager.h"
 #include "TimeManager.h"
@@ -55,7 +56,7 @@ void Creature::OnDamaged(Creature* attacker)
 		{
 			scene->RemoveActor(this);
 		}*/
-		GET_SINGLE(SceneManager)->GetCurrentScene().RemoveActor(this);
+		GET_SINGLE(GameInstance)->GetCurrentScene().RemoveActor(this);
 		//GET_SINGLE(SceneManager)->GetCurrentScene()->RemoveActor(this);
 	}
 }

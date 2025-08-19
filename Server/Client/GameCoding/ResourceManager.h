@@ -10,7 +10,7 @@ class Sound;
 class ResourceManager
 {
 public:
-	DECLARE_SINGLE(ResourceManager);
+	//DECLARE_SINGLE(ResourceManager);
 
 	~ResourceManager();
 

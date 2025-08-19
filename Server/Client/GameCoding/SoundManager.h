@@ -3,8 +3,8 @@
 
 class SoundManager
 {
-	DECLARE_SINGLE(SoundManager);
-
+	//DECLARE_SINGLE(SoundManager);
+public:
 	~SoundManager();
 
 public:

@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "GameInstance.h"
 #include "Scene.h"
 #include "Actor.h"
 #include "Creature.h"
@@ -37,7 +38,7 @@ void Scene::Init()
 
 void Scene::Update()
 {
-	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
+	float deltaTime = GET_SINGLE(GameInstance)->GetDeltaTime();
 
 	// บนป็
 	for (const vector<Actor*> actors : _actors)

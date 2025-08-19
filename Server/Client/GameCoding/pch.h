@@ -44,4 +44,3 @@ namespace fs = std::filesystem;
 #pragma comment (lib, "dsound.lib")
 
 //자주 쓰이는 헤더
-#include "Scene.h"

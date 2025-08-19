@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "GameInstance.h"
 #include "Button.h"
 #include "InputManager.h"
 #include "TimeManager.h"
@@ -23,8 +24,8 @@ void Button::BeginPlay()
 
 void Button::Tick()
 {
-	POINT mousePos = GET_SINGLE(InputManager)->GetMousePos();
-	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
+	POINT mousePos = GET_SINGLE(GameInstance)->GetMousePos();
+	float deltaTime = GET_SINGLE(GameInstance)->GetDeltaTime();
 
 	if (_state == BS_Clicked)
 	{
@@ -38,7 +39,7 @@ void Button::Tick()
 
 	if (IsMouseInRect())
 	{
-		if (GET_SINGLE(InputManager)->GetButton(KeyType::LeftMouse))
+		if (GET_SINGLE(GameInstance)->GetButton(KeyType::LeftMouse))
 		{
 			SetButtonState(BS_Pressed);
 			// OnPressed

@@ -200,6 +200,9 @@
     <ClInclude Include="HitEffect.h">
       <Filter>소스 파일\03. Objects\Game\Effect</Filter>
     </ClInclude>
+    <ClInclude Include="GameInstance.h">
+      <Filter>소스 파일\00. MainGame</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GameCoding.rc">
@@ -319,6 +322,9 @@
     </ClCompile>
     <ClCompile Include="HitEffect.cpp">
       <Filter>소스 파일\03. Objects\Game\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="GameInstance.cpp">
+      <Filter>소스 파일\00. MainGame</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

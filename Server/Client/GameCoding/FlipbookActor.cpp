@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "GameInstance.h"
 #include "FlipbookActor.h"
 #include "Flipbook.h"
 #include "Texture.h"
@@ -32,7 +33,7 @@ void FlipbookActor::Tick()
 	if (info.loop == false && _idx == info.end)
 		return;
 
-	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
+	float deltaTime = GET_SINGLE(GameInstance)->GetDeltaTime();
 
 	_sumTime += deltaTime;
 
@@ -54,7 +55,7 @@ void FlipbookActor::Render(HDC hdc)
 		return;
 
 	const FlipbookInfo& info = _flipbook->GetInfo();
-	Vec2 cameraPos = GET_SINGLE(SceneManager)->GetCameraPos();
+	Vec2 cameraPos = GET_SINGLE(GameInstance)->GetCameraPos();
 
 	::TransparentBlt(hdc,
 		(int32)_pos.x - info.size.x / 2 - ((int32)cameraPos.x - GWinSizeX / 2),

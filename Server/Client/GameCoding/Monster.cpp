@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "GameInstance.h"
 #include "Monster.h"
 #include "InputManager.h"
 #include "TimeManager.h"
@@ -13,10 +14,10 @@
 
 Monster::Monster()
 {
-	_flipbookMove[DIR_UP] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_SnakeUp");
-	_flipbookMove[DIR_DOWN] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_SnakeDown");
-	_flipbookMove[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_SnakeLeft");
-	_flipbookMove[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_SnakeRight");
+	_flipbookMove[DIR_UP] = GET_SINGLE(GameInstance)->GetFlipbook(L"FB_SnakeUp");
+	_flipbookMove[DIR_DOWN] = GET_SINGLE(GameInstance)->GetFlipbook(L"FB_SnakeDown");
+	_flipbookMove[DIR_LEFT] = GET_SINGLE(GameInstance)->GetFlipbook(L"FB_SnakeLeft");
+	_flipbookMove[DIR_RIGHT] = GET_SINGLE(GameInstance)->GetFlipbook(L"FB_SnakeRight");
 
 }
 
@@ -47,7 +48,7 @@ void Monster::Render(HDC hdc)
 
 void Monster::TickIdle()
 {
-	DevScene* scene = dynamic_cast<DevScene*>(&GET_SINGLE(SceneManager)->GetCurrentScene());
+	DevScene* scene = dynamic_cast<DevScene*>(&GET_SINGLE(GameInstance)->GetCurrentScene());
 	//DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
 	//DevScene* scene = GET_SINGLE(SceneManager)->GetCurrentScene<DevScene>();
 
@@ -91,7 +92,7 @@ void Monster::TickIdle()
 
 void Monster::TickMove()
 {
-	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
+	float deltaTime = GET_SINGLE(GameInstance)->GetDeltaTime();
 
 	Vec2 dir = (_destPos - _pos);
 	if (dir.Length() < 5.f)
@@ -132,7 +133,7 @@ void Monster::TickSkill()
 
 	if (_waitSeconds > 0)
 	{
-		float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
+		float deltaTime = GET_SINGLE(GameInstance)->GetDeltaTime();
 		_waitSeconds = max(0, _waitSeconds - deltaTime);	
 		return;
 	}
@@ -140,7 +141,7 @@ void Monster::TickSkill()
 	{
 		//DevScene* scene = dynamic_cast<DevScene*>(&GET_SINGLE(SceneManager)->GetCurrentScene());
 		//DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
-		DevScene* scene = GET_SINGLE(SceneManager)->GetCurrentScene<DevScene>();
+		DevScene* scene = dynamic_cast<DevScene*>(&GET_SINGLE(GameInstance)->GetCurrentScene());
 
 		if (scene == nullptr)
 			return;

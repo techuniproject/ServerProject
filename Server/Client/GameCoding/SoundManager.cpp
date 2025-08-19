@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "GameInstance.h"
 #include "SoundManager.h"
 #include "ResourceManager.h"
 #include "Sound.h"
@@ -28,7 +29,7 @@ void SoundManager::Init(HWND hwnd)
 
 void SoundManager::Play(const wstring& key, bool loop /*= false*/)
 {
-	Sound* sound = GET_SINGLE(ResourceManager)->GetSound(key);
+	Sound* sound = GET_SINGLE(GameInstance)->GetSound(key);
 	if (sound == nullptr)
 		return;
 

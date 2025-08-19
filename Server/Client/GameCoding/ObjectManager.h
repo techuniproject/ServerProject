@@ -4,7 +4,7 @@ class GameObject;
 
 class ObjectManager
 {
-	DECLARE_SINGLE(ObjectManager)
+	//DECLARE_SINGLE(ObjectManager)
 
 public:
 	template<typename T>

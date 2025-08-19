@@ -1,10 +1,13 @@
 #include "pch.h"
 #include "Game.h"
+#include "GameInstance.h"
 #include "TimeManager.h"
 #include "InputManager.h"
 #include "SceneManager.h"
 #include "ResourceManager.h"
 #include "SoundManager.h"
+
+
 
 Game::Game()
 {
@@ -14,8 +17,9 @@ Game::Game()
 Game::~Game()
 {
 	// 사실 마지막에 ..
-	GET_SINGLE(SceneManager)->Clear();
-	GET_SINGLE(ResourceManager)->Clear();
+	GET_SINGLE(GameInstance)->Clear();
+	//GET_SINGLE(SceneManager)->Clear();
+	//GET_SINGLE(ResourceManager)->Clear();
 
 	_CrtDumpMemoryLeaks();
 }
@@ -32,33 +36,41 @@ void Game::Init(HWND hwnd)
 	HBITMAP prev = (HBITMAP)::SelectObject(hdcBack, _bmpBack); // DC와 BMP를 연결
 	::DeleteObject(prev);
 
-	GET_SINGLE(TimeManager)->Init();
-	GET_SINGLE(InputManager)->Init(hwnd);
-	GET_SINGLE(SceneManager)->Init();
-	GET_SINGLE(ResourceManager)->Init(hwnd, fs::path(L"C:\\Users\\서정원\\Desktop\\ServerClient\\ServerProject\\Server\\Client\\Resources"));
-	GET_SINGLE(SoundManager)->Init(hwnd);
+	GET_SINGLE(GameInstance)->Init(hwnd);
 
-	//SceneManager* ms=new SceneManager();
+	//GET_SINGLE(TimeManager)->Init();
+	//GET_SINGLE(InputManager)->Init(hwnd);
+	//GET_SINGLE(SceneManager)->Init();
+	//GET_SINGLE(ResourceManager)->Init(hwnd, fs::path(L"C:\\Users\\서정원\\Desktop\\ServerClient\\ServerProject\\Server\\Client\\Resources"));
+	//GET_SINGLE(SoundManager)->Init(hwnd);
 
-	GET_SINGLE(SceneManager)->ChangeScene(SceneType::DevScene);
+	GET_SINGLE(GameInstance)->ChangeScene(SceneType::DevScene);
+
+	//GET_SINGLE(SceneManager)->ChangeScene(SceneType::DevScene);
 }
 
 void Game::Update()
 {
-	GET_SINGLE(TimeManager)->Update();
-	GET_SINGLE(InputManager)->Update();
-	GET_SINGLE(SceneManager)->Update();
+	GET_SINGLE(GameInstance)->Update();
+	//GET_SINGLE(TimeManager)->Update();
+	//GET_SINGLE(InputManager)->Update();
+	//GET_SINGLE(SceneManager)->Update();
 }
 
 void Game::Render()
 {
-	GET_SINGLE(SceneManager)->Render(hdcBack);
+	//GET_SINGLE(SceneManager)->Render(hdcBack);
 
-	uint32 fps = GET_SINGLE(TimeManager)->GetFps();
-	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
+	GET_SINGLE(GameInstance)->RenderScene(hdcBack);
+
+	//uint32 fps = GET_SINGLE(TimeManager)->GetFps();
+	//float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
+
+	uint32 fps = GET_SINGLE(GameInstance)->GetFps();
+	float deltaTime = GET_SINGLE(GameInstance)->GetDeltaTime();
 
 	{
-		POINT mousePos = GET_SINGLE(InputManager)->GetMousePos();
+		POINT mousePos = GET_SINGLE(GameInstance)->GetMousePos();
 		wstring str = std::format(L"Mouse({0}, {1})", mousePos.x, mousePos.y);
 		::TextOut(hdcBack, 20, 10, str.c_str(), static_cast<int32>(str.size()));
 	}

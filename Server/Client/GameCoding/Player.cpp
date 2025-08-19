@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "GameInstance.h"
 #include "Player.h"
 #include "InputManager.h"
 #include "TimeManager.h"
@@ -13,30 +14,30 @@
 
 Player::Player()
 {
-	_flipbookIdle[DIR_UP] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_IdleUp");
-	_flipbookIdle[DIR_DOWN] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_IdleDown");
-	_flipbookIdle[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_IdleLeft");
-	_flipbookIdle[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_IdleRight");
+	_flipbookIdle[DIR_UP] = GET_SINGLE(GameInstance)->GetFlipbook(L"FB_IdleUp");
+	_flipbookIdle[DIR_DOWN] = GET_SINGLE(GameInstance)->GetFlipbook(L"FB_IdleDown");
+	_flipbookIdle[DIR_LEFT] = GET_SINGLE(GameInstance)->GetFlipbook(L"FB_IdleLeft");
+	_flipbookIdle[DIR_RIGHT] = GET_SINGLE(GameInstance)->GetFlipbook(L"FB_IdleRight");
 	
-	_flipbookMove[DIR_UP] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_MoveUp");
-	_flipbookMove[DIR_DOWN] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_MoveDown");
-	_flipbookMove[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_MoveLeft");
-	_flipbookMove[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_MoveRight");
+	_flipbookMove[DIR_UP] = GET_SINGLE(GameInstance)->GetFlipbook(L"FB_MoveUp");
+	_flipbookMove[DIR_DOWN] = GET_SINGLE(GameInstance)->GetFlipbook(L"FB_MoveDown");
+	_flipbookMove[DIR_LEFT] = GET_SINGLE(GameInstance)->GetFlipbook(L"FB_MoveLeft");
+	_flipbookMove[DIR_RIGHT] = GET_SINGLE(GameInstance)->GetFlipbook(L"FB_MoveRight");
 
-	_flipbookAttack[DIR_UP] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_AttackUp");
-	_flipbookAttack[DIR_DOWN] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_AttackDown");
-	_flipbookAttack[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_AttackLeft");
-	_flipbookAttack[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_AttackRight");
+	_flipbookAttack[DIR_UP] = GET_SINGLE(GameInstance)->GetFlipbook(L"FB_AttackUp");
+	_flipbookAttack[DIR_DOWN] = GET_SINGLE(GameInstance)->GetFlipbook(L"FB_AttackDown");
+	_flipbookAttack[DIR_LEFT] = GET_SINGLE(GameInstance)->GetFlipbook(L"FB_AttackLeft");
+	_flipbookAttack[DIR_RIGHT] = GET_SINGLE(GameInstance)->GetFlipbook(L"FB_AttackRight");
 
-	_flipbookBow[DIR_UP] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_BowUp");
-	_flipbookBow[DIR_DOWN] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_BowDown");
-	_flipbookBow[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_BowLeft");
-	_flipbookBow[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_BowRight");
+	_flipbookBow[DIR_UP] = GET_SINGLE(GameInstance)->GetFlipbook(L"FB_BowUp");
+	_flipbookBow[DIR_DOWN] = GET_SINGLE(GameInstance)->GetFlipbook(L"FB_BowDown");
+	_flipbookBow[DIR_LEFT] = GET_SINGLE(GameInstance)->GetFlipbook(L"FB_BowLeft");
+	_flipbookBow[DIR_RIGHT] = GET_SINGLE(GameInstance)->GetFlipbook(L"FB_BowRight");
 
-	_flipbookStaff[DIR_UP] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_StaffUp");
-	_flipbookStaff[DIR_DOWN] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_StaffDown");
-	_flipbookStaff[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_StaffLeft");
-	_flipbookStaff[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_StaffRight");
+	_flipbookStaff[DIR_UP] = GET_SINGLE(GameInstance)->GetFlipbook(L"FB_StaffUp");
+	_flipbookStaff[DIR_DOWN] = GET_SINGLE(GameInstance)->GetFlipbook(L"FB_StaffDown");
+	_flipbookStaff[DIR_LEFT] = GET_SINGLE(GameInstance)->GetFlipbook(L"FB_StaffLeft");
+	_flipbookStaff[DIR_RIGHT] = GET_SINGLE(GameInstance)->GetFlipbook(L"FB_StaffRight");
 
 	CameraComponent* camera = new CameraComponent();
 	AddComponent(camera);
@@ -72,12 +73,12 @@ void Player::Render(HDC hdc)
 
 void Player::TickIdle()
 {
-	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
+	float deltaTime = GET_SINGLE(GameInstance)->GetDeltaTime();
 
 	_keyPressed = true;
 	Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
 
-	if (GET_SINGLE(InputManager)->GetButton(KeyType::W))
+	if (GET_SINGLE(GameInstance)->GetButton(KeyType::W))
 	{
 		SetDir(DIR_UP);
 
@@ -88,7 +89,7 @@ void Player::TickIdle()
 			SetState(ObjectState::Move);
 		}
 	}
-	else  if (GET_SINGLE(InputManager)->GetButton(KeyType::S))
+	else  if (GET_SINGLE(GameInstance)->GetButton(KeyType::S))
 	{
 		SetDir(DIR_DOWN);
 
@@ -99,7 +100,7 @@ void Player::TickIdle()
 			SetState(ObjectState::Move);
 		}
 	}
-	else if (GET_SINGLE(InputManager)->GetButton(KeyType::A))
+	else if (GET_SINGLE(GameInstance)->GetButton(KeyType::A))
 	{
 		SetDir(DIR_LEFT);
 		Vec2Int nextPos = _cellPos + deltaXY[_dir];
@@ -109,7 +110,7 @@ void Player::TickIdle()
 			SetState(ObjectState::Move);
 		}
 	}
-	else if (GET_SINGLE(InputManager)->GetButton(KeyType::D))
+	else if (GET_SINGLE(GameInstance)->GetButton(KeyType::D))
 	{
 		SetDir(DIR_RIGHT);
 		Vec2Int nextPos = _cellPos + deltaXY[_dir];
@@ -126,20 +127,20 @@ void Player::TickIdle()
 			UpdateAnimation();
 	}
 
-	if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_1))
+	if (GET_SINGLE(GameInstance)->GetButtonDown(KeyType::KEY_1))
 	{
 		SetWeaponType(WeaponType::Sword);
 	}
-	else if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_2))
+	else if (GET_SINGLE(GameInstance)->GetButtonDown(KeyType::KEY_2))
 	{
 		SetWeaponType(WeaponType::Bow);
 	}
-	else if (GET_SINGLE(InputManager)->GetButtonDown(KeyType::KEY_3))
+	else if (GET_SINGLE(GameInstance)->GetButtonDown(KeyType::KEY_3))
 	{
 		SetWeaponType(WeaponType::Staff);
 	}
 
-	if (GET_SINGLE(InputManager)->GetButton(KeyType::SpaceBar))
+	if (GET_SINGLE(GameInstance)->GetButton(KeyType::SpaceBar))
 	{
 		SetState(ObjectState::Skill);
 	}
@@ -147,7 +148,7 @@ void Player::TickIdle()
 
 void Player::TickMove()
 {
-	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
+	float deltaTime = GET_SINGLE(GameInstance)->GetDeltaTime();
 
 	Vec2 dir = (_destPos - _pos);	
 	if (dir.Length() < 5.f)
@@ -185,7 +186,7 @@ void Player::TickSkill()
 	{
 		//DevScene* scene = dynamic_cast<DevScene*>(&GET_SINGLE(SceneManager)->GetCurrentScene());
 		//DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
-		DevScene* scene = GET_SINGLE(SceneManager)->GetCurrentScene<DevScene>();
+		DevScene* scene = dynamic_cast<DevScene*>(&GET_SINGLE(GameInstance)->GetCurrentScene());
 
 		if (scene == nullptr)
 			return;

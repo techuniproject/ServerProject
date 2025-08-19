@@ -4,7 +4,9 @@ class Scene;
 
 class SceneManager
 {
-	DECLARE_SINGLE(SceneManager)
+	//2025-08-17 서정원
+	//DECLARE_SINGLE(SceneManager)
+	DECLARE_DEFAULT_CONSTRUCTOR(SceneManager)
 	DECLARE_DEFAULT_DESTRUCTOR(SceneManager)
 	// 컴파일러가 만들어주는 기본 암시적 소멸자는 헤더에서 정의하므로 
 	// 전방선언으로 Scene을 알려주고, unique_ptr<Scene>같이 delete해야하는 부분에서 오류남
@@ -22,19 +24,21 @@ public:
 	//Scene* GetCurrentScene() { return _scene.get(); } 외부에서 삭제될 위험
 	//~SceneManager() = default; -> 전방선언 후 해당 클래스에 대한 소멸을 unique_ptr<Scene>에서사용하려해서 정의 여기서 x
 
-	template<typename T>
-	T* GetCurrentScene() 
+	/*template<typename T>
+	T* GetCurrentScene() noexcept
+		requires is_base_of_v<Scene,T>
 	{
 		return dynamic_cast<T*>(_scene.get());
 	}
 	
 	template<typename T>
-	const T* GetCurrentScene() const
+	const T* GetCurrentScene() const noexcept
+		requires is_base_of_v<Scene, T>
 	{
 		return dynamic_cast<const T*>(_scene.get());
-	}
+	}*/
 
-
+	SceneType& GetCurrentSceneType() { return _sceneType; }
 	Scene& GetCurrentScene() { assert(_scene);  return *_scene; }
 	const Scene& GetCurrentScene() const { assert(_scene);  return *_scene; }
 	//Scene* GetCurrentScene1() { assert(_scene);  return _scene.get(); }

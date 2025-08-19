@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "GameInstance.h"
 #include "GameObject.h"
 #include "Creature.h"
 #include "InputManager.h"
@@ -75,7 +76,7 @@ bool GameObject::HasReachedDest()
 bool GameObject::CanGo(Vec2Int cellPos)
 {
 	//DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
-	DevScene* scene = dynamic_cast<DevScene*>(&GET_SINGLE(SceneManager)->GetCurrentScene());
+	DevScene* scene = dynamic_cast<DevScene*>(&GET_SINGLE(GameInstance)->GetCurrentScene());
 	//DevScene* scene = GET_SINGLE(SceneManager)->GetCurrentScene<DevScene>();
 
 	if (scene == nullptr)
@@ -102,7 +103,7 @@ void GameObject::SetCellPos(Vec2Int cellPos, bool teleport /*= false*/)
 	_cellPos = cellPos;
 
 	//DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
-	DevScene* scene = dynamic_cast<DevScene*>(&GET_SINGLE(SceneManager)->GetCurrentScene());
+	DevScene* scene = dynamic_cast<DevScene*>(&GET_SINGLE(GameInstance)->GetCurrentScene());
 	//DevScene* scene = GET_SINGLE(SceneManager)->GetCurrentScene<DevScene>();
 
 	if (scene == nullptr)

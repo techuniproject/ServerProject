@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Arrow.h"
+#include "GameInstance.h"
 #include "TimeManager.h"
 #include "ResourceManager.h"
 #include "Flipbook.h"
@@ -10,10 +11,10 @@
 
 Arrow::Arrow()
 {
-	_flipbookMove[DIR_UP] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_ArrowUp");
-	_flipbookMove[DIR_DOWN] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_ArrowDown");
-	_flipbookMove[DIR_LEFT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_ArrowLeft");
-	_flipbookMove[DIR_RIGHT] = GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_ArrowRight");
+	_flipbookMove[DIR_UP] = GET_SINGLE(GameInstance)->GetFlipbook(L"FB_ArrowUp");
+	_flipbookMove[DIR_DOWN] = GET_SINGLE(GameInstance)->GetFlipbook(L"FB_ArrowDown");
+	_flipbookMove[DIR_LEFT] = GET_SINGLE(GameInstance)->GetFlipbook(L"FB_ArrowLeft");
+	_flipbookMove[DIR_RIGHT] = GET_SINGLE(GameInstance)->GetFlipbook(L"FB_ArrowRight");
 
 }
 
@@ -47,7 +48,7 @@ void Arrow::TickIdle()
 	//DevScene* scene = dynamic_cast<DevScene*>(&GET_SINGLE(SceneManager)->GetCurrentScene());
 	//DevScene& scene = dynamic_cast<DevScene&>(GET_SINGLE(SceneManager)->GetCurrentScene());
 	
-	DevScene* scene = GET_SINGLE(SceneManager)->GetCurrentScene<DevScene>();
+	DevScene* scene = dynamic_cast<DevScene*>(&GET_SINGLE(GameInstance)->GetCurrentScene());
 	if (scene == nullptr)
 		return;
 
@@ -74,7 +75,7 @@ void Arrow::TickIdle()
 
 void Arrow::TickMove()
 {
-	float deltaTime = GET_SINGLE(TimeManager)->GetDeltaTime();
+	float deltaTime = GET_SINGLE(GameInstance)->GetDeltaTime();
 
 	Vec2 dir = (_destPos - _pos);
 	if (dir.Length() < 5.f)

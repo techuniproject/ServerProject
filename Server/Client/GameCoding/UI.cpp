@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "UI.h"
+#include "GameInstance.h"
 #include "InputManager.h"
 
 UI::UI()
@@ -44,7 +45,7 @@ bool UI::IsMouseInRect()
 {
 	RECT rect = GetRect();
 
-	POINT mousePos = GET_SINGLE(InputManager)->GetMousePos();
+	POINT mousePos = GET_SINGLE(GameInstance)->GetMousePos();
 
 	//return ::PtInRect(&rect, mousePos);
 	if (mousePos.x < rect.left)

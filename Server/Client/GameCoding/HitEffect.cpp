@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "GameInstance.h"
 #include "HitEffect.h"
 #include "ResourceManager.h"
 #include "SceneManager.h"
@@ -29,7 +30,7 @@ void HitEffect::Tick()
 		//Scene* scene = GET_SINGLE(SceneManager)->GetCurrentScene();
 		/*Scene* scene = &GET_SINGLE(SceneManager)->GetCurrentScene();
 		scene->RemoveActor(this);*/
-		GET_SINGLE(SceneManager)->GetCurrentScene().RemoveActor(this);
+		GET_SINGLE(GameInstance)->GetCurrentScene().RemoveActor(this);
 	}
 }
 
@@ -41,5 +42,5 @@ void HitEffect::Render(HDC hdc)
 
 void HitEffect::UpdateAnimation()
 {
-	SetFlipbook(GET_SINGLE(ResourceManager)->GetFlipbook(L"FB_Hit"));
+	SetFlipbook(GET_SINGLE(GameInstance)->GetFlipbook(L"FB_Hit"));
 }
