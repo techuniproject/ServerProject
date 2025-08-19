@@ -184,10 +184,9 @@ void Player::TickSkill()
 	// TODO : Damage?
 	if (IsAnimationEnded())
 	{
-		//DevScene* scene = dynamic_cast<DevScene*>(&GET_SINGLE(SceneManager)->GetCurrentScene());
-		//DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
-		DevScene* scene = dynamic_cast<DevScene*>(&GET_SINGLE(GameInstance)->GetCurrentScene());
-
+		//DevScene* scene = dynamic_cast<DevScene*>(&GET_SINGLE(GameInstance)->GetCurrentScene());
+		DevScene* scene = GET_SINGLE(GameInstance)->GetCurrentScene<DevScene>();
+		
 		if (scene == nullptr)
 			return;
 

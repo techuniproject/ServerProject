@@ -17,6 +17,8 @@ DEFINE_DEFAULT_CONSTRUCTOR(GameInstance); //unique_ptr때문에 헤더를 알아야 메모�
 DEFINE_DEFAULT_DESTRUCTOR(GameInstance);
 
 
+
+
 void GameInstance::Init(HWND hwnd) 
 {
 

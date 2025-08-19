@@ -48,10 +48,9 @@ void Monster::Render(HDC hdc)
 
 void Monster::TickIdle()
 {
-	DevScene* scene = dynamic_cast<DevScene*>(&GET_SINGLE(GameInstance)->GetCurrentScene());
-	//DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
-	//DevScene* scene = GET_SINGLE(SceneManager)->GetCurrentScene<DevScene>();
-
+	//DevScene* scene = dynamic_cast<DevScene*>(&GET_SINGLE(GameInstance)->GetCurrentScene());
+	DevScene* scene = GET_SINGLE(GameInstance)->GetCurrentScene<DevScene>();
+	
 	if (scene == nullptr)
 		return;
 
@@ -139,10 +138,8 @@ void Monster::TickSkill()
 	}
 
 	{
-		//DevScene* scene = dynamic_cast<DevScene*>(&GET_SINGLE(SceneManager)->GetCurrentScene());
-		//DevScene* scene = dynamic_cast<DevScene*>(GET_SINGLE(SceneManager)->GetCurrentScene());
-		DevScene* scene = dynamic_cast<DevScene*>(&GET_SINGLE(GameInstance)->GetCurrentScene());
-
+	//	DevScene* scene = dynamic_cast<DevScene*>(&GET_SINGLE(GameInstance)->GetCurrentScene());
+		DevScene* scene = GET_SINGLE(GameInstance)->GetCurrentScene<DevScene>();
 		if (scene == nullptr)
 			return;
 

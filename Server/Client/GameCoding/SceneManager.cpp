@@ -8,6 +8,7 @@
 DEFINE_DEFAULT_DESTRUCTOR(SceneManager)
 DEFINE_DEFAULT_CONSTRUCTOR(SceneManager)
 
+
 void SceneManager::Init()
 {
 

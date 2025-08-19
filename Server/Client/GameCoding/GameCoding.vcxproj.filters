@@ -332,4 +332,8 @@
       <Filter>소스 파일\00. MainGame</Filter>
     </Text>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="SceneManager.inl" />
+    <None Include="GameInstance.inl" />
+  </ItemGroup>
 </Project>

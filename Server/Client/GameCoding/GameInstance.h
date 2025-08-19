@@ -1,5 +1,4 @@
-#pragma once
-//#include "SceneManager.h"
+﻿#pragma once
 
 class ObjectManager;
 class InputManager;
@@ -18,7 +17,7 @@ class GameObject;
 
 
 
-// 2025-08-19 GameInstance ����
+// 2025-08-19 GameInstance 설계
 class GameInstance
 {
 public:
@@ -32,17 +31,11 @@ public:
 	void Clear();
 
 public: //SceneManager
-	//template<typename T>
-	//T* GetCurrentScene() noexcept
-	//{
-	//	return _SceneManager->template GetCurrentScene<T>();
-	//}
+	template<typename T>
+	T* GetCurrentScene() noexcept;
 
-	//template<typename T>
-	//const T* GetCurrentScene() const noexcept
-	//{
-	//	return _SceneManager->template GetCurrentScene<T>();
-	//}
+	template<typename T>
+	const T* GetCurrentScene() const noexcept;
 
 	void RenderScene(HDC hdc);
 	SceneType& GetCurrentSceneType();
@@ -96,3 +89,4 @@ private:
 	unique_ptr<TimeManager> _TimeManager;
 };
 
+#include "GameInstance.inl" // ⬅️ 포워딩 템플릿 '정의' 포함

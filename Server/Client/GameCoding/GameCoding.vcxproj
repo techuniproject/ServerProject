@@ -236,6 +236,10 @@
   <ItemGroup>
     <Text Include="smart_pointer.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="GameInstance.inl" />
+    <None Include="SceneManager.inl" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

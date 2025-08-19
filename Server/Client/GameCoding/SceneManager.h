@@ -1,42 +1,35 @@
-#pragma once
-//#include "Scene.h" //pch·Î »¬Áö °í¹Î , ÀÌ Çì´õ Ãß°¡½Ã ºñ¿ë¹ß»ıÇÏ¹Ç·Î
+ï»¿#pragma once
+//#include "Scene.h" //pchë¡œ ëº„ì§€ ê³ ë¯¼ , ì´ í—¤ë” ì¶”ê°€ì‹œ ë¹„ìš©ë°œìƒí•˜ë¯€ë¡œ
 class Scene;
 
 class SceneManager
 {
-	//2025-08-17 ¼­Á¤¿ø
+	//2025-08-17 ì„œì •ì›
 	//DECLARE_SINGLE(SceneManager)
 	DECLARE_DEFAULT_CONSTRUCTOR(SceneManager)
 	DECLARE_DEFAULT_DESTRUCTOR(SceneManager)
-	// ÄÄÆÄÀÏ·¯°¡ ¸¸µé¾îÁÖ´Â ±âº» ¾Ï½ÃÀû ¼Ò¸êÀÚ´Â Çì´õ¿¡¼­ Á¤ÀÇÇÏ¹Ç·Î 
-	// Àü¹æ¼±¾ğÀ¸·Î SceneÀ» ¾Ë·ÁÁÖ°í, unique_ptr<Scene>°°ÀÌ deleteÇØ¾ßÇÏ´Â ºÎºĞ¿¡¼­ ¿À·ù³²
-	// ¾Ï½ÃÀû ¼Ò¸êÀÚ´Â ÀÎ¶óÀÎÀ¸·Î ¸¸µé¾îÁ® TU°¡ Scene.h¸¦ Ãß°¡¾ÈÇÑ TU¿¡ ÇÑÇØ ÄÄÆÄÀÏ ¿¡·¯ È®·ü ÀÖ´Ù´Â °Í
+	// ì»´íŒŒì¼ëŸ¬ê°€ ë§Œë“¤ì–´ì£¼ëŠ” ê¸°ë³¸ ì•”ì‹œì  ì†Œë©¸ìëŠ” í—¤ë”ì—ì„œ ì •ì˜í•˜ë¯€ë¡œ 
+	// ì „ë°©ì„ ì–¸ìœ¼ë¡œ Sceneì„ ì•Œë ¤ì£¼ê³ , unique_ptr<Scene>ê°™ì´ deleteí•´ì•¼í•˜ëŠ” ë¶€ë¶„ì—ì„œ ì˜¤ë¥˜ë‚¨
+	// ì•”ì‹œì  ì†Œë©¸ìëŠ” ì¸ë¼ì¸ìœ¼ë¡œ ë§Œë“¤ì–´ì ¸ TUê°€ Scene.hë¥¼ ì¶”ê°€ì•ˆí•œ TUì— í•œí•´ ì»´íŒŒì¼ ì—ëŸ¬ í™•ë¥  ìˆë‹¤ëŠ” ê²ƒ
 public:
 	void Init();
 	void Update();
 	void Render(HDC hdc);
 
-	void Clear();//ÀÌ°Ô ÇÊ¿äÇÑÁö ¾Ö¸Å
+	void Clear();//ì´ê²Œ í•„ìš”í•œì§€ ì• ë§¤
 
 public:
 	void ChangeScene(SceneType sceneType);
-	//Scene* GetCurrentScene() { return _scene;} //»ıÆ÷ÀÎÅÍ »ç¿ë ½Ã
-	//Scene* GetCurrentScene() { return _scene.get(); } ¿ÜºÎ¿¡¼­ »èÁ¦µÉ À§Çè
-	//~SceneManager() = default; -> Àü¹æ¼±¾ğ ÈÄ ÇØ´ç Å¬·¡½º¿¡ ´ëÇÑ ¼Ò¸êÀ» unique_ptr<Scene>¿¡¼­»ç¿ëÇÏ·ÁÇØ¼­ Á¤ÀÇ ¿©±â¼­ x
+	//Scene* GetCurrentScene() { return _scene;} //ìƒí¬ì¸í„° ì‚¬ìš© ì‹œ
+	//Scene* GetCurrentScene() { return _scene.get(); } ì™¸ë¶€ì—ì„œ ì‚­ì œë  ìœ„í—˜
+	//~SceneManager() = default; -> ì „ë°©ì„ ì–¸ í›„ í•´ë‹¹ í´ë˜ìŠ¤ì— ëŒ€í•œ ì†Œë©¸ì„ unique_ptr<Scene>ì—ì„œì‚¬ìš©í•˜ë ¤í•´ì„œ ì •ì˜ ì—¬ê¸°ì„œ x
 
-	/*template<typename T>
-	T* GetCurrentScene() noexcept
-		requires is_base_of_v<Scene,T>
-	{
-		return dynamic_cast<T*>(_scene.get());
-	}
-	
 	template<typename T>
-	const T* GetCurrentScene() const noexcept
-		requires is_base_of_v<Scene, T>
-	{
-		return dynamic_cast<const T*>(_scene.get());
-	}*/
+	T* GetCurrentScene() noexcept;
+
+	template<typename T>
+	const T* GetCurrentScene() const noexcept;
+
 
 	SceneType& GetCurrentSceneType() { return _sceneType; }
 	Scene& GetCurrentScene() { assert(_scene);  return *_scene; }
@@ -56,3 +49,4 @@ private:
 	Vec2 _cameraPos = {400, 300};
 };
 
+#include "SceneManager.inl" // â¬…ï¸ í…œí”Œë¦¿ 'ì •ì˜'ë¥¼ í—¤ë” ëì— í¬í•¨
