@@ -135,15 +135,17 @@ void ResourceManager::SaveTilemap(const wstring& key, const wstring& path)
 shared_ptr<Tilemap>  ResourceManager::LoadTilemap(const wstring& key, const wstring& path)
 {
 	if (auto it = _tilemaps.find(key); it != _tilemaps.end())
+	{
+		fs::path fullPath = _resourcePath / path;
+		it->second->LoadFile(fullPath);
 		return it->second;
+	}
 
-	fs::path fullPath = _resourcePath / path;
+	//shared_ptr<Tilemap> tm = std::make_shared<Tilemap>();
+	//tm->LoadFile(fullPath);
 
-	shared_ptr<Tilemap> tm = std::make_shared<Tilemap>();
-	tm->LoadFile(fullPath);
-
-	_tilemaps.emplace(key, tm);
-	return tm;
+	//_tilemaps.emplace(key, tm);
+	return nullptr;
 }
 
 shared_ptr<Sound> ResourceManager::GetSound(const std::wstring& key) const
