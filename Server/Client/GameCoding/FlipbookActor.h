@@ -5,6 +5,7 @@ class Flipbook;
 
 class FlipbookActor : public Actor
 {
+	using Super = Actor;
 public:
 	FlipbookActor();
 	virtual ~FlipbookActor() override;

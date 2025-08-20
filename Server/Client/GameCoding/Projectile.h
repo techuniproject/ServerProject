@@ -3,6 +3,7 @@
 
 class Projectile : public GameObject
 {
+	using Super = GameObject;
 
 public:
 	Projectile();

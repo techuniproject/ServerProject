@@ -17,7 +17,7 @@ Button::~Button()
 
 void Button::BeginPlay()
 {
-	__super::BeginPlay();
+	Super::BeginPlay();
 
 	SetButtonState(BS_Default);
 }

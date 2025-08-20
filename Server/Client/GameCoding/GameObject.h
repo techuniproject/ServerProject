@@ -3,6 +3,8 @@
 
 class GameObject : public FlipbookActor
 {
+	using Super = FlipbookActor;
+
 public:
 	GameObject();
 	virtual ~GameObject() override;

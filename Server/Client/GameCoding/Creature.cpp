@@ -22,18 +22,18 @@ Creature::~Creature()
 
 void Creature::BeginPlay()
 {
-	__super::BeginPlay();
+	Super::BeginPlay();
 }
 
 void Creature::Tick()
 {
-	__super::Tick();
+	Super::Tick();
 
 }
 
 void Creature::Render(HDC hdc)
 {
-	__super::Render(hdc);
+	Super::Render(hdc);
 }
 
 void Creature::OnDamaged(shared_ptr<Creature>  attacker)

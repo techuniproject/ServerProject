@@ -28,7 +28,7 @@ Monster::~Monster()
 
 void Monster::BeginPlay()
 {
-	__super::BeginPlay();
+	Super::BeginPlay();
 
 	SetState(ObjectState::Move);
 	SetState(ObjectState::Idle);
@@ -36,13 +36,13 @@ void Monster::BeginPlay()
 
 void Monster::Tick()
 {
-	__super::Tick();
+	Super::Tick();
 
 }
 
 void Monster::Render(HDC hdc)
 {
-	__super::Render(hdc);
+	Super::Render(hdc);
 
 }
 

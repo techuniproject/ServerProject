@@ -13,6 +13,7 @@ enum TILE_SIZE
 
 class TilemapActor : public Actor
 {
+	using Super = Actor;
 public:
 	TilemapActor();
 	virtual ~TilemapActor();

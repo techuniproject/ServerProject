@@ -17,6 +17,7 @@ struct Stat
 
 class Creature : public GameObject
 {
+	using Super = GameObject;
 public:
 	Creature();
 	virtual ~Creature() override;

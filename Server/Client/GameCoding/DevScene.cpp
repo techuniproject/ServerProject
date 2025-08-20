@@ -71,12 +71,12 @@ void DevScene::Init()
 	//SpawnObjectAtRandomPos<Monster>();
 	SpawnObject<Monster>(Vec2Int{7, 7});
 
-	__super::Init();
+	Super::Init();
 }
 
 void DevScene::Update()
 {
-	__super::Update();
+	Super::Update();
 
 	float deltaTime = GET_SINGLE(GameInstance)->GetDeltaTime();
 
@@ -85,13 +85,13 @@ void DevScene::Update()
 
 void DevScene::Render(HDC hdc)
 {
-	__super::Render(hdc);
+	Super::Render(hdc);
 
 }
 
 void DevScene::AddActor(shared_ptr<Actor> actor)
 {
-	__super::AddActor(actor);
+	Super::AddActor(actor);
 
 	shared_ptr<Monster> creature = dynamic_pointer_cast<Monster>(actor);
 	if (creature)
@@ -102,7 +102,7 @@ void DevScene::AddActor(shared_ptr<Actor> actor)
 
 void DevScene::RemoveActor(shared_ptr<Actor> actor)
 {
-	__super::RemoveActor(actor);
+	Super::RemoveActor(actor);
 
 	shared_ptr<Monster> creature = dynamic_pointer_cast<Monster>(actor);
 	if (creature)

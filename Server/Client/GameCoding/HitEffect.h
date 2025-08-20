@@ -3,6 +3,8 @@
 
 class HitEffect : public GameObject
 {
+	using Super = GameObject;
+
 public:
 	HitEffect();
 	virtual ~HitEffect() override;

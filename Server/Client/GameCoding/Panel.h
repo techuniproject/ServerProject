@@ -5,6 +5,7 @@ class Sprite;
 
 class Panel : public UI
 {
+	using Super = UI;
 public:
 	Panel();
 	virtual ~Panel();

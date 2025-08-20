@@ -16,21 +16,21 @@ SpriteActor::~SpriteActor()
 
 void SpriteActor::BeginPlay()
 {
-	__super::BeginPlay();
+	Super::BeginPlay();
 
 
 }
 
 void SpriteActor::Tick()
 {
-	__super::Tick();
+	Super::Tick();
 
 	
 }
 
 void SpriteActor::Render(HDC hdc)
 {
-	__super::Render(hdc);
+	Super::Render(hdc);
 
 	if (_sprite == nullptr)
 		return;

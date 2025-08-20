@@ -9,6 +9,8 @@ class Player;
 
 class Monster : public Creature
 {
+	using Super = Creature;
+
 public:
 	Monster();
 	virtual ~Monster() override;

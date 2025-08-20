@@ -19,19 +19,19 @@ TilemapActor::~TilemapActor()
 
 void TilemapActor::BeginPlay()
 {
-	__super::BeginPlay();
+	Super::BeginPlay();
 }
 
 void TilemapActor::Tick()
 {
-	__super::Tick();
+	Super::Tick();
 
 	//TickPicking();
 }
 
 void TilemapActor::Render(HDC hdc)
 {	
-	__super::Render(hdc);
+	Super::Render(hdc);
 
 	if (_tilemap == nullptr)
 		return;

@@ -66,7 +66,7 @@ void Player::AttatchDefaultComponent()
 
 void Player::BeginPlay()
 {
-	__super::BeginPlay();
+	Super::BeginPlay();
 
 	SetState(ObjectState::Move);
 	SetState(ObjectState::Idle);
@@ -76,12 +76,12 @@ void Player::BeginPlay()
 
 void Player::Tick()
 {
-	__super::Tick();
+	Super::Tick();
 }
 
 void Player::Render(HDC hdc)
 {
-	__super::Render(hdc);
+	Super::Render(hdc);
 
 }
 
