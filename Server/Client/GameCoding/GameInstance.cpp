@@ -6,6 +6,7 @@
 #include "SceneManager.h"
 #include "SoundManager.h"
 #include "TimeManager.h"
+#include "NetworkManager.h"
 #include "Texture.h"
 #include "Sprite.h"
 #include "Flipbook.h"
@@ -28,6 +29,7 @@ void GameInstance::Init(HWND hwnd)
 	_SceneManager = make_unique<SceneManager>();
 	_SoundManager = make_unique<SoundManager>();
 	_TimeManager = make_unique<TimeManager>();
+	_NetworkManager = make_unique<NetworkManager>();
 
 	/*_ObjectManager = make_shared<ObjectManager>();
 	_InputManager = make_shared<InputManager>();
@@ -41,6 +43,7 @@ void GameInstance::Init(HWND hwnd)
 	_SceneManager->Init();
 	_ResourceManager->Init(hwnd, fs::path(L"C:\\Users\\¼­Á¤¿ø\\Desktop\\ServerClient\\ServerProject\\Server\\Client\\Resources"));
 	_SoundManager->Init(hwnd);
+	_NetworkManager->Init();
 }
 
 void GameInstance::Update() 
@@ -48,6 +51,7 @@ void GameInstance::Update()
 	_TimeManager->Update();
 	_InputManager->Update();
 	_SceneManager->Update();
+	_NetworkManager->Update();
 }
 
 void GameInstance::Clear()

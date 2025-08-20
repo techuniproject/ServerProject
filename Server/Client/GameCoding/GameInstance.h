@@ -6,6 +6,7 @@ class ResourceManager;
 class SceneManager;
 class SoundManager;
 class TimeManager;
+class NetworkManager;
 class Scene;
 class ResourceBase;
 class Texture;
@@ -92,6 +93,7 @@ private:
 	unique_ptr<SceneManager> _SceneManager;
 	unique_ptr<SoundManager> _SoundManager;
 	unique_ptr<TimeManager> _TimeManager;
+	unique_ptr<NetworkManager> _NetworkManager;
 };
 
 #include "GameInstance.inl" // ⬅️ 포워딩 템플릿 '정의' 포함

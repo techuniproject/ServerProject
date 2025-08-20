@@ -1,24 +1,17 @@
 #pragma once
 
+#include "CorePch.h"
 #include "Types.h"
 #include "Values.h"
 #include "Defines.h"
 #include "Enums.h"
 #include "Utils.h"
 
-
-#include <windows.h>
-#include <vector>
-#include <list>
-#include <map>
-#include <unordered_map>
-#include <set>
-#include <unordered_set>
-#include <string>
-#include <algorithm>
-#include <functional>
-#include <queue>
-using namespace std;
+#include "Protocol.pb.h"
+#include "Enum.pb.h"
+#include "Struct.pb.h"
+#include <assert.h>
+#include "ClientPacketHandler.h"
 
 #include <assert.h>
 
@@ -43,4 +36,11 @@ namespace fs = std::filesystem;
 #pragma comment (lib, "winmm.lib")
 #pragma comment (lib, "dsound.lib")
 
-//자주 쓰이는 헤더
+
+#ifdef _DEBUG
+#pragma comment(lib, "ServerCore\\Debug\\ServerCore.lib")
+#pragma comment(lib, "Protobuf\\Debug\\libprotobufd.lib")
+#else
+#pragma comment(lib, "ServerCore\\Release\\ServerCore.lib")
+#pragma comment(lib, "Protobuf\\Release\\libprotobuf.lib")
+#endif

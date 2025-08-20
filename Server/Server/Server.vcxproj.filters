@@ -84,5 +84,8 @@
     <None Include="..\Common\protoc-21.12-win64\bin\protoc.exe">
       <Filter>소스 파일\Protocol</Filter>
     </None>
+    <None Include="..\Common\protoc-21.12-win64\bin\GenPackets.bat">
+      <Filter>소스 파일\Protocol</Filter>
+    </None>
   </ItemGroup>
 </Project>

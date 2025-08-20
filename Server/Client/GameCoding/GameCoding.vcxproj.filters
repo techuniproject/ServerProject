@@ -72,6 +72,15 @@
     <Filter Include="소스 파일\03. Objects\Game\Effect">
       <UniqueIdentifier>{5985ac07-8f66-4d37-b14f-9b90895edc39}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Protocol">
+      <UniqueIdentifier>{2fa788ff-8d2f-4adb-b17c-f7a56e561a6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\07. Network">
+      <UniqueIdentifier>{89e93f6b-412e-4148-8c68-36037691783c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Inline">
+      <UniqueIdentifier>{b9ae61f9-0366-43a9-a505-efcdd68ad762}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameCoding.h">
@@ -203,6 +212,24 @@
     <ClInclude Include="GameInstance.h">
       <Filter>소스 파일\00. MainGame</Filter>
     </ClInclude>
+    <ClInclude Include="Struct.pb.h">
+      <Filter>소스 파일\Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="Enum.pb.h">
+      <Filter>소스 파일\Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="Protocol.pb.h">
+      <Filter>소스 파일\Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientPacketHandler.h">
+      <Filter>소스 파일\07. Network</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerSession.h">
+      <Filter>소스 파일\07. Network</Filter>
+    </ClInclude>
+    <ClInclude Include="NetworkManager.h">
+      <Filter>소스 파일\01. Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GameCoding.rc">
@@ -326,6 +353,24 @@
     <ClCompile Include="GameInstance.cpp">
       <Filter>소스 파일\00. MainGame</Filter>
     </ClCompile>
+    <ClCompile Include="Struct.pb.cc">
+      <Filter>소스 파일\Protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="Enum.pb.cc">
+      <Filter>소스 파일\Protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="Protocol.pb.cc">
+      <Filter>소스 파일\Protocol</Filter>
+    </ClCompile>
+    <ClCompile Include="ClientPacketHandler.cpp">
+      <Filter>소스 파일\07. Network</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerSession.cpp">
+      <Filter>소스 파일\07. Network</Filter>
+    </ClCompile>
+    <ClCompile Include="NetworkManager.cpp">
+      <Filter>소스 파일\01. Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="smart_pointer.txt">
@@ -333,7 +378,11 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <None Include="SceneManager.inl" />
-    <None Include="GameInstance.inl" />
+    <None Include="GameInstance.inl">
+      <Filter>소스 파일\Inline</Filter>
+    </None>
+    <None Include="SceneManager.inl">
+      <Filter>소스 파일\Inline</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -182,6 +182,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </None>
+    <None Include="..\Common\protoc-21.12-win64\bin\GenPackets.bat" />
     <None Include="..\Common\protoc-21.12-win64\bin\protoc.exe" />
     <None Include="..\Common\protoc-21.12-win64\bin\Protocol.proto">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
