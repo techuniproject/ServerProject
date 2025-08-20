@@ -93,15 +93,17 @@ int main()
 			});
 	}
 
-	while (true)//컨텐츠 들어갈곳
-	{
-		vector<BuffData> buffs{ BuffData{100,1.5f},BuffData{200,2.3f},BuffData{300,0.7f} };
+	//while (true)//컨텐츠 들어갈곳
+	//{
+	//	vector<BuffData> buffs{ BuffData{100,1.5f},BuffData{200,2.3f},BuffData{300,0.7f} };
 
-		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_TEST(1001, 100, 10, buffs);
-		GSessionManager.Broadcast(sendBuffer);
+	//	SendBufferRef sendBuffer = ServerPacketHandler::Make_S_TEST(1001, 100, 10, buffs);
+	//	GSessionManager.Broadcast(sendBuffer);
 
-		this_thread::sleep_for(250ms);
-	}
+	//	this_thread::sleep_for(250ms);
+	//}
+
+
 
 	GThreadManager->Join();
 

@@ -1,10 +1,16 @@
 #include "pch.h"
 #include "GameSession.h"
 #include "GameSessionManager.h"
+#include "ServerPacketHandler.h"
 
 void GameSession::OnConnected()
 {
 	GSessionManager.Add(static_pointer_cast<GameSession>(shared_from_this()));
+
+	Send(ServerPacketHandler::Make_S_EnterGame());//환영 패킷
+
+	//게임 입장
+
 }
 
 void GameSession::OnDisconnected()
