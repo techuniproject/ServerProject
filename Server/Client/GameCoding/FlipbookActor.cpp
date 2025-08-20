@@ -19,12 +19,12 @@ FlipbookActor::~FlipbookActor()
 
 void FlipbookActor::BeginPlay()
 {
-	Super::BeginPlay();
+	__super::BeginPlay();
 }
 
 void FlipbookActor::Tick()
 {
-	Super::Tick();
+	__super::Tick();
 
 	if (_flipbook == nullptr)
 		return;
@@ -49,7 +49,7 @@ void FlipbookActor::Tick()
 
 void FlipbookActor::Render(HDC hdc)
 {
-	Super::Render(hdc);
+	__super::Render(hdc);
 
 	if (_flipbook == nullptr)
 		return;

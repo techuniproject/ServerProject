@@ -18,12 +18,12 @@ HitEffect::~HitEffect()
 
 void HitEffect::BeginPlay()
 {
-	Super::BeginPlay();	
+	__super::BeginPlay();
 }
 
 void HitEffect::Tick()
 {
-	Super::Tick();
+	__super::Tick();
 
 	if (IsAnimationEnded())
 	{
@@ -36,7 +36,7 @@ void HitEffect::Tick()
 
 void HitEffect::Render(HDC hdc)
 {
-	Super::Render(hdc);
+	__super::Render(hdc);
 
 }
 

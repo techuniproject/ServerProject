@@ -21,7 +21,6 @@ struct PQNode
 
 class DevScene : public Scene
 {
-	using Super = Scene;
 public:
 	DevScene();
 	virtual ~DevScene() override;

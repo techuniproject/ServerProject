@@ -23,7 +23,7 @@ GameObject::~GameObject()
 
 void GameObject::BeginPlay()
 {
-	Super::BeginPlay();
+	__super::BeginPlay();
 
 	SetState(ObjectState::Move);
 	SetState(ObjectState::Idle);
@@ -31,7 +31,7 @@ void GameObject::BeginPlay()
 
 void GameObject::Tick()
 {
-	Super::Tick();
+	__super::Tick();
 
 	switch (_state)
 	{
@@ -49,7 +49,7 @@ void GameObject::Tick()
 
 void GameObject::Render(HDC hdc)
 {
-	Super::Render(hdc);
+	__super::Render(hdc);
 }
 
 void GameObject::SetState(ObjectState state)

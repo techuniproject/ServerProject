@@ -25,19 +25,19 @@ Arrow::~Arrow()
 
 void Arrow::BeginPlay()
 {
-	Super::BeginPlay();
+	__super::BeginPlay();
 	UpdateAnimation();
 }
 
 void Arrow::Tick()
 {
-	Super::Tick();
+	__super::Tick();
 	
 }
 
 void Arrow::Render(HDC hdc)
 {
-	Super::Render(hdc);
+	__super::Render(hdc);
 
 
 }

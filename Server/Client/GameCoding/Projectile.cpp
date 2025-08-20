@@ -13,18 +13,18 @@ Projectile::~Projectile()
 
 void Projectile::BeginPlay()
 {
-	Super::BeginPlay();
+	__super::BeginPlay();
 
 }
 
 void Projectile::Tick()
 {
-	Super::Tick();
+	__super::Tick();
 
 }
 
 void Projectile::Render(HDC hdc)
 {
-	Super::Render(hdc);
+	__super::Render(hdc);
 
 }

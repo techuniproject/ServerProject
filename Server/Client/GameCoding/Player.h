@@ -9,7 +9,6 @@ class BoxCollider;
 
 class Player : public Creature
 {
-	using Super = Creature;
 public:
 	Player();
 	virtual ~Player() override;

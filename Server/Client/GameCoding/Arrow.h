@@ -3,7 +3,6 @@
 
 class Arrow : public Projectile
 {
-	using Super = Projectile;
 
 public:
 	Arrow();

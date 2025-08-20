@@ -15,7 +15,6 @@ enum ButtonState
 
 class Button : public UI
 {
-	using Super = UI;
 public:
 	Button();
 	virtual ~Button() override;

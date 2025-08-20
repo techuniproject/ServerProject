@@ -16,7 +16,7 @@ Panel::~Panel()
 
 void Panel::BeginPlay()
 {
-	Super::BeginPlay();
+	__super::BeginPlay();
 
 	for (shared_ptr<UI>& child : _children)
 		child->BeginPlay();
@@ -24,7 +24,7 @@ void Panel::BeginPlay()
 
 void Panel::Tick()
 {
-	Super::Tick();
+	__super::Tick();
 
 	for (shared_ptr<UI>& child : _children)
 		child->Tick();
@@ -32,7 +32,7 @@ void Panel::Tick()
 
 void Panel::Render(HDC hdc)
 {
-	Super::Render(hdc);
+	__super::Render(hdc);
 
 	for (shared_ptr<UI>& child : _children)
 		child->Render(hdc);
