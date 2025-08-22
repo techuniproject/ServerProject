@@ -59,8 +59,8 @@ void Player::AttatchDefaultComponent()
 	생성자가 끝난 뒤에야, 그 객체를 소유하는 shared_ptr<T>가 완성됨
 	즉, 생성자 실행 중에는 아직 shared_ptr이 객체를 소유하지 않음 → shared_from_this()는 내부적으로 약한 참조(weak_ptr)를 찾는데, 등록된 게 없으니 bad_weak_ptr 예외를 던집니다.
 	*/
-	shared_ptr<CameraComponent> camera = make_shared<CameraComponent>();
-	AddComponent(camera);
+	//shared_ptr<CameraComponent> camera = make_shared<CameraComponent>();
+	//AddComponent(camera);
 }
 
 
@@ -68,10 +68,10 @@ void Player::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SetState(ObjectState::Move);
-	SetState(ObjectState::Idle);
+	SetState(MOVE);
+	SetState(IDLE);
 
-	SetCellPos({5, 5}, true);
+	
 }
 
 void Player::Tick()
@@ -88,77 +88,7 @@ void Player::Render(HDC hdc)
 
 void Player::TickIdle()
 {
-	float deltaTime = GET_SINGLE(GameInstance)->GetDeltaTime();
-
-	_keyPressed = true;
-	Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
-
-	if (GET_SINGLE(GameInstance)->GetButton(KeyType::W))
-	{
-		SetDir(DIR_UP);
-
-		Vec2Int nextPos = _cellPos + deltaXY[_dir];
-		if (CanGo(nextPos))
-		{
-			SetCellPos(nextPos);
-			SetState(ObjectState::Move);
-		}
-	}
-	else  if (GET_SINGLE(GameInstance)->GetButton(KeyType::S))
-	{
-		SetDir(DIR_DOWN);
-
-		Vec2Int nextPos = _cellPos + deltaXY[_dir];
-		if (CanGo(nextPos))
-		{
-			SetCellPos(nextPos);
-			SetState(ObjectState::Move);
-		}
-	}
-	else if (GET_SINGLE(GameInstance)->GetButton(KeyType::A))
-	{
-		SetDir(DIR_LEFT);
-		Vec2Int nextPos = _cellPos + deltaXY[_dir];
-		if (CanGo(nextPos))
-		{
-			SetCellPos(nextPos);
-			SetState(ObjectState::Move);
-		}
-	}
-	else if (GET_SINGLE(GameInstance)->GetButton(KeyType::D))
-	{
-		SetDir(DIR_RIGHT);
-		Vec2Int nextPos = _cellPos + deltaXY[_dir];
-		if (CanGo(nextPos))
-		{
-			SetCellPos(nextPos);
-			SetState(ObjectState::Move);
-		}
-	}
-	else
-	{
-		_keyPressed = false;
-		if (_state == ObjectState::Idle)
-			UpdateAnimation();
-	}
-
-	if (GET_SINGLE(GameInstance)->GetButtonDown(KeyType::KEY_1))
-	{
-		SetWeaponType(WeaponType::Sword);
-	}
-	else if (GET_SINGLE(GameInstance)->GetButtonDown(KeyType::KEY_2))
-	{
-		SetWeaponType(WeaponType::Bow);
-	}
-	else if (GET_SINGLE(GameInstance)->GetButtonDown(KeyType::KEY_3))
-	{
-		SetWeaponType(WeaponType::Staff);
-	}
-
-	if (GET_SINGLE(GameInstance)->GetButton(KeyType::SpaceBar))
-	{
-		SetState(ObjectState::Skill);
-	}
+	
 }
 
 void Player::TickMove()
@@ -166,14 +96,14 @@ void Player::TickMove()
 	float deltaTime = GET_SINGLE(GameInstance)->GetDeltaTime();
 
 	Vec2 dir = (_destPos - _pos);	
-	if (dir.Length() < 5.f)
+	if (dir.Length() < 1.f)
 	{
-		SetState(ObjectState::Idle);
+		SetState(IDLE);
 		_pos = _destPos;
 	}
 	else
 	{
-		switch (_dir)
+		switch (info.dir())
 		{
 		case DIR_UP:
 			_pos.y -= 200 * deltaTime;
@@ -216,34 +146,34 @@ void Player::TickSkill()
 		}
 		else if (_weaponType == WeaponType::Bow)
 		{
-			shared_ptr<Arrow> arrow = scene->SpawnObject<Arrow>(_cellPos);
-			arrow->SetDir(_dir);	
+			shared_ptr<Arrow> arrow = scene->SpawnObject<Arrow>(GetCellPos());
+			arrow->SetDir(info.dir());	
 		}
 
-		SetState(ObjectState::Idle);
+		SetState(IDLE);
 	}
 }
 
 void Player::UpdateAnimation()
 {
-	switch (_state)
+	switch (info.state())
 	{
-	case ObjectState::Idle:
-		if (_keyPressed)
-			SetFlipbook(_flipbookMove[_dir]); 
-		else
-			SetFlipbook(_flipbookIdle[_dir]);
+	case IDLE:
+		/*if (_keyPressed)
+			SetFlipbook(_flipbookMove[info.dir()]);
+		else*/
+			SetFlipbook(_flipbookIdle[info.dir()]);
 		break;
-	case ObjectState::Move:
-		SetFlipbook(_flipbookMove[_dir]);
+	case MOVE:
+		SetFlipbook(_flipbookMove[info.dir()]);
 		break;
-	case ObjectState::Skill:
+	case SKILL:
 		if (_weaponType == WeaponType::Sword)
-			SetFlipbook(_flipbookAttack[_dir]);
+			SetFlipbook(_flipbookAttack[info.dir()]);
 		else if (_weaponType == WeaponType::Bow)
-			SetFlipbook(_flipbookBow[_dir]);
+			SetFlipbook(_flipbookBow[info.dir()]);
 		else
-			SetFlipbook(_flipbookStaff[_dir]);
+			SetFlipbook(_flipbookStaff[info.dir()]);
 		break;
 	}
 }

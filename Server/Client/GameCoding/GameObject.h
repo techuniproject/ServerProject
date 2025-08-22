@@ -29,17 +29,19 @@ public:
 	Dir GetLookAtDir(Vec2Int cellPos);
 
 	void SetCellPos(Vec2Int cellPos, bool teleport = false);
-	Vec2Int GetCellPos() { return _cellPos; }
+	Vec2Int GetCellPos();
 	Vec2Int GetFrontCellPos();
 
-	int64 GetObjectID() { return _objectID; }
-	void SetObjectID(int64 id) { _objectID = id; }
+	int64 GetObjectID() { return info.objectid(); }
+	void SetObjectID(int64 id) { info.set_objectid(id); }
 
 protected:
-	int64 _objectID = 0;
-	Vec2Int _cellPos = {};
-	Vec2 _speed = {};
-	Dir _dir = DIR_DOWN;
-	ObjectState _state = ObjectState::Idle;
+	//int64 _objectID = 0;
+	//Vec2Int GetCellPos() = {};
+	//Vec2 _speed = {};
+	//Dir _dir = DIR_DOWN;
+	//ObjectState _state = IDLE;
+public://나중엔 private관리
+	Protocol::ObjectInfo info;
 };
 

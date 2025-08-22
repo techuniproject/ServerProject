@@ -32,20 +32,34 @@ enum COLLISION_LAYER_TYPE : uint8
 	// ...
 };
 
-enum Dir
-{
-	DIR_UP,
-	DIR_DOWN,
-	DIR_LEFT,
-	DIR_RIGHT,
-};
+//enum Dir
+//{
+//	DIR_UP,
+//	DIR_DOWN,
+//	DIR_LEFT,
+//	DIR_RIGHT,
+//};
+//
+//enum class ObjectState
+//{
+//	Idle,
+//	Move,
+//	Skill,
+//};
 
-enum class ObjectState
-{
-	Idle,
-	Move,
-	Skill,
-};
+#include "Enum.pb.h"
+
+using ObjectState = Protocol::OBJECT_STATE_TYPE;
+using Dir = Protocol::DIR_TYPE;
+
+#define DIR_DOWN Protocol::DIR_TYPE_DOWN
+#define DIR_UP Protocol::DIR_TYPE_UP
+#define DIR_RIGHT Protocol::DIR_TYPE_RIGHT
+#define DIR_LEFT Protocol::DIR_TYPE_LEFT
+
+#define IDLE Protocol::OBJECT_STATE_TYPE_IDLE
+#define MOVE Protocol::OBJECT_STATE_TYPE_MOVE
+#define SKILL Protocol::OBJECT_STATE_TYPE_SKILL
 
 enum class WeaponType
 {

@@ -3,8 +3,8 @@
 #include "BufferReader.h"
 #include "BufferWriter.h"
 
-
-void ServerPacketHandler::HandlePacket(BYTE* buffer, int32 len)
+//서버에 보낸 클라(세션)을 알기위해 받는 첫 인자
+void ServerPacketHandler::HandlePacket(GameSessionRef session, BYTE* buffer, int32 len)
 {
 	BufferReader br(buffer, len);
 

@@ -19,7 +19,7 @@ public:
 	virtual void Render(HDC hdc) override;
 
 	virtual void AttatchDefaultComponent()override;
-private:
+protected:
 	virtual void TickIdle() override;
 	virtual void TickMove() override;
 	virtual void TickSkill() override;

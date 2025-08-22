@@ -19,7 +19,7 @@ public:
 	{
 		//cout << "OnRecv Len = " << len << endl;
 
-		ClientPacketHandler::HandlePacket(buffer, len);
+		ClientPacketHandler::HandlePacket(static_pointer_cast<ServerSession>(shared_from_this()),buffer, len);
 
 	}
 

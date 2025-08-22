@@ -10,6 +10,7 @@
 #include "Actor.h"
 #include "SpriteActor.h"
 #include "Player.h"
+#include "MyPlayer.h"
 #include "Flipbook.h"
 #include "UI.h"
 #include "Button.h"
@@ -67,7 +68,7 @@ void DevScene::Init()
 	GET_SINGLE(GameInstance)->LoadSound(L"BGM", L"Sound\\BGM.wav");
 	GET_SINGLE(GameInstance)->LoadSound(L"Attack", L"Sound\\Sword.wav");
 
-	SpawnObjectAtRandomPos<Player>();
+	SpawnObjectAtRandomPos<MyPlayer>();
 	//SpawnObjectAtRandomPos<Monster>();
 	SpawnObject<Monster>(Vec2Int{7, 7});
 
