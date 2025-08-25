@@ -92,26 +92,36 @@ void ClientPacketHandler::Handle_S_MyPlayer(ServerSessionRef session, BYTE* buff
 
 void ClientPacketHandler::Handle_S_AddObject(ServerSessionRef session, BYTE* buffer, int32 len)
 {
-	//PacketHeader* header = (PacketHeader*)buffer;
-	////uint16 id = header->id;
-	//uint16 size = header->size;
+	PacketHeader* header = (PacketHeader*)buffer;
+	//uint16 id = header->id;
+	uint16 size = header->size;
 
-	//Protocol::S_AddObject pkt;
-	//pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+	Protocol::S_AddObject pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
 
-	//bool success = pkt.success();
-	//uint64 accountId = pkt.accountid();
+	GameInstance* gameInstance = GET_SINGLE(GameInstance);
+
+	DevScene* scene = gameInstance->GetCurrentScene<DevScene>();
+	if (scene)
+	{
+		scene->Handle_S_AddObject(pkt);
+	}
 }
 
 void ClientPacketHandler::Handle_S_RemoveObject(ServerSessionRef session, BYTE* buffer, int32 len)
 {
-	//PacketHeader* header = (PacketHeader*)buffer;
-	////uint16 id = header->id;
-	//uint16 size = header->size;
+	PacketHeader* header = (PacketHeader*)buffer;
+	//uint16 id = header->id;
+	uint16 size = header->size;
 
-	//Protocol::S_RemoveObject pkt;
-	//pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+	Protocol::S_RemoveObject pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
 
-	//bool success = pkt.success();
-	//uint64 accountId = pkt.accountid();
+	GameInstance* gameInstance = GET_SINGLE(GameInstance);
+
+	DevScene* scene = gameInstance->GetCurrentScene<DevScene>();
+	if (scene)
+	{
+		scene->Handle_S_RemoveObject(pkt);
+	}
 }

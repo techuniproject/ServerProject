@@ -62,6 +62,13 @@ public:
 		return SpawnObject<T>(randPos);
 	}
 
+public:
+	void Handle_S_AddObject(Protocol::S_AddObject& pkt);
+	void Handle_S_RemoveObject(Protocol::S_RemoveObject& pkt);
+
+public:
+	shared_ptr<GameObject> GetGameObject(uint64 id);
+
 	shared_ptr<Player> FindClosestPlayer(Vec2Int pos);
 
 	bool FindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int32 maxDepth = 10);

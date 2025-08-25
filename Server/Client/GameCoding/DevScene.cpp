@@ -70,7 +70,7 @@ void DevScene::Init()
 
 	//SpawnObjectAtRandomPos<MyPlayer>();
 	//SpawnObjectAtRandomPos<Monster>();
-	SpawnObject<Monster>(Vec2Int{7, 7});
+	//SpawnObject<Monster>(Vec2Int{7, 7});
 
 	Super::Init();
 }
@@ -81,7 +81,7 @@ void DevScene::Update()
 
 	float deltaTime = GET_SINGLE(GameInstance)->GetDeltaTime();
 
-	TickMonsterSpawn();
+	//TickMonsterSpawn();
 }
 
 void DevScene::Render(HDC hdc)
@@ -310,6 +310,57 @@ void DevScene::LoadTilemap()
 		_tilemapActor->SetTilemap(tm);
 		_tilemapActor->SetShowDebug(false);
 	}
+}
+
+void DevScene::Handle_S_AddObject(Protocol::S_AddObject& pkt)
+{
+	uint64 myPlayerId = GET_SINGLE(GameInstance)->GetMyPlayerId();
+
+	const int32 size = pkt.objects_size();
+	for (int32 i = 0; i < size; ++i) {
+		const Protocol::ObjectInfo& info = pkt.objects(i);
+		if (myPlayerId == info.objectid())
+			continue;
+
+		if (info.objecttype() == Protocol::OBJECT_TYPE_PLAYER)
+		{
+			shared_ptr<Player> player = SpawnObject<Player>(Vec2Int(info.posx(), info.posy()));
+			player->SetDir(info.dir());
+			player->SetState(info.state());
+			player->info = info;
+		}
+		else if (info.objecttype() == Protocol::OBJECT_TYPE_MONSTER)
+		{
+			shared_ptr<Monster> monster = SpawnObject<Monster>(Vec2Int(info.posx(), info.posy()));
+			monster->SetDir(info.dir());
+			monster->SetState(info.state());
+			monster->info = info;
+		}
+	}
+}
+
+void DevScene::Handle_S_RemoveObject(Protocol::S_RemoveObject& pkt)
+{
+	const int32 size = pkt.ids_size();
+	for (int32 i = 0; i < size; ++i)
+	{
+		int32 id = pkt.ids(i);
+
+		shared_ptr<GameObject> object = GetGameObject(id);
+		if (object)
+			RemoveActor(object);
+	}
+}
+
+shared_ptr<GameObject> DevScene::GetGameObject(uint64 id)
+{
+	for (shared_ptr<Actor> actor : _actors[LAYER_OBJECT])
+	{
+		shared_ptr<GameObject> gameObject = dynamic_pointer_cast<GameObject>(actor);
+		if (gameObject && gameObject->info.objectid() == id)
+			return gameObject;
+	}
+	return nullptr;
 }
 
 shared_ptr<Player> DevScene::FindClosestPlayer(Vec2Int pos)

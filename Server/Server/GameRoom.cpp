@@ -164,5 +164,8 @@ void GameRoom::RemoveObject(uint64 id)
 
 void GameRoom::Broadcast(SendBufferRef& sendBuffer)
 {
-
+	for (auto& item : _players)
+	{
+		item.second->session->Send(sendBuffer);
+	}
 }
