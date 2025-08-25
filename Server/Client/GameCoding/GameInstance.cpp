@@ -13,6 +13,8 @@
 #include "Tilemap.h"
 #include "Sound.h"
 #include "Scene.h"
+#include "DevScene.h"
+#include "MyPlayer.h"
 
 DEFINE_DEFAULT_CONSTRUCTOR(GameInstance); //unique_ptr때문에 헤더를 알아야 메모리 관리 코드 만들 수 있음
 DEFINE_DEFAULT_DESTRUCTOR(GameInstance);
@@ -69,6 +71,8 @@ void GameInstance::Clear()
 
 
 
+
+
 //SceneManager
 void GameInstance::RenderScene(HDC hdc)
 {
@@ -108,6 +112,20 @@ Vec2 GameInstance::GetCameraPos()
 void GameInstance::SetCameraPos(Vec2 pos) 
 {
 	return _SceneManager->SetCameraPos(pos);
+}
+
+shared_ptr<MyPlayer> GameInstance::GetMyPlayer()
+{
+	return _SceneManager->GetMyPlayer();
+}
+
+uint64 GameInstance::GetMyPlayerId()
+{
+	return _SceneManager->GetMyPlayerId();
+}
+void GameInstance::SetMyPlayer(shared_ptr<MyPlayer> myPlayer)
+{
+	_SceneManager->SetMyPlayer(myPlayer);
 }
 
 //TimeManager

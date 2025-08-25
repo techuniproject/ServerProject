@@ -68,7 +68,7 @@ void DevScene::Init()
 	GET_SINGLE(GameInstance)->LoadSound(L"BGM", L"Sound\\BGM.wav");
 	GET_SINGLE(GameInstance)->LoadSound(L"Attack", L"Sound\\Sword.wav");
 
-	SpawnObjectAtRandomPos<MyPlayer>();
+	//SpawnObjectAtRandomPos<MyPlayer>();
 	//SpawnObjectAtRandomPos<Monster>();
 	SpawnObject<Monster>(Vec2Int{7, 7});
 

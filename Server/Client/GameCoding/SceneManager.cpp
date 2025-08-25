@@ -3,6 +3,7 @@
 #include "DevScene.h"
 #include "EditScene.h"
 #include "SceneManager.h"
+#include "MyPlayer.h"
 
 
 DEFINE_DEFAULT_DESTRUCTOR(SceneManager)
@@ -37,7 +38,7 @@ void SceneManager::ChangeScene(SceneType sceneType)
 	if (_sceneType == sceneType)
 		return;
 
-	Scene* newScene = nullptr;
+	//Scene* newScene = nullptr;
 
 	switch (sceneType)
 	{
@@ -58,4 +59,10 @@ void SceneManager::ChangeScene(SceneType sceneType)
 	_scene->Init();
 
 	
+}
+
+uint64 SceneManager::GetMyPlayerId()
+{
+	auto player = _myPlayer.lock();
+	return player ? player->info.objectid():0;
 }

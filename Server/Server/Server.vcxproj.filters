@@ -12,14 +12,17 @@
     <Filter Include="소스 파일\Main">
       <UniqueIdentifier>{ce16f46c-ec6c-4971-a2ae-f0b555d735ad}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\Headers">
-      <UniqueIdentifier>{46802b88-eb8d-4229-a171-53df05e60611}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\Protocol">
       <UniqueIdentifier>{d28d72b7-1573-4369-b93a-e40f25c9db57}</UniqueIdentifier>
     </Filter>
     <Filter Include="소스 파일\Protocol\Proto">
       <UniqueIdentifier>{f22beb99-b2e6-4bd7-9302-1165936f328f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Object">
+      <UniqueIdentifier>{d72b59bd-ddc5-4f93-ab5f-a540e617a1cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Room">
+      <UniqueIdentifier>{48be2a3e-93e1-49a3-810e-5e1509416d7c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -47,6 +50,21 @@
     <ClCompile Include="Protocol.pb.cc">
       <Filter>소스 파일\Protocol</Filter>
     </ClCompile>
+    <ClCompile Include="GameRoom.cpp">
+      <Filter>소스 파일\Room</Filter>
+    </ClCompile>
+    <ClCompile Include="Monster.cpp">
+      <Filter>소스 파일\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Creature.cpp">
+      <Filter>소스 파일\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>소스 파일\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>소스 파일\Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -69,6 +87,21 @@
     </ClInclude>
     <ClInclude Include="Enum.pb.h">
       <Filter>소스 파일\Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="Creature.h">
+      <Filter>소스 파일\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>소스 파일\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Monster.h">
+      <Filter>소스 파일\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>소스 파일\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="GameRoom.h">
+      <Filter>소스 파일\Room</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

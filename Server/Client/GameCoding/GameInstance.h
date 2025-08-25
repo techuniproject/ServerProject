@@ -15,6 +15,8 @@ class Flipbook;
 class Tilemap;
 class Sound;
 class GameObject;
+class DevScene;
+class MyPlayer;
 
 
 
@@ -51,6 +53,9 @@ public: //SceneManager
 	Vec2 GetCameraPos();
 	void SetCameraPos(Vec2 pos);
 	void ClearScene();
+	shared_ptr<MyPlayer> GetMyPlayer();
+	uint64 GetMyPlayerId();
+	void SetMyPlayer(shared_ptr<MyPlayer> myPlayer);
 
 public:
 	//TimeManager

@@ -1,6 +1,9 @@
 #include "pch.h"
+#include "GameInstance.h"
 #include "ClientPacketHandler.h"
 #include "BufferReader.h"
+#include "DevScene.h"
+#include "MyPlayer.h"
 
 void ClientPacketHandler::HandlePacket(ServerSessionRef session,BYTE* buffer, int32 len)
 {
@@ -16,6 +19,15 @@ void ClientPacketHandler::HandlePacket(ServerSessionRef session,BYTE* buffer, in
 		break;
 	case S_EnterGame:
 		Handle_S_EnterGame(session,buffer, len);
+		break;
+	case S_MyPlayer:
+		Handle_S_MyPlayer(session,buffer, len);
+		break;
+	case S_AddObject:
+		Handle_S_AddObject(session,buffer, len);
+		break;
+	case S_RemoveObject:
+		Handle_S_RemoveObject(session,buffer, len);
 		break;
 	}
 }
@@ -54,4 +66,52 @@ void ClientPacketHandler::Handle_S_EnterGame(ServerSessionRef session, BYTE* buf
 	bool success = pkt.success();
 	uint64 accountId = pkt.accountid();
 	
+}
+
+void ClientPacketHandler::Handle_S_MyPlayer(ServerSessionRef session, BYTE* buffer, int32 len)
+{
+	PacketHeader* header = (PacketHeader*)buffer;
+	//uint16 id = header->id;
+	uint16 size = header->size;
+
+	Protocol::S_MyPlayer pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+
+	const Protocol::ObjectInfo& info = pkt.info();
+
+	GameInstance* gameInstance = GET_SINGLE(GameInstance);
+
+	DevScene* scene = gameInstance->GetCurrentScene<DevScene>();
+	if (scene)
+	{
+		shared_ptr<MyPlayer> myPlayer=scene->SpawnObject<MyPlayer>(Vec2Int(info.posx(), info.posy()));
+		myPlayer->info = info;
+		gameInstance->SetMyPlayer(myPlayer);
+	}
+}
+
+void ClientPacketHandler::Handle_S_AddObject(ServerSessionRef session, BYTE* buffer, int32 len)
+{
+	//PacketHeader* header = (PacketHeader*)buffer;
+	////uint16 id = header->id;
+	//uint16 size = header->size;
+
+	//Protocol::S_AddObject pkt;
+	//pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+
+	//bool success = pkt.success();
+	//uint64 accountId = pkt.accountid();
+}
+
+void ClientPacketHandler::Handle_S_RemoveObject(ServerSessionRef session, BYTE* buffer, int32 len)
+{
+	//PacketHeader* header = (PacketHeader*)buffer;
+	////uint16 id = header->id;
+	//uint16 size = header->size;
+
+	//Protocol::S_RemoveObject pkt;
+	//pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+
+	//bool success = pkt.success();
+	//uint64 accountId = pkt.accountid();
 }

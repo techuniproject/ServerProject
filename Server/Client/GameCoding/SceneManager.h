@@ -1,6 +1,7 @@
 ﻿#pragma once
 //#include "Scene.h" //pch로 뺄지 고민 , 이 헤더 추가시 비용발생하므로
 class Scene;
+class MyPlayer;
 
 class SceneManager
 {
@@ -36,10 +37,15 @@ public:
 	const Scene& GetCurrentScene() const { assert(_scene);  return *_scene; }
 	//Scene* GetCurrentScene1() { assert(_scene);  return _scene.get(); }
 	
+	shared_ptr<MyPlayer> GetMyPlayer() { return _myPlayer.lock(); }
+	uint64 GetMyPlayerId();
+	void SetMyPlayer(shared_ptr<MyPlayer> myPlayer) { _myPlayer = myPlayer; }
+
 private:
 	//Scene* _scene;
 	unique_ptr<Scene> _scene;
 	SceneType _sceneType = SceneType::None;
+	weak_ptr<MyPlayer> _myPlayer;
 
 public:
 	Vec2 GetCameraPos() { return _cameraPos; }
