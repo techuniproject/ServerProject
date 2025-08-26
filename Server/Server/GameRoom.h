@@ -14,7 +14,9 @@ public:
 	shared_ptr<class GameObject> FindObject(uint64 id);
 
 	shared_ptr<GameRoom> GetRoomRef() { return shared_from_this(); }
-
+public:
+	//PacketHandler
+	void Handle_C_Move(Protocol::C_Move& pkt);
 public:
 	void AddObject(shared_ptr<class GameObject> gameObject);
 	void RemoveObject(uint64 id);

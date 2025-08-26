@@ -41,6 +41,9 @@ protected:
 	//Vec2 _speed = {};
 	//Dir _dir = DIR_DOWN;
 	//ObjectState _state = IDLE;
+protected://상태 바뀜 추적용 
+	bool _dirtyFlag = false;
+
 public://나중엔 private관리
 	Protocol::ObjectInfo info;
 };

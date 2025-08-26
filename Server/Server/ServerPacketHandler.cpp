@@ -2,6 +2,8 @@
 #include "ServerPacketHandler.h"
 #include "BufferReader.h"
 #include "BufferWriter.h"
+#include "GameSession.h"
+#include "GameRoom.h"
 
 //서버에 보낸 클라(세션)을 알기위해 받는 첫 인자
 void ServerPacketHandler::HandlePacket(GameSessionRef session, BYTE* buffer, int32 len)
@@ -13,10 +15,30 @@ void ServerPacketHandler::HandlePacket(GameSessionRef session, BYTE* buffer, int
 
 	switch (header.id)
 	{
+	case C_Move:
+		Handle_C_Move(session, buffer, len);
+		break;
 	default:
 		break;
 	}
 }
+
+void ServerPacketHandler::Handle_C_Move(GameSessionRef session, BYTE* buffer, int32 len)
+{
+
+	PacketHeader* header = (PacketHeader*)buffer;
+	//uint16 id = header->id;
+	uint16 size = header->size;
+
+	Protocol::C_Move pkt;
+	pkt.ParseFromArray(&header[1], size - sizeof(PacketHeader));
+
+
+	shared_ptr<GameRoom> gameRoom = session->gameRoom.lock();
+	if (gameRoom)
+		gameRoom->Handle_C_Move(pkt);
+}
+
 
 SendBufferRef ServerPacketHandler::Make_S_TEST(uint64 id, uint32 hp, uint16 attack, vector<BuffData> buffs)
 {
@@ -83,6 +105,16 @@ SendBufferRef ServerPacketHandler::Make_S_AddObject(const Protocol::S_AddObject&
 SendBufferRef ServerPacketHandler::Make_S_RemoveObject(const Protocol::S_RemoveObject& pkt)
 {
 	return MakeSendBuffer(pkt,S_RemoveObject);
+}
+
+SendBufferRef ServerPacketHandler::Make_S_Move(const Protocol::ObjectInfo& info)
+{
+	Protocol::S_Move pkt;
+
+	Protocol::ObjectInfo* objectInfo = pkt.mutable_info();
+	*objectInfo = info;
+
+	return MakeSendBuffer(pkt,S_Move);
 }
 
 

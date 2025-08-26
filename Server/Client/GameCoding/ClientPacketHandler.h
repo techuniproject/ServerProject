@@ -8,6 +8,9 @@ enum
 	S_MyPlayer = 4, //구분용도
 	S_AddObject = 5, //구분용도
 	S_RemoveObject = 6,//구분용도
+
+	C_Move = 10,
+	S_Move = 11,
 };
 
 class ClientPacketHandler
@@ -21,9 +24,13 @@ public:
 	static void Handle_S_MyPlayer(ServerSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_S_AddObject(ServerSessionRef session, BYTE* buffer, int32 len);
 	static void Handle_S_RemoveObject(ServerSessionRef session, BYTE* buffer, int32 len);
+	static void Handle_S_Move(ServerSessionRef session, BYTE* buffer, int32 len);
 
 
 	// 보내기
+	static SendBufferRef Make_C_Move();
+
+
 	template<typename T>
 	static SendBufferRef MakeSendBuffer(T& pkt, uint16 pktId)
 	{

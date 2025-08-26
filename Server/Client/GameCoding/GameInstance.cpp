@@ -241,3 +241,15 @@ LPDIRECTSOUND GameInstance::GetSoundDevice()
 {
 	return _SoundManager->GetSoundDevice();
 }
+
+//NetworkManager
+
+shared_ptr<ServerSession> GameInstance::CreateSession()
+{
+	return _NetworkManager->CreateSession();
+}
+
+void GameInstance::SendPacket(shared_ptr<SendBuffer> sendBuffer)
+{
+	_NetworkManager->SendPacket(sendBuffer);
+}

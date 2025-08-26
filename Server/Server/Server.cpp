@@ -12,7 +12,7 @@ using namespace std;
 #include "GameSession.h"
 #include "GameSessionManager.h"
 #include "ServerPacketHandler.h"
-
+#include "GameRoom.h"
 
 //class GameSession : public Session
 //{//애플리케이션 레벨에서 한명의 클라이언트와 주고받는 데이터 처리 로직을 담는 객체
@@ -69,6 +69,7 @@ int main()
 {
 	SocketUtils::Init();
 	// WSAStartUp 호출, ConnectEx/DisconnectEx/AcceptEx 함수 포인터를 런타임 바인딩
+	GRoom->Init();
 
 	ServerServiceRef service = make_shared<ServerService>(
 		NetAddress(L"127.0.0.1", 7777),

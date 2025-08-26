@@ -91,6 +91,12 @@ public:
 		//SoundManager
 	void Play(const wstring& key, bool loop = false);
 	LPDIRECTSOUND GetSoundDevice();
+
+public:
+	//NetworkManager
+	shared_ptr<ServerSession> CreateSession();
+	void SendPacket(shared_ptr<SendBuffer> sendBuffer);
+
 private:
 	unique_ptr<ObjectManager> _ObjectManager;
 	unique_ptr<InputManager> _InputManager;

@@ -127,6 +127,17 @@ void MyPlayer::TryMove()
 	}*/
 }
 
+void MyPlayer::SyncToServer()
+{
+	if (_dirtyFlag == false)
+		return;
+
+	SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Move();
+	GET_SINGLE(GameInstance)->SendPacket(sendBuffer);
+
+
+}
+
 
 void MyPlayer::BeginPlay()
 {
@@ -136,6 +147,9 @@ void MyPlayer::BeginPlay()
 void MyPlayer::Tick()
 {
 	Super::Tick();
+	
+	//프레임마다 상태 바뀜을 감지하여 서버에 통보 (서버라 매 프레임 보내는게 정석은 아님)
+	SyncToServer();
 }
 
 void MyPlayer::Render(HDC hdc)
