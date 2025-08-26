@@ -15,6 +15,7 @@
 #include "Scene.h"
 #include "DevScene.h"
 #include "MyPlayer.h"
+#include "ClientPacketHandler.h"
 
 DEFINE_DEFAULT_CONSTRUCTOR(GameInstance); //unique_ptr때문에 헤더를 알아야 메모리 관리 코드 만들 수 있음
 DEFINE_DEFAULT_DESTRUCTOR(GameInstance);
@@ -46,6 +47,7 @@ void GameInstance::Init(HWND hwnd)
 	_ResourceManager->Init(hwnd, fs::path(L"C:\\Users\\서정원\\Desktop\\ServerClient\\ServerProject\\Server\\Client\\Resources"));
 	_SoundManager->Init(hwnd);
 	_NetworkManager->Init();
+	ClientPacketHandler::Init();
 }
 
 void GameInstance::Update() 

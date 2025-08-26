@@ -1,55 +1,76 @@
 #pragma once
 
+#include "Protocol.pb.h"
+
+constexpr int32 HANDLER_MAX = 0x2000;
+using PacketHandlerFunc = std::function<bool(GameSessionRef&, BYTE*, int32)>;
+extern PacketHandlerFunc g_packet_handler[HANDLER_MAX];
+
 enum
 {
-	S_TEST = 1,
-	S_EnterGame = 2, //구분용도
-
-	S_MyPlayer = 4, //구분용도
-	S_AddObject = 5, //구분용도
-	S_RemoveObject = 6,//구분용도
-
-	C_Move = 10,
-	S_Move = 11,
+PKT_S_EnterGame = 0,
+PKT_S_MyPlayer = 1,
+PKT_S_AddObject = 2,
+PKT_S_RemoveObject = 3,
+PKT_C_Move = 4,
+PKT_S_Move = 5,
 };
 
-struct BuffData
-{
-	uint64 buffId;
-	float remainTime;
-};
+bool Handle_INVALID(GameSessionRef& session, BYTE* buffer, int32 length);
+bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move&pkt);
 
 class ServerPacketHandler
 {
 public:
-	static void HandlePacket(GameSessionRef session, BYTE* buffer, int32 len);
+    static void Init()
+    {
+        for (int i = 0; i < HANDLER_MAX; ++i)
+            g_packet_handler[i] = Handle_INVALID;
+            g_packet_handler[PKT_C_Move] = [](GameSessionRef& session, BYTE* buffer, int32 length)
+            {
+                return ParsePacket <Protocol::C_Move> (Handle_C_Move, session, buffer, length);
+            };
+    }
 
-	// 받기
-	static void Handle_C_Move(GameSessionRef session, BYTE* buffer, int32 len);
+    static bool HandlePacket(GameSessionRef session, BYTE * buffer, int32 length);
+    static SendBufferRef MakeSendBuffer(const Protocol::S_EnterGame&pkt) { return MakeSendBuffer(pkt, PKT_S_EnterGame); }
+    static SendBufferRef MakeSendBuffer(const Protocol::S_MyPlayer&pkt) { return MakeSendBuffer(pkt, PKT_S_MyPlayer); }
+    static SendBufferRef MakeSendBuffer(const Protocol::S_AddObject&pkt) { return MakeSendBuffer(pkt, PKT_S_AddObject); }
+    static SendBufferRef MakeSendBuffer(const Protocol::S_RemoveObject&pkt) { return MakeSendBuffer(pkt, PKT_S_RemoveObject); }
+    static SendBufferRef MakeSendBuffer(const Protocol::S_Move&pkt) { return MakeSendBuffer(pkt, PKT_S_Move); }
 
-	// 보내기
-	static SendBufferRef Make_S_TEST(uint64 id, uint32 hp, uint16 attack, vector<BuffData> buffs);
-	static SendBufferRef Make_S_EnterGame();
-	static SendBufferRef Make_S_MyPlayer(const Protocol::ObjectInfo& info);
-	static SendBufferRef Make_S_AddObject(const Protocol::S_AddObject& pkt);
-	static SendBufferRef Make_S_RemoveObject(const Protocol::S_RemoveObject& pkt);
-	static SendBufferRef Make_S_Move(const Protocol::ObjectInfo& info);
+    static SendBufferRef Make_S_EnterGame();
+    static SendBufferRef Make_S_MyPlayer(const Protocol::ObjectInfo& info);
+    static SendBufferRef Make_S_AddObject(const Protocol::S_AddObject& pkt);
+    static SendBufferRef Make_S_RemoveObject(const Protocol::S_RemoveObject& pkt);
+    static SendBufferRef Make_S_Move(const Protocol::ObjectInfo& info);
 
-	template<typename T>
-	static SendBufferRef MakeSendBuffer(T& pkt, uint16 pktId)
-	{
-		const uint16 dataSize = static_cast<uint16>(pkt.ByteSizeLong());
-		const uint16 packetSize = dataSize + sizeof(PacketHeader);
+private:
+    template<typename PacketType, typename ProcessFunc>
+    static bool ParsePacket(ProcessFunc func, GameSessionRef& session, BYTE * buffer, int32 length)
+    {
+        PacketType pkt;
+        if (false == pkt.ParseFromArray(buffer + sizeof(PacketHeader), length - sizeof(PacketHeader)))
+            return false;
 
-		SendBufferRef sendBuffer = make_shared<SendBuffer>(packetSize);
-		PacketHeader* header = reinterpret_cast<PacketHeader*>(sendBuffer->Buffer());
-		header->size = packetSize;
-		header->id = pktId;
-		assert(pkt.SerializeToArray(&header[1], dataSize));
-		sendBuffer->Close(packetSize);
+        return func(session, pkt);
+    }
 
-		return sendBuffer;
-	}
+    template<typename T>
+    static SendBufferRef MakeSendBuffer(T& pkt, uint16 packet_id)
+    {
+        const uint16 data_size = static_cast<uint16>(pkt.ByteSizeLong());
+        const uint16 packet_size = data_size + sizeof(PacketHeader);
+
+        SendBufferRef send_buffer = make_shared<SendBuffer>(packet_size);
+
+        PacketHeader* header = reinterpret_cast<PacketHeader*>(send_buffer->Buffer());
+        header->size = packet_size;
+        header->id = packet_id;
+
+        assert(pkt.SerializeToArray(&header[1], data_size));
+        send_buffer->Close(packet_size);
+
+        return send_buffer;
+    }
 };
-
-// https://minusi.tistory.com/entry/%EA%B5%AC%EA%B8%80-%ED%94%84%EB%A1%9C%ED%86%A0%EC%BD%9C-%EB%B2%84%ED%8D%BC-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0with-visual-studio

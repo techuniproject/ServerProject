@@ -1,0 +1,9 @@
+cd C:/Users/서정원/Desktop/ServerClient/ServerProject/Server/Tools/PacketGenerator
+
+:: 클라이언트용 (수신 = S_, 송신 = C_)
+python PacketGenerator.py --path C:/Users/서정원/Desktop/ServerClient/ServerProject/Server/Common/protoc-21.12-win64/bin/Protocol.proto --output ClientPacketHandler --recv S_ --send C_
+
+:: 서버용 (수신 = C_, 송신 = S_)
+python PacketGenerator.py --path C:/Users/서정원/Desktop/ServerClient/ServerProject/Server/Common/protoc-21.12-win64/bin/Protocol.proto --output ServerPacketHandler --recv C_ --send S_
+
+//이후 bat파일 사용

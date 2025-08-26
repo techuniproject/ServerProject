@@ -70,7 +70,7 @@ int main()
 	SocketUtils::Init();
 	// WSAStartUp 호출, ConnectEx/DisconnectEx/AcceptEx 함수 포인터를 런타임 바인딩
 	GRoom->Init();
-
+	ServerPacketHandler::Init();
 	ServerServiceRef service = make_shared<ServerService>(
 		NetAddress(L"127.0.0.1", 7777),
 		make_shared<IocpCore>(),

@@ -24,6 +24,9 @@
     <Filter Include="소스 파일\Room">
       <UniqueIdentifier>{48be2a3e-93e1-49a3-810e-5e1509416d7c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Main\자동화방법">
+      <UniqueIdentifier>{60803bd6-d80f-4d83-b196-02128d35ea7a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Server.cpp">
@@ -64,6 +67,9 @@
     </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>소스 파일\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="자동화전ClientPacketHandler.txt">
+      <Filter>소스 파일\Main\자동화방법</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -120,5 +126,13 @@
     <None Include="..\Common\protoc-21.12-win64\bin\GenPackets.bat">
       <Filter>소스 파일\Protocol</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="RefactorPacket.txt">
+      <Filter>소스 파일\Main\자동화방법</Filter>
+    </Text>
+    <Text Include="자동화전ServerPacketHandler.txt">
+      <Filter>소스 파일\Main\자동화방법</Filter>
+    </Text>
   </ItemGroup>
 </Project>

@@ -4,6 +4,9 @@ protoc.exe -I=./ --cpp_out=./ ./Enum.proto
 protoc.exe -I=./ --cpp_out=./ ./Struct.proto
 protoc.exe -I=./ --cpp_out=./ ./Protocol.proto
 
+GenPackets.exe --path=./Protocol.proto --output=ClientPacketHandler --recv=C_ --send=S_
+GenPackets.exe --path=./Protocol.proto --output=ServerPacketHandler --recv=S_ --send=C_
+
 IF ERRORLEVEL 1 PAUSE
 
 XCOPY /Y Enum.pb.h "../../../Server"
