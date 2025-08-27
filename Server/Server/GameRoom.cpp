@@ -40,6 +40,7 @@ void GameRoom::EnterRoom(GameSessionRef session)
 
 	curPlayer->info.set_posx(5);
 	curPlayer->info.set_posy(5);
+	
 
 	//입장한 클라에게 정보를 보내주기
 	{
@@ -190,3 +191,4 @@ void GameRoom::Broadcast(SendBufferRef& sendBuffer)
 		item.second->session->Send(sendBuffer);
 	}
 }
+

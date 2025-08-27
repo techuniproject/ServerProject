@@ -104,6 +104,14 @@ int main()
 	//	this_thread::sleep_for(250ms);
 	//}
 
+	/*Protocol::S_CHAT chatPkt;
+	chatPkt.set_msg("hello world !");
+	auto sendbuf = ServerPacketHandler::MakeSendBuffer(chatPkt);
+
+	while (true) {
+		GRoom->Broadcast(sendbuf);
+		this_thread::sleep_for(1s);
+	}*/
 
 
 	GThreadManager->Join();

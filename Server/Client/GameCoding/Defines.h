@@ -3,6 +3,8 @@
 //싱글톤 -> Meyers Singleton (참조 반환)
 //전역으로 관리하는게 메모리 삭제 위험 없음 스마트포인터로 관리(힙)에 비해
 
+#define WM_CHATMSG (WM_USER + 1)
+
 #define NO_COPY_MOVE(ClassName)					\
 public:											\
 	ClassName (const ClassName&) = delete;		\

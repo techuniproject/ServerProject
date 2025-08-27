@@ -5,6 +5,7 @@
 #include "DevScene.h"
 #include "MyPlayer.h"
 
+extern HWND g_hWnd;
 PacketHandlerFunc g_packet_handler[HANDLER_MAX];
 
 //void ClientPacketHandler::HandlePacket(ServerSessionRef session,BYTE* buffer, int32 len)
@@ -60,6 +61,30 @@ SendBufferRef ClientPacketHandler::Make_C_Move()
 	
 
 	return MakeSendBuffer(pkt);
+}
+
+SendBufferRef ClientPacketHandler::Make_C_Chat(wstring& wstr)
+{
+    Protocol::C_CHAT pkt;
+  
+    if (wstr.empty()) return nullptr;
+
+    int len = WideCharToMultiByte(
+        CP_UTF8, 0,
+        wstr.c_str(), (int)wstr.size(),
+        nullptr, 0,
+        nullptr, nullptr);
+
+    std::string str(len, 0);
+    WideCharToMultiByte(
+        CP_UTF8, 0,
+        wstr.c_str(), (int)wstr.size(),
+        str.data(), len,
+        nullptr, nullptr);
+    pkt.set_msg(str);
+    pkt.set_playerid(GET_SINGLE(GameInstance)->GetMyPlayerId());
+
+    return MakeSendBuffer(pkt);
 }
 
 bool Handle_INVALID(ServerSessionRef& session, BYTE* buffer, int32 length)
@@ -137,6 +162,19 @@ bool Handle_S_Move(ServerSessionRef& session, Protocol::S_Move& pkt)
  	    
  	}
     return false;
+}
+
+bool Handle_S_CHAT(ServerSessionRef& session, Protocol::S_CHAT& pkt)
+{
+    
+    int wlen = MultiByteToWideChar(CP_UTF8, 0, pkt.msg().c_str(), -1, NULL, 0);
+    std::wstring* wmsg = new std::wstring(wlen-1, 0);
+    MultiByteToWideChar(CP_UTF8, 0, pkt.msg().c_str(), -1, &(*wmsg)[0], wlen);
+    std::wstring formatted = std::format(L"Player {} : {}", pkt.playerid(), *wmsg);
+
+    // 메인 윈도우에 메시지 전달
+    PostMessage(g_hWnd, WM_CHATMSG, (WPARAM)pkt.playerid(), (LPARAM)new std::wstring(formatted));
+    return true;
 }
 
 

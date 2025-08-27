@@ -15,6 +15,8 @@ PKT_S_AddObject = 2,
 PKT_S_RemoveObject = 3,
 PKT_C_Move = 4,
 PKT_S_Move = 5,
+PKT_C_CHAT = 6,
+PKT_S_CHAT = 7,
 };
 
 bool Handle_INVALID(ServerSessionRef& session, BYTE* buffer, int32 length);
@@ -23,6 +25,8 @@ bool Handle_S_MyPlayer(ServerSessionRef& session, Protocol::S_MyPlayer&pkt);
 bool Handle_S_AddObject(ServerSessionRef& session, Protocol::S_AddObject&pkt);
 bool Handle_S_RemoveObject(ServerSessionRef& session, Protocol::S_RemoveObject&pkt);
 bool Handle_S_Move(ServerSessionRef& session, Protocol::S_Move&pkt);
+bool Handle_S_Move(ServerSessionRef& session, Protocol::S_Move& pkt);
+bool Handle_S_CHAT(ServerSessionRef& session, Protocol::S_CHAT& pkt);
 
 class ClientPacketHandler
 {
@@ -51,12 +55,18 @@ public:
             {
                 return ParsePacket < Protocol::S_Move > (Handle_S_Move, session, buffer, length);
             };
+        g_packet_handler[PKT_S_CHAT] = [](ServerSessionRef& session, BYTE* buffer, int32 length)
+            {
+                return ParsePacket < Protocol::S_CHAT >(Handle_S_CHAT, session, buffer, length);
+            };
     }
 
     static bool HandlePacket(ServerSessionRef session, BYTE * buffer, int32 length);
     static SendBufferRef MakeSendBuffer(Protocol::C_Move&pkt) { return MakeSendBuffer(pkt, PKT_C_Move); }
+    static SendBufferRef MakeSendBuffer(Protocol::C_CHAT&pkt) { return MakeSendBuffer(pkt, PKT_C_CHAT); }
 
     static SendBufferRef Make_C_Move();
+    static SendBufferRef Make_C_Chat(wstring& str);
 
 private:
     template<typename PacketType, typename ProcessFunc>
@@ -87,3 +97,4 @@ private:
         return send_buffer;
     }
 };
+

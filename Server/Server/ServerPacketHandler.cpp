@@ -103,6 +103,23 @@ bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move& pkt)//받아와서 시�
     return false;
 }
 
+bool Handle_C_CHAT(GameSessionRef& session, Protocol::C_CHAT& pkt)
+{
+   // cout << pkt.msg() << endl;
+
+    Protocol::S_CHAT chatfromclientpkt;
+    chatfromclientpkt.set_msg(pkt.msg());
+    chatfromclientpkt.set_playerid(pkt.playerid());
+    SendBufferRef sendbuffer= ServerPacketHandler::MakeSendBuffer(chatfromclientpkt);
+
+    shared_ptr<GameRoom> gameRoom = session->gameRoom.lock();
+    if (gameRoom) {
+        gameRoom->Broadcast(sendbuffer);
+        return true;
+    }
+    return false;
+}
+
 
 //void ServerPacketHandler::Handle_C_Move(GameSessionRef session, BYTE* buffer, int32 len)
 //{

@@ -30,6 +30,10 @@ namespace fs = std::filesystem;
 
 #pragma comment(lib, "msimg32.lib")
 
+//UI winapi 색상
+#include <richedit.h>   // 추가
+
+
 // 사운드
 #include <MMSystem.h>
 #include <dsound.h>

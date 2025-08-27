@@ -14,10 +14,13 @@ PKT_S_AddObject = 2,
 PKT_S_RemoveObject = 3,
 PKT_C_Move = 4,
 PKT_S_Move = 5,
+PKT_C_CHAT = 6,
+PKT_S_CHAT = 7,
 };
 
 bool Handle_INVALID(GameSessionRef& session, BYTE* buffer, int32 length);
 bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move&pkt);
+bool Handle_C_CHAT(GameSessionRef& session, Protocol::C_CHAT&pkt);
 
 class ServerPacketHandler
 {
@@ -26,9 +29,13 @@ public:
     {
         for (int i = 0; i < HANDLER_MAX; ++i)
             g_packet_handler[i] = Handle_INVALID;
-            g_packet_handler[PKT_C_Move] = [](GameSessionRef& session, BYTE* buffer, int32 length)
+        g_packet_handler[PKT_C_Move] = [](GameSessionRef& session, BYTE* buffer, int32 length)
             {
-                return ParsePacket <Protocol::C_Move> (Handle_C_Move, session, buffer, length);
+                return ParsePacket < Protocol::C_Move > (Handle_C_Move, session, buffer, length);
+            };
+        g_packet_handler[PKT_C_CHAT] = [](GameSessionRef& session, BYTE* buffer, int32 length)
+            {
+                return ParsePacket < Protocol::C_CHAT > (Handle_C_CHAT, session, buffer, length);
             };
     }
 
@@ -38,13 +45,13 @@ public:
     static SendBufferRef MakeSendBuffer(const Protocol::S_AddObject&pkt) { return MakeSendBuffer(pkt, PKT_S_AddObject); }
     static SendBufferRef MakeSendBuffer(const Protocol::S_RemoveObject&pkt) { return MakeSendBuffer(pkt, PKT_S_RemoveObject); }
     static SendBufferRef MakeSendBuffer(const Protocol::S_Move&pkt) { return MakeSendBuffer(pkt, PKT_S_Move); }
+    static SendBufferRef MakeSendBuffer(const Protocol::S_CHAT&pkt) { return MakeSendBuffer(pkt, PKT_S_CHAT); }
 
     static SendBufferRef Make_S_EnterGame();
     static SendBufferRef Make_S_MyPlayer(const Protocol::ObjectInfo& info);
     static SendBufferRef Make_S_AddObject(const Protocol::S_AddObject& pkt);
     static SendBufferRef Make_S_RemoveObject(const Protocol::S_RemoveObject& pkt);
     static SendBufferRef Make_S_Move(const Protocol::ObjectInfo& info);
-
 private:
     template<typename PacketType, typename ProcessFunc>
     static bool ParsePacket(ProcessFunc func, GameSessionRef& session, BYTE * buffer, int32 length)

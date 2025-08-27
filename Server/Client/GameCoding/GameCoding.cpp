@@ -2,6 +2,7 @@
 #include "framework.h"
 #include "GameCoding.h"
 #include "Game.h"
+#include "GameInstance.h"
 
 #define MAX_LOADSTRING 100
 
@@ -19,6 +20,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_ LPWSTR    lpCmdLine,
                      _In_ int       nCmdShow)
 {
+    LoadLibrary(TEXT("Msftedit.dll"));
     // 1) 윈도우 창 정보 등록
     MyRegisterClass(hInstance);
 
@@ -27,8 +29,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
 
     Game game;
-    game.Init(g_hWnd);
-
+    game.Init(g_hWnd,hInstance);
+    SetWindowLongPtr(g_hWnd, GWLP_USERDATA, (LONG_PTR)&game);
     MSG msg = {};
     uint64 prevTick = 0;
 
@@ -102,7 +104,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    RECT windowRect = {0, 0, GWinSizeX, GWinSizeY};
    ::AdjustWindowRect(&windowRect, WS_OVERLAPPEDWINDOW, false);
 
-   HWND hWnd = CreateWindowW(L"GameCoding", L"Client", WS_OVERLAPPEDWINDOW,
+   HWND hWnd = CreateWindowW(L"GameCoding", L"Client", WS_OVERLAPPEDWINDOW|WS_CLIPCHILDREN,
       CW_USEDEFAULT, 0, windowRect.right - windowRect.left, windowRect.bottom - windowRect.top, nullptr, nullptr, hInstance, nullptr);
 
    g_hWnd = hWnd;
@@ -133,7 +135,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     switch (message)
     {
     case WM_COMMAND:
+        if (LOWORD(wParam) == 1003) // Send 버튼
         {
+            wchar_t buf[256];
+            GetWindowTextW(Game::_chatInput, buf, 256);
+            if (wcslen(buf) > 0)
+            {
+                //Game::AppendChat(buf);
+                SetWindowTextW(Game::_chatInput, L"");
+
+                // TODO: 서버로 송신
+                wstring wstr = buf;
+                SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Chat(wstr);
+                GET_SINGLE(GameInstance)->SendPacket(sendBuffer);
+            }
+        }
+    {
             int wmId = LOWORD(wParam);
             // 메뉴 선택을 구문 분석합니다:
             switch (wmId)
@@ -146,6 +163,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
         break;
+    case WM_CHATMSG: // 서버에서 온 메시지
+    {
+        int senderId = (int)wParam;
+        wstring* msg = (std::wstring*)lParam;
+        COLORREF color = Game::GetDiversedColorFromId(senderId);
+        Game::AppendChat(*msg, color);
+        delete msg; // 동적 할당 해제
+    }
+    break;
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
