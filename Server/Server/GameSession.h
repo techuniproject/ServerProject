@@ -4,6 +4,7 @@
 class GameSession : public PacketSession
 {
 public:
+	friend class GameRoom;
 	~GameSession()
 	{
 		cout << "~GameSession" << endl;

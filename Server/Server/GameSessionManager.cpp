@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "GameSessionManager.h"
 #include "GameSession.h"
+#include "GameRoom.h"
 
 GameSessionManager GSessionManager;
 
@@ -15,6 +16,7 @@ void GameSessionManager::Remove(GameSessionRef session)
 	WRITE_LOCK;
 	_sessions.erase(session);
 }
+
 
 void GameSessionManager::Broadcast(SendBufferRef sendBuffer)
 {

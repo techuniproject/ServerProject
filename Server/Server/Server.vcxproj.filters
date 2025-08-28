@@ -27,6 +27,9 @@
     <Filter Include="소스 파일\Main\자동화방법">
       <UniqueIdentifier>{60803bd6-d80f-4d83-b196-02128d35ea7a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Job">
+      <UniqueIdentifier>{85026309-b40f-4cf0-ab34-60a83d626d33}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Server.cpp">
@@ -71,6 +74,9 @@
     <ClCompile Include="자동화전ClientPacketHandler.txt">
       <Filter>소스 파일\Main\자동화방법</Filter>
     </ClCompile>
+    <ClCompile Include="Job.cpp">
+      <Filter>소스 파일\Job</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -108,6 +114,9 @@
     </ClInclude>
     <ClInclude Include="GameRoom.h">
       <Filter>소스 파일\Room</Filter>
+    </ClInclude>
+    <ClInclude Include="Job.h">
+      <Filter>소스 파일\Job</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

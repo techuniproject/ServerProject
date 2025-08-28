@@ -18,75 +18,43 @@ GameRoom::~GameRoom()
 
 void GameRoom::Init()
 {
-	shared_ptr<Monster> monster = GameObject::CreateMonster();
-	monster->info.set_posx(8);
-	monster->info.set_posy(8);
-	AddObject(monster);
+	shared_ptr<GameRoom>gameRoom = shared_from_this();
+
+	PushJob([gameRoom]() {
+		shared_ptr<Monster> monster = GameObject::CreateMonster();
+		monster->info.set_posx(8);
+		monster->info.set_posy(8);
+		gameRoom->Enter(monster);
+
+		Protocol::S_AddObject AddedMonster;
+		*AddedMonster.add_objects() = monster->info;
+
+		SendBufferRef sendBuf= ServerPacketHandler::Make_S_AddObject(AddedMonster);
+		gameRoom->Broadcast(sendBuf);
+		});
+
+//	shared_ptr<Monster> monster = GameObject::CreateMonster();
+//	monster->info.set_posx(8);
+//	monster->info.set_posy(8);
+//	AddObject(monster);
 }
 
-void GameRoom::Update()
+void GameRoom::PushJob(function<void()> func)
 {
-
+	_jobs.Push(make_shared<LambdaJob>(move(func)));
 }
 
-void GameRoom::EnterRoom(GameSessionRef session)
+void GameRoom::FlushJobs()
 {
-	shared_ptr<Player> curPlayer = GameObject::CreatePlayer();
-
-	//서로의 존재를 연결
-	session->gameRoom = GetRoomRef();
-	session->player = curPlayer;
-	curPlayer->session = session;
-
-	curPlayer->info.set_posx(5);
-	curPlayer->info.set_posy(5);
-	
-
-	//입장한 클라에게 정보를 보내주기
-	{
-		SendBufferRef sendBuffer=ServerPacketHandler::Make_S_MyPlayer(curPlayer->info);
-		session->Send(sendBuffer);
-	}
-	//모든 오브젝트에게 정보 전송
-	{
-		Protocol::S_AddObject pkt;
-
-		for (auto& item : _players)
-		{
-			//read - pkt.object(1) index
-			//write - Protocol::ObjectInfo* info =  pkt.add_objects() -pointer 반환
-			Protocol::ObjectInfo* info = pkt.add_objects();
-			*info = item.second->info;
-		}
-
-		for (auto& item : _monsters)
-		{
-			Protocol::ObjectInfo* info = pkt.add_objects();
-			*info = item.second->info;
-		}
-
-		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddObject(pkt);
-		session->Send(sendBuffer);
-	}
-
-	AddObject(curPlayer);
-}
-
-void GameRoom::LeaveRoom(GameSessionRef session)
-{
-	if (session == nullptr)
-		return;
-	if (session->player.lock() == nullptr)
-		return;
-
-	uint64 id= session->player.lock()->info.objectid();
-	//shared_ptr<GameObject> gameObject = FindObject(id);
-	RemoveObject(id);
+    while (true) {
+        shared_ptr<Job> job = _jobs.Pop();
+        if (!job) break;
+        job->Execute();
+    }
 }
 
 shared_ptr<GameObject> GameRoom::FindObject(uint64 id)
 {
-
 	{
 		auto findIt = _players.find(id);
 		if (findIt != _players.end())
@@ -100,30 +68,9 @@ shared_ptr<GameObject> GameRoom::FindObject(uint64 id)
 	return nullptr;
 }
 
-void GameRoom::Handle_C_Move(Protocol::C_Move& pkt)
+void GameRoom::Enter(shared_ptr<GameObject> gameObject)
 {
-	uint64 id = pkt.info().objectid();
-	shared_ptr<GameObject> gameObject= FindObject(id);
-	
-	if (gameObject == nullptr)
-		return;
-
-	//TODO Validation 해킹 체킹
-	gameObject->info.set_state(pkt.info().state());
-	gameObject->info.set_dir(pkt.info().dir());
-	gameObject->info.set_posx(pkt.info().posx());
-	gameObject->info.set_posy(pkt.info().posy());
-	
-	{
-		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Move(pkt.info());
-		Broadcast(sendBuffer);
-	}
-
-}
-
-void GameRoom::AddObject(shared_ptr<class GameObject> gameObject)
-{
-	uint64 id = gameObject->info.objectid();
+    uint64 id = gameObject->info.objectid();
 	auto objectType = gameObject->info.objecttype();
 	
 	switch (objectType)
@@ -137,22 +84,11 @@ void GameRoom::AddObject(shared_ptr<class GameObject> gameObject)
 	default:
 		return;
 	}
-	gameObject->room = GetRoomRef();
+	gameObject->room = shared_from_this();
 
-	{
-		Protocol::S_AddObject pkt;
-
-		
-		Protocol::ObjectInfo* info = pkt.add_objects();
-		*info = gameObject->info; //현재 추가될 애 정보
-		
-		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddObject(pkt);
-		//session->Send(sendBuffer); 모든 애들한테 보내줘야함
-		Broadcast(sendBuffer);
-	}
 }
 
-void GameRoom::RemoveObject(uint64 id)
+void GameRoom::Leave(uint64 id)
 {
 	shared_ptr<GameObject> gameObject = FindObject(id);
 	if (gameObject == nullptr)
@@ -173,22 +109,208 @@ void GameRoom::RemoveObject(uint64 id)
 	}
 
 	gameObject->room = nullptr;
-
-	//TODO 오브젝트 삭제 메시지 전송
-
-	{
-		Protocol::S_RemoveObject pkt;
-		pkt.add_ids(id);
-		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_RemoveObject(pkt);
-		Broadcast(sendBuffer);
-	}
 }
 
-void GameRoom::Broadcast(SendBufferRef& sendBuffer)
+void GameRoom::Broadcast(SendBufferRef sendBuffer)
 {
-	for (auto& item : _players)
-	{
-		item.second->session->Send(sendBuffer);
-	}
+    for (auto& p : _players)
+        p.second->session->Send(sendBuffer);
+
 }
 
+vector<Protocol::ObjectInfo> GameRoom::GetRoomPlayerInfo()
+{
+	vector<Protocol::ObjectInfo> infos;
+
+	for (auto p : _players)
+		infos.push_back(p.second->info);
+
+	return infos;
+}
+
+vector<Protocol::ObjectInfo> GameRoom::GetRoomMonsterInfo()
+{
+	vector<Protocol::ObjectInfo> infos;
+
+	for (auto m : _monsters)
+		infos.push_back(m.second->info);
+
+	return infos;
+}
+
+//void GameRoom::Init()
+//{
+//	shared_ptr<Monster> monster = GameObject::CreateMonster();
+//	monster->info.set_posx(8);
+//	monster->info.set_posy(8);
+//	AddObject(monster);
+//}
+
+//void GameRoom::Update()
+//{
+//
+//}
+
+//void GameRoom::EnterRoom(GameSessionRef session)
+//{
+//	shared_ptr<Player> curPlayer = GameObject::CreatePlayer();
+//
+//	//서로의 존재를 연결
+//	session->gameRoom = shared_from_this();
+//	session->player = curPlayer;
+//	curPlayer->session = session;
+//
+//	curPlayer->info.set_posx(5);
+//	curPlayer->info.set_posy(5);
+//	
+//
+//	//입장한 클라에게 정보를 보내주기
+//	{
+//		SendBufferRef sendBuffer=ServerPacketHandler::Make_S_MyPlayer(curPlayer->info);
+//		session->Send(sendBuffer);
+//	}
+//	//모든 오브젝트의 정보 전송
+//	{
+//		Protocol::S_AddObject pkt;
+//
+//		for (auto& item : _players)
+//		{
+//			//read - pkt.object(1) index
+//			//write - Protocol::ObjectInfo* info =  pkt.add_objects() -pointer 반환
+//			Protocol::ObjectInfo* info = pkt.add_objects();
+//			*info = item.second->info;
+//		}
+//
+//		for (auto& item : _monsters)
+//		{
+//			Protocol::ObjectInfo* info = pkt.add_objects();
+//			*info = item.second->info;
+//		}
+//
+//		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddObject(pkt);
+//		session->Send(sendBuffer);
+//	}
+//
+//	AddObject(curPlayer);
+//}
+//
+//void GameRoom::LeaveRoom(GameSessionRef session)
+//{
+//	if (session == nullptr)
+//		return;
+//	if (session->player.lock() == nullptr)
+//		return;
+//
+//	uint64 id= session->player.lock()->info.objectid();
+//	//shared_ptr<GameObject> gameObject = FindObject(id);
+//	RemoveObject(id);
+//}
+//
+//shared_ptr<GameObject> GameRoom::FindObject(uint64 id)
+//{
+//
+//	{
+//		auto findIt = _players.find(id);
+//		if (findIt != _players.end())
+//			return findIt->second;
+//	}
+//	{
+//		auto findIt = _monsters.find(id);
+//		if (findIt != _monsters.end())
+//			return findIt->second;
+//	}
+//	return nullptr;
+//}
+//
+//void GameRoom::Handle_C_Move(Protocol::C_Move& pkt)
+//{
+//	uint64 id = pkt.info().objectid();
+//	shared_ptr<GameObject> gameObject= FindObject(id);
+//	
+//	if (gameObject == nullptr)
+//		return;
+//
+//	//TODO Validation 해킹 체킹
+//	gameObject->info.set_state(pkt.info().state());
+//	gameObject->info.set_dir(pkt.info().dir());
+//	gameObject->info.set_posx(pkt.info().posx());
+//	gameObject->info.set_posy(pkt.info().posy());
+//	
+//	{
+//		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Move(pkt.info());
+//		Broadcast(sendBuffer);
+//	}
+//
+//}
+//
+//void GameRoom::AddObject(shared_ptr<class GameObject> gameObject)
+//{
+//	uint64 id = gameObject->info.objectid();
+//	auto objectType = gameObject->info.objecttype();
+//	
+//	switch (objectType)
+//	{
+//	case Protocol::OBJECT_TYPE_PLAYER:
+//		_players[id] = static_pointer_cast<Player>(gameObject);
+//		break;
+//	case Protocol::OBJECT_TYPE_MONSTER:
+//		_monsters[id] = static_pointer_cast<Monster>(gameObject);
+//		break;
+//	default:
+//		return;
+//	}
+//	gameObject->room = GetRoomRef();
+//
+//	{
+//		Protocol::S_AddObject pkt;
+//
+//		
+//		Protocol::ObjectInfo* info = pkt.add_objects();
+//		*info = gameObject->info; //현재 추가될 애 정보
+//		
+//		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddObject(pkt);
+//		//session->Send(sendBuffer); 모든 애들한테 보내줘야함
+//		Broadcast(sendBuffer);
+//	}
+//}
+//
+//void GameRoom::RemoveObject(uint64 id)
+//{
+//	shared_ptr<GameObject> gameObject = FindObject(id);
+//	if (gameObject == nullptr)
+//		return;
+//
+//	auto objectType = gameObject->info.objecttype();
+//
+//	switch (objectType)
+//	{
+//	case Protocol::OBJECT_TYPE_PLAYER:
+//		_players.erase(id);
+//		break;
+//	case Protocol::OBJECT_TYPE_MONSTER:
+//		_monsters.erase(id);
+//		break;
+//	default:
+//		return;
+//	}
+//
+//	gameObject->room = nullptr;
+//
+//	//TODO 오브젝트 삭제 메시지 전송
+//
+//	{
+//		Protocol::S_RemoveObject pkt;
+//		pkt.add_ids(id);
+//		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_RemoveObject(pkt);
+//		Broadcast(sendBuffer);
+//	}
+//}
+//
+//void GameRoom::Broadcast(SendBufferRef& sendBuffer)
+//{
+//	for (auto& item : _players)
+//	{
+//		item.second->session->Send(sendBuffer);
+//	}
+//}
+//

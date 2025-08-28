@@ -88,12 +88,17 @@ int main()
 		GThreadManager->Launch([=]()
 			{
 				while (true)
-				{
+				{//워커들은 I/O감지 후, 패킷 직렬 처리 및 작업 넣기.
 					service->GetIocpCore()->Dispatch();
 				}
 			});
 	}
-	
+
+	while (true) //메인스레드 Job처리, 게임로직 및 Send/Recv예약(패킷)
+	{
+		GRoom->FlushJobs();
+		this_thread::sleep_for(1ms);
+	}
 	//while (true)//컨텐츠 들어갈곳
 	//{
 	//	vector<BuffData> buffs{ BuffData{100,1.5f},BuffData{200,2.3f},BuffData{300,0.7f} };
