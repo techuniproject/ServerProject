@@ -84,7 +84,8 @@ bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move& pkt)//받아와서 시�
         	object->info.set_posy(pkt.info().posy());
 
             SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Move(pkt.info());
-            gameRoom->Broadcast(sendBuffer);
+           // gameRoom->Broadcast(sendBuffer);
+            gameRoom->PushBroadcastJob(sendBuffer);
             });
         return true;
     }
@@ -111,7 +112,8 @@ bool Handle_C_CHAT(GameSessionRef& session, Protocol::C_CHAT& pkt)
             chatfromclientpkt.set_playerid(pkt.playerid());
           
             SendBufferRef sendbuffer = ServerPacketHandler::MakeSendBuffer(chatfromclientpkt);
-            gameRoom->Broadcast(sendbuffer);
+            //gameRoom->Broadcast(sendbuffer);
+            gameRoom->PushBroadcastJob(sendbuffer);
             return true;
             });
     

@@ -7,11 +7,21 @@ class Monster :public Creature
 
 public:
 	Monster();
-	virtual ~Monster();
+	virtual ~Monster() override;
 
-	virtual void Update();
+	virtual void Init();
+	virtual void Update()override;
+
 
 private:
+	virtual void UpdateIdle();
+	virtual void UpdateMove();
+	virtual void UpdateSkill();
 
+
+private:
+	uint64 _waitUntil = 0;
+
+	weak_ptr<Player> _target; // TEMP
 };
 

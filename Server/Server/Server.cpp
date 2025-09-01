@@ -82,14 +82,16 @@ int main()
 	//  SessionFactory에 람다로 GameSession 만들어주는 함수 꽂아줌 -> 접속마다 GameSession 새로 만들어줌
 
 	assert(service->Start());
-
-	for (int32 i = 0; i < 5; i++)
+	int thread_cnt = thread::hardware_concurrency();
+	for (int32 i = 0; i < thread::hardware_concurrency(); i++)
 	{
 		GThreadManager->Launch([=]()
 			{
 				while (true)
 				{//워커들은 I/O감지 후, 패킷 직렬 처리 및 작업 넣기.
 					service->GetIocpCore()->Dispatch();
+					GRoom->FlushSendJobs();
+					GRoom->FlushBroadcastJobs();
 				}
 			});
 	}
@@ -97,7 +99,12 @@ int main()
 	while (true) //메인스레드 Job처리, 게임로직 및 Send/Recv예약(패킷)
 	{
 		GRoom->FlushJobs();
-		this_thread::sleep_for(1ms);
+		GRoom->Update();
+		//Job처리후 Update 일관성 고려
+		//Update는 게임로직 수정후 broadcast이므로 큰 제약 없음 메인스레드 jobqueue엔 들어갈게 없음 곧바로 처리가능,.
+		// 다만 io작업은 워커가 처리하도록 미뤄도 됨 병렬적으로 동작하기 때문.
+		//this_thread::sleep_for(1ms);
+		std::this_thread::yield();
 	}
 	//while (true)//컨텐츠 들어갈곳
 	//{

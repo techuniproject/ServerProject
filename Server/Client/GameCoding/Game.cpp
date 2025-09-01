@@ -59,6 +59,10 @@ void Game::Init(HWND hwnd,HINSTANCE hInstance)
 void Game::Update()
 {
 	GET_SINGLE(GameInstance)->Update();
+	if (GetAsyncKeyState(VK_F1) & 0x0001) // 눌릴 때만
+	{
+		ShowChatUI();
+	}
 	//GET_SINGLE(TimeManager)->Update();
 	//GET_SINGLE(InputManager)->Update();
 	//GET_SINGLE(SceneManager)->Update();
@@ -170,4 +174,15 @@ COLORREF Game::GetDiversedColorFromId(int id)
 	BYTE B = (BYTE)((b + m) * 255);
 
 	return RGB(R, G, B);
+}
+
+void Game::ShowChatUI()
+{
+	_chatVisible = !_chatVisible;
+
+	int cmd = _chatVisible ? SW_SHOW : SW_HIDE;
+
+	if (_chathwnd)   ShowWindow(_chathwnd, cmd);
+	if (_chatInput)  ShowWindow(_chatInput, cmd);
+	if (_chatSendBtn) ShowWindow(_chatSendBtn, cmd);
 }

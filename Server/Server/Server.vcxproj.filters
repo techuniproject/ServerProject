@@ -77,6 +77,9 @@
     <ClCompile Include="Job.cpp">
       <Filter>소스 파일\Job</Filter>
     </ClCompile>
+    <ClCompile Include="Tilemap.cpp">
+      <Filter>소스 파일\Room</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -117,6 +120,9 @@
     </ClInclude>
     <ClInclude Include="Job.h">
       <Filter>소스 파일\Job</Filter>
+    </ClInclude>
+    <ClInclude Include="Tilemap.h">
+      <Filter>소스 파일\Room</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

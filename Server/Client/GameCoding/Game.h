@@ -25,10 +25,12 @@ public:
 	static void AppendChat(const wstring& msg, COLORREF color);
 	static COLORREF GetColorFromId(int id); //해시 사용
 	static COLORREF GetDiversedColorFromId(int id); //해시 사용
+	void ShowChatUI();
 private:
 	// Double Buffering
 	RECT _rect;
 	HDC hdcBack = {};
 	HBITMAP _bmpBack = {};
+	bool _chatVisible = true;
 };
 

@@ -576,6 +576,8 @@ Vec2Int DevScene::GetRandomEmptyCellPos()
 
 void DevScene::TickMonsterSpawn()
 {
+	return;//서버로 이전
+
 	if (_monsterCount < DESIRED_COUNT)
 		SpawnObjectAtRandomPos<Monster>();
 }
