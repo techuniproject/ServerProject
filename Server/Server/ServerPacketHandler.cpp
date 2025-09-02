@@ -71,9 +71,16 @@ bool Handle_INVALID(GameSessionRef& session, BYTE* buffer, int32 length)
 
 bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move& pkt)//받아와서 시리얼라이즈해줌
 {
+   // uint64 enqueueTime = GetTickCount64();
+    
     shared_ptr<GameRoom> gameRoom = session->gameRoom.lock();
     if (gameRoom) {
-        gameRoom->PushJob([gameRoom, pkt]() {
+        gameRoom->PushJob([gameRoom, pkt/*, enqueueTime*/]() {
+         /*   uint64 startTime = GetTickCount64();
+            uint64 delay = startTime - enqueueTime;
+          
+            cout << "[JobQueue Delay] " << delay << " ms" << endl;*/
+            
             shared_ptr<GameObject> object = gameRoom->FindObject(pkt.info().objectid());
             if (object == nullptr)return;
            
@@ -84,8 +91,8 @@ bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move& pkt)//받아와서 시�
         	object->info.set_posy(pkt.info().posy());
 
             SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Move(pkt.info());
-           // gameRoom->Broadcast(sendBuffer);
-            gameRoom->PushBroadcastJob(sendBuffer);
+            gameRoom->Broadcast(sendBuffer);
+           
             });
         return true;
     }
@@ -112,8 +119,7 @@ bool Handle_C_CHAT(GameSessionRef& session, Protocol::C_CHAT& pkt)
             chatfromclientpkt.set_playerid(pkt.playerid());
           
             SendBufferRef sendbuffer = ServerPacketHandler::MakeSendBuffer(chatfromclientpkt);
-            //gameRoom->Broadcast(sendbuffer);
-            gameRoom->PushBroadcastJob(sendbuffer);
+            gameRoom->Broadcast(sendbuffer);
             return true;
             });
     

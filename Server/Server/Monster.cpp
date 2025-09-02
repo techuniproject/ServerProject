@@ -44,6 +44,61 @@ void Monster::Update()//어차피 메인스레드 로직이라 lock신경X, send도 메인이 해도
 	}
 }
 
+//void Monster::UpdateIdle()
+//{
+//
+//	if (!room) return;
+//
+//	// 타겟 없으면 새로 탐색
+//	if (_target.lock() == nullptr)
+//		_target = room->FindClosestPlayer(GetCellPos());
+//	shared_ptr<Player> player = _target.lock();
+//	if (!player) return;
+//
+//	// =============================
+//	// 1) 공격 범위 판정
+//	// =============================
+//	Vec2Int d = player->GetCellPos() - GetCellPos();
+//	int dist = abs(d.x) + abs(d.y);
+//	if (dist <= 1) // 붙어있으면 바로 공격
+//	{
+//		SetDir(GetLookAtDir(player->GetCellPos()));
+//		SetState(SKILL, true);
+//		_waitUntil = GetTickCount64() + 1000; // 공격 쿨다운
+//		return;
+//	}
+//
+//	// =============================
+//	// 2) 경로 탐색 (쿨다운 적용)
+//	// =============================
+//	uint64 now = GetTickCount64();
+//	if (now > _lastPathUpdate + _pathUpdateInterval)
+//	{
+//		_path.clear();
+//		if (room->MyFindPath(GetCellPos(), player->GetCellPos(), OUT _path))
+//		{
+//			_lastPathUpdate = now;
+//		}
+//	}
+//
+//	// =============================
+//	// 3) 경로 따라가기
+//	// =============================
+//	if (_path.size() > 1)
+//	{
+//		Vec2Int nextPos = _path[1];
+//		if (room->CanGo(nextPos))
+//		{
+//			SetDir(GetLookAtDir(nextPos));
+//			SetCellPos(nextPos);
+//			SetState(MOVE, true);
+//			_waitUntil = now + 200; // 이동 텀
+//			_path.erase(_path.begin()); // 첫 칸 소비
+//		}
+//	}
+//}
+
+
 void Monster::UpdateIdle()
 {
 	

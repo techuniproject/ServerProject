@@ -90,8 +90,6 @@ int main()
 				while (true)
 				{//워커들은 I/O감지 후, 패킷 직렬 처리 및 작업 넣기.
 					service->GetIocpCore()->Dispatch();
-					GRoom->FlushSendJobs();
-					GRoom->FlushBroadcastJobs();
 				}
 			});
 	}

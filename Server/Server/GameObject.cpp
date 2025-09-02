@@ -115,7 +115,7 @@ void GameObject::BroadcastMove()
 	if (room)
 	{
 		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Move(info);
-		//room->Broadcast(sendBuffer);
-		room->PushBroadcastJob(sendBuffer);//워커가 하도록
+		room->Broadcast(sendBuffer);
+		
 	}
 }

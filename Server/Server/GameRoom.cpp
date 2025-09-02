@@ -45,6 +45,7 @@ void GameRoom::Init()
 
 void GameRoom::Update()
 {
+	//uint64 start = GetTickCount64();
 	for (auto& item : _players)
 	{
 		item.second->Update();
@@ -53,6 +54,8 @@ void GameRoom::Update()
 	{
 		item.second->Update();
 	}
+	//uint64 end = GetTickCount64();
+	//cout << "[Update Time] " << (end - start) << " ms" << endl;
 }
 
 void GameRoom::PushJob(function<void()> func)
@@ -183,6 +186,8 @@ shared_ptr<Player>  GameRoom::FindClosestPlayer(Vec2Int pos) {
 }
 
 bool  GameRoom::FindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int32 maxDepth) {
+	
+	
 	int32 depth = abs(src.y - dest.y) + abs(src.x - dest.x);
 	if (depth >= maxDepth)
 		return false;
@@ -298,6 +303,91 @@ bool  GameRoom::FindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int32
 	return true;
 }
 
+bool GameRoom::MyFindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int32 maxDepth)
+{
+
+	priority_queue<MyPQNode, vector<MyPQNode>, greater<MyPQNode>>pq;
+	map<Vec2Int, int32> gCost; //시작점으로부터 각 노드까지 최단 비용
+	map<Vec2Int, Vec2Int> parent;
+
+	//
+	auto heuristic = [](Vec2Int& a, Vec2Int& b) {
+		return abs(b.x - a.x) + abs(b.y - a.y);
+		};
+	
+	gCost[src] = 0;
+	int h = heuristic(src, dest);
+
+	Vec2Int dir[4] = { {0,1},{0,-1},{1,0},{-1,0} };
+	int cost[] = { 1,1,1,1 };
+	bool found = false; //실제 경로가 없을수도 있으니 찾았는지 여부 따지기 용도
+
+	while (!pq.empty())
+	{
+		MyPQNode cur = pq.top();
+		pq.pop();
+
+		if (cur.pos == dest) {
+			found = true;
+			break;
+		}
+
+		if (cur.g > gCost[cur.pos])//현재 노드 기준 시작점으로부터 비용이 지금껏 방문한 현재 노드 비용보다 크다면 넘김
+			continue;
+
+		for (int i = 0; i < 4; ++i) {
+			Vec2Int next = cur.pos + dir[i];
+
+			if (!CanGo(next))continue; //현재 좌표 기준 4방향을 순차로 갈때 못가는 좌표면 넘김
+
+			int nextG = cur.g + cost[i]; // 시작점에서 현재좌표까지 최소 비용 + cost(1)
+			if (nextG >= maxDepth)continue; //시작점에서 이 노드까지 거리가 maxDepth(10)보다 크면 탐색 그만
+
+			if (gCost.find(next) == gCost.end() || nextG < gCost[next])
+			{
+				gCost[next] = nextG;
+				int f = nextG + heuristic(next, dest);
+				pq.push({ f,nextG,next });
+				parent[next] = cur.pos;
+			}
+		}
+	}
+	if (!found) {
+		float bestScore = FLT_MAX;
+		Vec2Int fallback = src;
+
+		for (auto& item : gCost) {
+			Vec2Int pos = item.first;
+			int32 g = item.second;
+			int32 h = heuristic(pos, dest);
+			int32 score = g + h;
+
+			if (bestScore == score) {
+				// 동점이면 시작점에서 더 가까운 쪽 선택
+				int32 dist1 = abs(dest.x - src.x) + abs(dest.y - src.y);
+				int32 dist2 = abs(pos.x - src.x) + abs(pos.y - src.y);
+				if (dist2 < dist1)
+					fallback = pos;
+			}
+			else if (score < bestScore) {
+				fallback = pos;
+				bestScore = score;
+			}
+		}
+		dest = fallback;
+	}
+	path.clear();
+	Vec2Int pos = dest;
+	while (true)
+	{
+		path.push_back(pos);
+		if (pos == parent[pos])break;
+		pos = parent[pos];
+	}
+	reverse(path.begin(), path.end());
+	return true;
+}
+
 bool  GameRoom::CanGo(Vec2Int cellPos) {
 	
 	Tile* tile = _tilemap.GetTileAt(cellPos);
@@ -358,63 +448,6 @@ shared_ptr<Creature>  GameRoom::GetCreatureAt(Vec2Int cellPos) {
 	}
 	return nullptr;
 }
-
-void GameRoom::PushSendJob(shared_ptr<GameSession> session, SendBufferRef sendBuf)
-{
-	lock_guard<mutex>m(_sendLock);
-	_sendJobs.push({ session,sendBuf });
-
-}
-
-void GameRoom::PushBroadcastJob(SendBufferRef sendBuf)
-{
-	lock_guard<mutex>m(_broadcastLock);
-		_broadcastJobs.push(sendBuf);
-}
-
-void GameRoom::FlushSendJobs()
-{
-	queue <pair<weak_ptr<GameSession>, SendBufferRef>> jobs;
-	{
-		lock_guard<mutex>m(_sendLock);
-		swap(jobs, _sendJobs); //내부적으로 move처리(포인터 이동) refcount jobs에선 줆
-	}
-	// 따로 컨테이너 빼는 것은, GameRoom 공용 컨테이너 사용 시, Lock을
-	// 오래 걸어야하고, 그 상태로 Send까지 처리하면 언제 Lock이 풀릴지 모름
-	// 그리고, 캐시 친화적으로 공유컨테이너 pop하다보면, false sharing 발생
-
-	while (!jobs.empty())
-	{
-		auto job= jobs.front();
-		jobs.pop();
-
-		if (auto session = job.first.lock())
-			session->Send(job.second);
-	}
-}
-
-void GameRoom::FlushBroadcastJobs()
-{
-	queue<SendBufferRef> jobs;
-	{
-		lock_guard<mutex>m(_broadcastLock);
-		swap(jobs, _broadcastJobs);
-	}
-
-	while (!jobs.empty())
-	{
-		Broadcast(jobs.front());
-		jobs.pop();
-	}
-}
-
-
-
-
-
-
-
-
 
 
 

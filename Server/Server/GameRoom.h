@@ -13,6 +13,17 @@ struct PQNode
 	Vec2Int pos;
 };
 
+struct MyPQNode
+{
+	bool operator<(const MyPQNode& other)const { return f < other.f; }//less - 큰게 우선
+	bool operator>(const MyPQNode& other)const { return f > other.f; }//greater - 작은게 우선
+
+	int f;
+	int g;
+	Vec2Int pos;
+
+};
+
 class GameRoom : public enable_shared_from_this<GameRoom>
 {
 public:
@@ -58,25 +69,11 @@ public:
 public:
 	shared_ptr<Player> FindClosestPlayer(Vec2Int pos);
 	bool FindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int32 maxDepth = 10);
+	bool MyFindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int32 maxDepth = 10);
 	bool CanGo(Vec2Int cellPos);
 	Vec2Int GetRandomEmptyCellPos();
 	shared_ptr<GameObject> GetGameObjectAt(Vec2Int cellPos);
 	shared_ptr<class Creature> GetCreatureAt(Vec2Int cellPos);
-public:
- // 메인 스레드에서 I/O 예약
-    void PushSendJob(shared_ptr<class GameSession> session, SendBufferRef sendBuf);
-    void PushBroadcastJob(SendBufferRef sendBuf);
-
-    // 워커 스레드에서 Flush 실행
-    void FlushSendJobs();
-    void FlushBroadcastJobs();
-private:
-	// I/O 예약 처리(메인스레드가 호출)
-	mutex _sendLock;
-	mutex _broadcastLock; //병렬적으로 send, broadcast 다른 워커스레드간 처리가능하도록 lock분리
-
-	queue<pair<weak_ptr<class GameSession>, SendBufferRef>> _sendJobs;
-	queue<SendBufferRef> _broadcastJobs;
 private:
 	// 워커스레드가 메인스레드가 호출하도록 넣는 Job
 	JobQueue _jobs;

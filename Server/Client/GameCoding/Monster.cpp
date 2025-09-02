@@ -94,7 +94,7 @@ void Monster::TickMove()
 	float deltaTime = GET_SINGLE(GameInstance)->GetDeltaTime();
 
 	Vec2 dir = (_destPos - _pos);
-	if (dir.Length() < 5.f)
+	if (dir.Length() < 3.f)
 	{
 		SetState(IDLE);
 		_pos = _destPos;
