@@ -83,7 +83,7 @@ int main()
 
 	assert(service->Start());
 	int thread_cnt = thread::hardware_concurrency();
-	for (int32 i = 0; i < thread::hardware_concurrency(); i++)
+	for (int32 i = 0; i < 5; i++)
 	{
 		GThreadManager->Launch([=]()
 			{

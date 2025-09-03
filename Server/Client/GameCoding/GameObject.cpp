@@ -35,6 +35,24 @@ void GameObject::Tick()
 
 	Super::Tick();
 
+	//GET_SINGLE(GameInstance)->GetDeltaTime();
+	//Vec2 servPos = Vec2(info.posx(), info.posy());
+	//Vec2 diff = servPos - _pos;
+	//float dist = diff.Length();
+	//float lerpSpeed = 10.f;
+	//if (dist > 200.f) {
+	//	_pos = servPos;  // 순간이동
+	//}
+	//else if (dist > 50.f) {
+	//	// 빠른 보간
+	//	_pos += diff * (GET_SINGLE(GameInstance)->GetDeltaTime() * (lerpSpeed * 3.f));
+	//}
+	//else {
+	//	// 천천히 보간
+	//	_pos += diff * (GET_SINGLE(GameInstance)->GetDeltaTime() * lerpSpeed);
+	//}
+
+
 	switch (info.state())
 	{
 	case IDLE:

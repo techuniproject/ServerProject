@@ -154,8 +154,8 @@ bool Handle_S_Move(ServerSessionRef& session, Protocol::S_Move& pkt)
  
  		shared_ptr<GameObject> gameObject=scene->GetGameObject(info.objectid());
  		if (gameObject) {
+            gameObject->SetState(info.state());
  			gameObject->SetDir(info.dir());
- 			gameObject->SetState(info.state());
  			gameObject->SetCellPos(Vec2Int(info.posx(), info.posy()));
             return true;
  		}

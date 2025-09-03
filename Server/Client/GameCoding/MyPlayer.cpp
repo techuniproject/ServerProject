@@ -86,45 +86,7 @@ void MyPlayer::TryMove()
 		SetCellPos(nextPos);
 		SetState(MOVE);
 	}
-	/*if (info.dir()==DIR_UP)
-	{
 	
-		Vec2Int nextPos = GetCellPos() + deltaXY[info.dir()];
-		if (CanGo(nextPos))
-		{
-			SetCellPos(nextPos);
-			SetState(MOVE);
-		}
-	}
-	else  if (info.dir() == DIR_DOWN)
-	{
-		
-		Vec2Int nextPos = GetCellPos() + deltaXY[info.dir()];
-		if (CanGo(nextPos))
-		{
-			SetCellPos(nextPos);
-			SetState(MOVE);
-		}
-	}
-	else if (info.dir() == DIR_LEFT)
-	{
-		Vec2Int nextPos = GetCellPos() + deltaXY[info.dir()];
-		if (CanGo(nextPos))
-		{
-			SetCellPos(nextPos);
-			SetState(MOVE);
-		}
-	}
-	else if (info.dir() == DIR_RIGHT)
-	{
-
-		Vec2Int nextPos = GetCellPos() + deltaXY[info.dir()];
-		if (CanGo(nextPos))
-		{
-			SetCellPos(nextPos);
-			SetState(MOVE);
-		}
-	}*/
 }
 
 void MyPlayer::SyncToServer()

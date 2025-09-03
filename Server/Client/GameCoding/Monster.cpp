@@ -94,7 +94,7 @@ void Monster::TickMove()
 	float deltaTime = GET_SINGLE(GameInstance)->GetDeltaTime();
 
 	Vec2 dir = (_destPos - _pos);
-	if (dir.Length() < 3.f)
+	if (dir.Length() < 5.f)
 	{
 		SetState(IDLE);
 		_pos = _destPos;
@@ -110,16 +110,16 @@ void Monster::TickMove()
 		switch (info.dir())
 		{
 		case DIR_UP:
-			_pos.y -= 50 * deltaTime;
+			_pos.y -= 150 * deltaTime;
 			break;
 		case DIR_DOWN:
-			_pos.y += 50 * deltaTime;
+			_pos.y += 150 * deltaTime;
 			break;
 		case DIR_LEFT:
-			_pos.x -= 50 * deltaTime;
+			_pos.x -= 150 * deltaTime;
 			break;
 		case DIR_RIGHT:
-			_pos.x += 50 * deltaTime;
+			_pos.x += 150 * deltaTime;
 			break;
 		}
 	}

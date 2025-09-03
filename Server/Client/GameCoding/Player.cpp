@@ -90,13 +90,18 @@ void Player::TickIdle()
 {
 	
 }
+/*
+FPS가 1600 → 800 → 400 이런 식으로 반토막 나면,
+
+deltaTime(= 1/FPS) 값은 반대로 0.0006 → 0.0012 → 0.0025 … 이런 식으로 커짐.
+*/
 
 void Player::TickMove()
 {
-	float deltaTime = GET_SINGLE(GameInstance)->GetDeltaTime();
+	/*float deltaTime = GET_SINGLE(GameInstance)->GetDeltaTime();
 
 	Vec2 dir = (_destPos - _pos);	
-	if (dir.Length() < 1.f)
+	if (dir.Length() <3.f)
 	{
 		SetState(IDLE);
 		_pos = _destPos;
@@ -118,7 +123,44 @@ void Player::TickMove()
 			_pos.x += 200 * deltaTime;
 			break;
 		}
-	}	
+	}	*/
+	//원래 length로 하던거 프레임 드랍 또는 통신 불안정할때 생기는 오차때문에
+	//잘 안들어가는 경우 그대로 쭉가는 버그 생김. length() 3으로하면 그나마 덜함.
+
+	float deltaTime = GET_SINGLE(GameInstance)->GetDeltaTime();
+	deltaTime = min(deltaTime, 0.05f); //프레임드랍 심해져서 0.05보다 커지면 보정
+		switch (info.dir())
+		{
+		case DIR_UP:
+			_pos.y -= 200 * deltaTime;
+			if (_pos.y <= _destPos.y) {
+				_pos = _destPos;
+				SetState(IDLE);
+			}
+			break;
+		case DIR_DOWN:
+			_pos.y += 200 * deltaTime;
+			if (_pos.y >= _destPos.y) {
+				_pos = _destPos;
+				SetState(IDLE);
+			}
+			break;
+		case DIR_LEFT:
+			_pos.x -= 200 * deltaTime;
+			if (_pos.x <= _destPos.x) {
+				_pos = _destPos;
+				SetState(IDLE);
+			}
+			break;
+		case DIR_RIGHT:
+			_pos.x += 200 * deltaTime;
+			if (_pos.x >= _destPos.x) {
+				_pos = _destPos;
+				SetState(IDLE);
+			}
+			break;
+		}
+	
 }
 
 void Player::TickSkill()
