@@ -124,7 +124,7 @@ void Monster::UpdateIdle()
 		else
 		{
 			vector<Vec2Int> path;
-			if (room->FindPath(GetCellPos(), player->GetCellPos(), OUT path))
+			if (room->MyFindPath(GetCellPos(), player->GetCellPos(), OUT path))
 			{
 				if (path.size() > 1)
 				{

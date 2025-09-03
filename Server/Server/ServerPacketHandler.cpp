@@ -137,3 +137,22 @@ bool Handle_C_CHAT(GameSessionRef& session, Protocol::C_CHAT& pkt)
     return false;
 }
 
+/*
+//¾ø¾Ù¶§
+ shared_ptr<GameRoom> gameRoom = session->gameRoom.lock();
+    if (gameRoom) {
+        gameRoom->PushJob([gameRoom, pkt]() {
+            Protocol::S_RemoveObject sendpkt;
+            int cnt = pkt.ids_size();
+            for (int i = 0; i < cnt; ++i) {
+                gameRoom->Leave(pkt.ids(i));
+                sendpkt.add_ids(pkt.ids(i));
+            }
+
+            SendBufferRef sendBuffer = ServerPacketHandler::Make_S_RemoveObject(sendpkt);
+            gameRoom->Broadcast(sendBuffer);
+
+            });
+        return true;
+    }
+*/
