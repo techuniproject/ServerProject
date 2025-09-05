@@ -119,12 +119,12 @@ void Monster::UpdateIdle()
 		{
 			SetDir(GetLookAtDir(player->GetCellPos()));
 			SetState(SKILL,true);
-			_waitUntil = GetTickCount64() + 1000; //+1초
+			_waitUntil = GetTickCount64() + 500; //+1초
 		}
 		else
 		{
 			vector<Vec2Int> path;
-			if (room->MyFindPath(GetCellPos(), player->GetCellPos(), OUT path))
+			if (room->FindPath(GetCellPos(), player->GetCellPos(), OUT path))
 			{
 				if (path.size() > 1)
 				{
@@ -133,7 +133,7 @@ void Monster::UpdateIdle()
 					{
 						SetDir(GetLookAtDir(nextPos));
 						SetCellPos(nextPos);
-						_waitUntil = GetTickCount64() + 1000; //+1초
+						_waitUntil = GetTickCount64() + 500; //+1초
 						SetState(MOVE,true);
 					}
 				}
@@ -151,7 +151,8 @@ void Monster::UpdateMove()
 	if (_waitUntil > now)
 		return;
 	
-	SetState(IDLE,true);
+	//SetState(IDLE,true);
+	SetState(IDLE);
 }
 
 void Monster::UpdateSkill()
@@ -161,5 +162,6 @@ void Monster::UpdateSkill()
 	if (_waitUntil > now)
 		return;
 
-	SetState(IDLE,true);
+	//SetState(IDLE,true);//차이?
+	SetState(IDLE);
 }

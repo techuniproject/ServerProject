@@ -87,6 +87,8 @@ void Monster::TickIdle()
 	//		}
 	//	}
 	//}
+	
+	
 }
 
 void Monster::TickMove()
@@ -124,40 +126,41 @@ void Monster::TickMove()
 		}
 	}*/
 
+	
 	float deltaTime = GET_SINGLE(GameInstance)->GetDeltaTime();
 	deltaTime = min(deltaTime, 0.05f); //프레임드랍 심해져서 0.05보다 커지면 보정
 	Vec2 dir = (_destPos - _pos);
 	bool horizontal = abs(dir.x) > abs(dir.y);
-	if (horizontal)
-		SetDir(dir.x < 0 ? DIR_LEFT : DIR_RIGHT);
-	else
-		SetDir(dir.y < 0 ? DIR_UP : DIR_DOWN);
+	//if (horizontal)
+	//	SetDir(dir.x < 0 ? DIR_LEFT : DIR_RIGHT);
+	//else
+	//	SetDir(dir.y < 0 ? DIR_UP : DIR_DOWN);
 	switch (info.dir())
 	{
 		
 	case DIR_UP:
-		_pos.y -= 150 * deltaTime;
+		_pos.y -= 100 * deltaTime;
 		if (_pos.y <= _destPos.y) {
 			_pos = _destPos;
 			SetState(IDLE);
 		}
 		break;
 	case DIR_DOWN:
-		_pos.y += 150 * deltaTime;
+		_pos.y += 100 * deltaTime;
 		if (_pos.y >= _destPos.y) {
 			_pos = _destPos;
 			SetState(IDLE);
 		}
 		break;
 	case DIR_LEFT:
-		_pos.x -= 150 * deltaTime;
+		_pos.x -= 100 * deltaTime;
 		if (_pos.x <= _destPos.x) {
 			_pos = _destPos;
 			SetState(IDLE);
 		}
 		break;
 	case DIR_RIGHT:
-		_pos.x += 150 * deltaTime;
+		_pos.x += 100 * deltaTime;
 		if (_pos.x >= _destPos.x) {
 			_pos = _destPos;
 			SetState(IDLE);

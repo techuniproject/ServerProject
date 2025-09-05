@@ -305,88 +305,189 @@ bool  GameRoom::FindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int32
 
 bool GameRoom::MyFindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int32 maxDepth)
 {
-
-	priority_queue<MyPQNode, vector<MyPQNode>, greater<MyPQNode>>pq;
-	map<Vec2Int, int32> gCost; //시작점으로부터 각 노드까지 최단 비용
+	priority_queue<MyPQNode, vector<MyPQNode>, greater<MyPQNode>> pq;
+	map<Vec2Int, int32> gCost;
 	map<Vec2Int, Vec2Int> parent;
 
-	//
-	auto heuristic = [](Vec2Int& a, Vec2Int& b) {
-		return abs(b.x - a.x) + abs(b.y - a.y);
+	auto heuristic = [](const Vec2Int& a, const Vec2Int& b) {
+		return abs(b.x - a.x) + abs(b.y - a.y); // 맨해튼 거리
 		};
-	
-	gCost[src] = 0;
-	int h = heuristic(src, dest);
 
-	Vec2Int dir[4] = { {0,1},{0,-1},{1,0},{-1,0} };
-	int cost[] = { 1,1,1,1 };
-	bool found = false; //실제 경로가 없을수도 있으니 찾았는지 여부 따지기 용도
+	// 초기화
+	gCost[src] = 0;
+	parent[src] = src;
+	pq.push({ heuristic(src, dest), 0, src });
+
+	Vec2Int dirs[4] = { {0,1},{0,-1},{1,0},{-1,0} };
+	bool found = false;
+
+	// maxDepth: 너무 작으면 돌아가는 길 포기하므로, 최소 보장
+	int heuristicDist = heuristic(src, dest);
+	if (maxDepth < heuristicDist * 4)  // 여유를 충분히 준다
+		maxDepth = heuristicDist * 4;
 
 	while (!pq.empty())
 	{
 		MyPQNode cur = pq.top();
 		pq.pop();
 
-		if (cur.pos == dest) {
+		if (cur.pos == dest)
+		{
 			found = true;
 			break;
 		}
 
-		if (cur.g > gCost[cur.pos])//현재 노드 기준 시작점으로부터 비용이 지금껏 방문한 현재 노드 비용보다 크다면 넘김
+		if (cur.g > gCost[cur.pos])
 			continue;
 
-		for (int i = 0; i < 4; ++i) {
-			Vec2Int next = cur.pos + dir[i];
+		for (int i = 0; i < 4; i++)
+		{
+			Vec2Int next = cur.pos + dirs[i];
+			if (!CanGo(next)) continue;
 
-			if (!CanGo(next))continue; //현재 좌표 기준 4방향을 순차로 갈때 못가는 좌표면 넘김
-
-			int nextG = cur.g + cost[i]; // 시작점에서 현재좌표까지 최소 비용 + cost(1)
-			if (nextG >= maxDepth)continue; //시작점에서 이 노드까지 거리가 maxDepth(10)보다 크면 탐색 그만
+			int nextG = cur.g + 1;
+			if (nextG > maxDepth) continue;
 
 			if (gCost.find(next) == gCost.end() || nextG < gCost[next])
 			{
 				gCost[next] = nextG;
-				int f = nextG + heuristic(next, dest);
-				pq.push({ f,nextG,next });
+
+				// Weighted A* : h에 가중치 (조금 더 목적지 쪽으로 치우치게)
+				int h = heuristic(next, dest);
+				int f = nextG + h * 2; // W = 2
+
+				pq.push({ f, nextG, next });
 				parent[next] = cur.pos;
 			}
 		}
 	}
-	if (!found) {
-		float bestScore = FLT_MAX;
+
+	// 목적지에 도달 못 했을 때 fallback
+	if (!found)
+	{
+		int bestH = INT_MAX;
 		Vec2Int fallback = src;
 
-		for (auto& item : gCost) {
+		for (auto& item : gCost)
+		{
 			Vec2Int pos = item.first;
-			int32 g = item.second;
-			int32 h = heuristic(pos, dest);
-			int32 score = g + h;
+			int g = item.second;
+			int h = heuristic(pos, dest);
 
-			if (bestScore == score) {
-				// 동점이면 시작점에서 더 가까운 쪽 선택
-				int32 dist1 = abs(dest.x - src.x) + abs(dest.y - src.y);
-				int32 dist2 = abs(pos.x - src.x) + abs(pos.y - src.y);
-				if (dist2 < dist1)
-					fallback = pos;
-			}
-			else if (score < bestScore) {
+			// h가 더 작거나, 동점이면 g가 더 큰 쪽 선택 (멀리 간 후보 선호)
+			if (h < bestH || (h == bestH && g > gCost[fallback]))
+			{
+				bestH = h;
 				fallback = pos;
-				bestScore = score;
 			}
 		}
 		dest = fallback;
 	}
+
+	// 경로 복원
 	path.clear();
 	Vec2Int pos = dest;
 	while (true)
 	{
 		path.push_back(pos);
-		if (pos == parent[pos])break;
+		if (pos == parent[pos]) break;
 		pos = parent[pos];
 	}
 	reverse(path.begin(), path.end());
+
 	return true;
 }
+
+//bool GameRoom::MyFindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int32 maxDepth)
+//{
+//
+//	priority_queue<MyPQNode, vector<MyPQNode>, greater<MyPQNode>>pq;
+//	map<Vec2Int, int32> gCost; //시작점으로부터 각 노드까지 최단 비용
+//	map<Vec2Int, Vec2Int> parent;
+//
+//	//
+//	auto heuristic = [](Vec2Int& a, Vec2Int& b) {
+//		return abs(b.x - a.x) + abs(b.y - a.y);
+//		};
+//	
+//	gCost[src] = 0;
+//	int h = heuristic(src, dest);
+//	parent[src] = src;
+//	pq.push({ h,0,src });
+//
+//	Vec2Int dir[4] = { {0,1},{0,-1},{1,0},{-1,0} };
+//	int cost[] = { 1,1,1,1 };
+//	bool found = false; //실제 경로가 없을수도 있으니 찾았는지 여부 따지기 용도
+//
+//	while (!pq.empty())
+//	{
+//		MyPQNode cur = pq.top();
+//		pq.pop();
+//
+//		if (cur.pos == dest) {
+//			found = true;
+//			break;
+//		}
+//
+//		if (cur.g > gCost[cur.pos])//현재 노드 기준 시작점으로부터 비용이 지금껏 방문한 현재 노드 비용보다 크다면 넘김
+//			continue;
+//
+//		for (int i = 0; i < 4; ++i) {
+//			Vec2Int next = cur.pos + dir[i];
+//
+//			if (!CanGo(next))continue; //현재 좌표 기준 4방향을 순차로 갈때 못가는 좌표면 넘김
+//
+//			int nextG = cur.g + cost[i]; // 시작점에서 현재좌표까지 최소 비용 + cost(1)
+//			if (nextG >= maxDepth)continue; //시작점에서 이 노드까지 거리가 maxDepth(10)보다 크면 탐색 그만
+//
+//			if (gCost.find(next) == gCost.end() || nextG < gCost[next])
+//			{
+//				gCost[next] = nextG;
+//				int f = nextG + heuristic(next, dest);
+//				pq.push({ f,nextG,next });
+//				parent[next] = cur.pos;
+//			}
+//		}
+//	}
+//	if (!found) {
+//		float bestScore = FLT_MAX;
+//		Vec2Int fallback = src;
+//
+//		for (auto& item : gCost) {
+//			Vec2Int pos = item.first;
+//			int32 g = item.second;
+//			int32 h = heuristic(pos, dest);
+//			int32 score = g + h;
+//
+//			//if (bestScore == score) {
+//			//	// 동점이면 시작점에서 더 가까운 쪽 선택
+//			//	int32 dist1 = abs(dest.x - src.x) + abs(dest.y - src.y);
+//			//	int32 dist2 = abs(pos.x - src.x) + abs(pos.y - src.y);
+//			//	if (dist2 < dist1)
+//			//		fallback = pos;
+//			//}
+//			//else if (score < bestScore) {
+//			//	fallback = pos;
+//			//	bestScore = score;
+//			//}
+//			if (score < bestScore || (score == bestScore && g > gCost[fallback])) {
+//				bestScore = score;
+//				fallback = pos;
+//			}
+//		}
+//		dest = fallback;
+//	}
+//	path.clear();
+//	Vec2Int pos = dest;
+//	while (true)
+//	{
+//		path.push_back(pos);
+//		if (pos == parent[pos])break;
+//		pos = parent[pos];
+//	}
+//	reverse(path.begin(), path.end());
+//	return true;
+//}
 
 bool  GameRoom::CanGo(Vec2Int cellPos) {
 	
