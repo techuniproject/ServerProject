@@ -5,6 +5,9 @@
 #include "GameSession.h"
 #include "GameRoom.h"
 #include "GameObject.h"
+#include "AIQueue.h"
+
+extern AIQueue GAIQueue;
 
 PacketHandlerFunc g_packet_handler[HANDLER_MAX];
 
@@ -111,30 +114,49 @@ bool Handle_C_CHAT(GameSessionRef& session, Protocol::C_CHAT& pkt)
    // cout << pkt.msg() << endl;
 
 
-    shared_ptr<GameRoom> gameRoom = session->gameRoom.lock();
-    if (gameRoom) {
-        gameRoom->PushJob([gameRoom, pkt]() {
-            Protocol::S_CHAT chatfromclientpkt;
-            chatfromclientpkt.set_msg(pkt.msg());
-            chatfromclientpkt.set_playerid(pkt.playerid());
-          
-            SendBufferRef sendbuffer = ServerPacketHandler::MakeSendBuffer(chatfromclientpkt);
-            gameRoom->Broadcast(sendbuffer);
-            return true;
-            });
-    
-    }
-   /* Protocol::S_CHAT chatfromclientpkt;
-    chatfromclientpkt.set_msg(pkt.msg());
-    chatfromclientpkt.set_playerid(pkt.playerid());
-    SendBufferRef sendbuffer= ServerPacketHandler::MakeSendBuffer(chatfromclientpkt);
+    //shared_ptr<GameRoom> gameRoom = session->gameRoom.lock();
+    //if (gameRoom) {
+    //    gameRoom->PushJob([gameRoom, pkt]() {
+    //        Protocol::S_CHAT chatfromclientpkt;
+    //        chatfromclientpkt.set_msg(pkt.msg());
+    //        chatfromclientpkt.set_playerid(pkt.playerid());
+    //      
+    //        SendBufferRef sendbuffer = ServerPacketHandler::MakeSendBuffer(chatfromclientpkt);
+    //        gameRoom->Broadcast(sendbuffer);
+    //        return true;
+    //        });
+    //
+    //}
+    auto gameRoom = session->gameRoom.lock();
+    if (!gameRoom) return false;
 
-    shared_ptr<GameRoom> gameRoom = session->gameRoom.lock();
-    if (gameRoom) {
-        gameRoom->Broadcast(sendbuffer);
-        return true;
-    }*/
-    return false;
+    // 1) 원래 하던 그대로, 사용자 채팅을 브로드캐스트
+    gameRoom->PushJob([gameRoom, pkt]() {
+        Protocol::S_CHAT echo;
+        echo.set_msg(pkt.msg());
+        echo.set_playerid(pkt.playerid());
+        SendBufferRef sb = ServerPacketHandler::MakeSendBuffer(echo);
+        gameRoom->Broadcast(sb);
+        });
+
+    // 2) "/npc " 또는 "/ai " 명령이면 LLM 작업 큐에 투입
+    std::string msg = pkt.msg();
+    auto starts_with = [&](const char* p) { return msg.rfind(p, 0) == 0; };
+
+    if (starts_with("/npc ") || starts_with("/ai ")) {
+        AIRequest r;
+        r.playerId = pkt.playerid();
+        r.npcId = 0;
+        r.convId = 0;
+        r.userText = msg.substr(msg.find(' ') + 1); // 접두사 뒤만 LLM에 보냄
+        r.room = gameRoom;                       // 답변은 이 방에 브로드캐스트
+        r.systemPrompt =
+            "당신은 마을 안내 NPC입니다. 정중하고 짧게 대답. 욕설/개인정보/광고 금지. 한국어.";
+        r.contextJson = "{}"; // 필요하면 플레이어/퀘스트 상태 요약 넣기
+        GAIQueue.Push(std::move(r));
+    }
+    return true;
+    
 }
 
 /*

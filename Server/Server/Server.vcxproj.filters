@@ -30,6 +30,9 @@
     <Filter Include="소스 파일\Job">
       <UniqueIdentifier>{85026309-b40f-4cf0-ab34-60a83d626d33}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\AI">
+      <UniqueIdentifier>{dd4323c0-2733-4f2a-b6da-bf1d4391b1ea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Server.cpp">
@@ -80,6 +83,9 @@
     <ClCompile Include="Tilemap.cpp">
       <Filter>소스 파일\Room</Filter>
     </ClCompile>
+    <ClCompile Include="AIWorker.cpp">
+      <Filter>소스 파일\AI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -123,6 +129,12 @@
     </ClInclude>
     <ClInclude Include="Tilemap.h">
       <Filter>소스 파일\Room</Filter>
+    </ClInclude>
+    <ClInclude Include="AIQueue.h">
+      <Filter>소스 파일\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="AIWorker.h">
+      <Filter>소스 파일\AI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

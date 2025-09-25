@@ -32,6 +32,20 @@ using Dir = Protocol::DIR_TYPE;
 #include "ServerPacketHandler.h"
 
 
+// --- [LLM 통합 전역 스위치] ---------------------------------
+#define FEATURE_LLM_CHAT 1  // 끄려면 0
+
+#if FEATURE_LLM_CHAT
+// WinHTTP는 링크를 한 번만 걸면 됨 (프로젝트 설정에서 걸어도 OK)
+#include <winhttp.h>
+#pragma comment(lib, "winhttp.lib")
+
+// 선택: LLM 모델/설정 전역(필요하면)
+#ifndef LLM_MODEL_NAME
+#define LLM_MODEL_NAME L"gpt-4.1-mini"
+#endif
+#endif // FEATURE_LLM_CHAT
+
 struct VectorInt
 {
 	VectorInt() {}

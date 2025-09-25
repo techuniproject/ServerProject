@@ -13,7 +13,11 @@ using namespace std;
 #include "GameSessionManager.h"
 #include "ServerPacketHandler.h"
 #include "GameRoom.h"
+#include "AIWorker.h"
+#include "AIQueue.h"
 
+AIQueue GAIQueue;
+AIWorkerPool GAIWorkers;
 //class GameSession : public Session
 //{//애플리케이션 레벨에서 한명의 클라이언트와 주고받는 데이터 처리 로직을 담는 객체
 //public:
@@ -80,7 +84,7 @@ int main()
 	//  TCP: 127.0.0.1:7777 (sin.addr, sin.port) IP addr와 포트번호 입력
 	//  IocpCore 인스턴스 생성(내부에 IOCP 핸들 CreateIoCompletionPort 생성)
 	//  SessionFactory에 람다로 GameSession 만들어주는 함수 꽂아줌 -> 접속마다 GameSession 새로 만들어줌
-
+	
 	assert(service->Start());
 	int thread_cnt = thread::hardware_concurrency();
 	for (int32 i = 0; i < 5; i++)
@@ -93,7 +97,7 @@ int main()
 				}
 			});
 	}
-
+	GAIWorkers.Start(2, &GAIQueue);
 	while (true) //메인스레드 Job처리, 게임로직 및 Send/Recv예약(패킷)
 	{
 		GRoom->FlushJobs();
@@ -128,6 +132,7 @@ int main()
 
 	// 윈속 종료
 	SocketUtils::Clear();
+	GAIWorkers.Stop();
 }
 
 /*

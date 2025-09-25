@@ -23,5 +23,6 @@ void SendBuffer::CopyData(void* data, int32 len)
 
 void SendBuffer::Close(uint32 writeSize)
 {
+	assert(writeSize <= Capacity());
 	_writeSize = writeSize;
 }

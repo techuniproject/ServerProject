@@ -91,7 +91,12 @@ private:
         header->size = packet_size;
         header->id = packet_id;
 
-        assert(pkt.SerializeToArray(&header[1], data_size));
+       // assert(pkt.SerializeToArray(&header[1], data_size));
+        if (!pkt.SerializeToArray(&header[1], data_size)) {
+         
+            OutputDebugStringA("[ERR] SerializeToArray failed\n");
+            return nullptr; 
+        }
         send_buffer->Close(packet_size);
 
         return send_buffer;
