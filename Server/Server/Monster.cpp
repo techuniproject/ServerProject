@@ -151,8 +151,27 @@ void Monster::UpdateSkill()
 
 	if (creature) {
 		creature->OnDamaged(dynamic_pointer_cast<Creature>(shared_from_this()));
+		//플레이어 맞았을 때 보류
 	}
 
 	//SetState(IDLE,true);//차이?
 	SetState(IDLE);
+}
+
+void Monster::UpdateHit()
+{
+	int64 now = GetTickCount64();
+
+	if (_waitUntil > now)
+		return;
+
+	SetState(IDLE);
+}
+
+void Monster::ApplyHitStun(uint32 ms) {
+	const uint64 now = GetTickCount64();
+	// 재피격 시 HIT 연장: max 사용 (리셋 원하면 그냥 대입)
+	_waitUntil = std::max<uint64>(_waitUntil, now + static_cast<uint64>(ms));
+
+	SetState(HIT, true);
 }

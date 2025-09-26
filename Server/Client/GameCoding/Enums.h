@@ -60,6 +60,7 @@ using Dir = Protocol::DIR_TYPE;
 #define IDLE Protocol::OBJECT_STATE_TYPE_IDLE
 #define MOVE Protocol::OBJECT_STATE_TYPE_MOVE
 #define SKILL Protocol::OBJECT_STATE_TYPE_SKILL
+#define HIT Protocol::OBJECT_STATE_TYPE_HIT
 
 #define SWORD Protocol::WEAPON_TYPE_SWORD
 #define BOW Protocol::WEAPON_TYPE_BOW

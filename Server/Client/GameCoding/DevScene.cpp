@@ -258,6 +258,27 @@ void DevScene::LoadMonster()
 		shared_ptr<Flipbook> fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_SnakeRight");
 		fb->SetInfo({ texture, L"FB_SnakeRight", {100, 100}, 0, 3, 1, 0.5f });
 	}
+	// HIT
+	{
+		shared_ptr<Texture> texture = GET_SINGLE(GameInstance)->GetTexture(L"Snake");
+		shared_ptr<Flipbook> fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_SnakeHitUp");
+		fb->SetInfo({ texture, L"FB_SnakeHitUp", {100, 100}, 0, 0, 5, 0.5f });
+	}
+	{
+		shared_ptr<Texture> texture = GET_SINGLE(GameInstance)->GetTexture(L"Snake");
+		shared_ptr<Flipbook> fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_SnakeHitDown");
+		fb->SetInfo({ texture, L"FB_SnakeHitDown", {100, 100}, 3, 3, 5, 0.5f });
+	}
+	{
+		shared_ptr<Texture> texture = GET_SINGLE(GameInstance)->GetTexture(L"Snake");
+		shared_ptr<Flipbook> fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_SnakeHitLeft");
+		fb->SetInfo({ texture, L"FB_SnakeHitLeft", {100, 100}, 1, 1, 5, 0.5f });
+	}
+	{
+		shared_ptr<Texture> texture = GET_SINGLE(GameInstance)->GetTexture(L"Snake");
+		shared_ptr<Flipbook> fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_SnakeHitRight");
+		fb->SetInfo({ texture, L"FB_SnakeHitRight", {100, 100}, 2, 2, 5, 0.5f });
+	}
 }
 
 void DevScene::LoadProjectiles()
@@ -284,6 +305,20 @@ void DevScene::LoadProjectiles()
 		fb->SetInfo({ texture, L"FB_ArrowRight", {100, 100}, 0, 0, 2, 0.5f });
 	}
 }
+/*
+
+struct FlipbookInfo
+{
+	shared_ptr<Texture> texture;
+	wstring name;
+	Vec2Int size = {};
+	int32 start = 0;
+	int32 end = 0;
+	int32 line = 0;
+	float duration = 1.f;
+	bool loop = true;
+};
+*/
 
 void DevScene::LoadEffect()
 {
@@ -292,6 +327,7 @@ void DevScene::LoadEffect()
 		shared_ptr<Flipbook> fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_Hit");
 		fb->SetInfo({ texture, L"FB_Hit", {50, 47}, 0, 5, 0, 0.5f, false});
 	}
+	
 }
 
 void DevScene::LoadTilemap()

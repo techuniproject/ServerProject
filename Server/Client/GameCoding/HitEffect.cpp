@@ -42,5 +42,19 @@ void HitEffect::Render(HDC hdc)
 
 void HitEffect::UpdateAnimation()
 {
-	SetFlipbook(GET_SINGLE(GameInstance)->GetFlipbook(L"FB_Hit"));
+	
+	switch (_EffectType) {
+	case SWORD_SNAKE:
+		SetFlipbook(GET_SINGLE(GameInstance)->GetFlipbook(L"FB_Hit"));
+		break;
+	case STAFF_SNAKE:
+		break;
+	case SNAKE_PLAYER:
+		SetFlipbook(GET_SINGLE(GameInstance)->GetFlipbook(L"FB_Hit"));
+		break;
+	default:
+		break;
+
+	}
+	
 }

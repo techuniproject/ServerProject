@@ -167,7 +167,7 @@ void Player::TickSkill()
 {
 	if (_flipbook == nullptr)
 		return;
-
+	
 	// TODO : Damage?
 	if (IsAnimationEnded())
 	{
@@ -182,8 +182,7 @@ void Player::TickSkill()
 			shared_ptr<Creature> creature = scene->GetCreatureAt(GetFrontCellPos());
 			if (creature)
 			{
-				scene->SpawnObject<HitEffect>(GetFrontCellPos());
-				//creature->OnDamaged(dynamic_pointer_cast<Creature>(shared_from_this()));
+				//scene->SpawnObject<HitEffect>(GetFrontCellPos())->SetEffectType(SWORD_SNAKE);
 			}
 		}
 		else if (_weaponType == BOW)

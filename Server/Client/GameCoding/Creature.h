@@ -40,6 +40,8 @@ public:
 	void SetStat(Stat stat) { _stat = stat;}
 	Stat& GetStat() { return _stat;}
 
+
+
 protected:
 	Stat _stat;
 };

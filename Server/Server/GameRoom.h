@@ -74,6 +74,8 @@ public:
 	Vec2Int GetRandomEmptyCellPos();
 	shared_ptr<GameObject> GetGameObjectAt(Vec2Int cellPos);
 	shared_ptr<class Creature> GetCreatureAt(Vec2Int cellPos);
+
+	void TickMonsterSpawn();
 private:
 	// 워커스레드가 메인스레드가 호출하도록 넣는 Job
 	JobQueue _jobs;
@@ -83,6 +85,7 @@ private:
 
 private:
 	Tilemap _tilemap;
+	const int32 DESIRED_COUNT = 1;
 };
 
 extern shared_ptr<GameRoom> GRoom;

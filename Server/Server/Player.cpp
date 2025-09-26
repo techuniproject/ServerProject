@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "GameRoom.h"
 #include "GameObject.h"
+#include "Monster.h"
 
 Player::Player()
 {
@@ -47,7 +48,12 @@ void Player::UpdateSkill()
 
 	if (info.weapontype() == Protocol::WEAPON_TYPE_SWORD) {
 		if (auto monster = GRoom->GetCreatureAt(GetFrontCellPos())) // 전방 셀 타격
+		{
 			monster->OnDamaged(dynamic_pointer_cast<Creature>(shared_from_this()));
+			if (auto m = std::dynamic_pointer_cast<Monster>(monster)) {
+				m->ApplyHitStun(500); 
+			}
+		}
 	}
 	else if (info.weapontype() == Protocol::WEAPON_TYPE_BOW)
 	{
@@ -55,4 +61,9 @@ void Player::UpdateSkill()
 	}
 	//_attackReadyAt = now + 350;       // 쿨다운
 	SetState(IDLE);
+}
+
+void Player::UpdateHit()
+{
+
 }

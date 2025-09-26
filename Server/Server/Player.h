@@ -16,6 +16,7 @@ private:
 	virtual void UpdateIdle()override;
 	virtual void UpdateMove()override;
 	virtual void UpdateSkill()override;
+	virtual void UpdateHit()override;
 
 public:
 	GameSessionRef session; //다른 클라의 존재를 알기 위한 통신창구 -나중에 private으로 막기

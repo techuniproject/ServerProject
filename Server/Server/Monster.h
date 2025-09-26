@@ -12,11 +12,13 @@ public:
 	virtual void Init();
 	virtual void Update()override;
 
+	void ApplyHitStun(uint32 ms);
 
 private:
 	virtual void UpdateIdle()override;
 	virtual void UpdateMove()override;
 	virtual void UpdateSkill()override;
+	virtual void UpdateHit()override;
 
 
 private:

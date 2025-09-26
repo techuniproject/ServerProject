@@ -43,6 +43,27 @@ void GameRoom::Init()
 //	AddObject(monster);
 }
 
+void GameRoom::TickMonsterSpawn() {
+	shared_ptr<GameRoom>gameRoom = shared_from_this();
+	if (_monsters.size() < DESIRED_COUNT)
+	{
+		PushJob([gameRoom]() {
+			shared_ptr<Monster> monster = GameObject::CreateMonster();
+			Vec2Int randPos = gameRoom->GetRandomEmptyCellPos();
+			monster->info.set_posx(randPos.x);
+			monster->info.set_posy(randPos.y);
+			gameRoom->Enter(monster);
+
+			Protocol::S_AddObject AddedMonster;
+			*AddedMonster.add_objects() = monster->info;
+
+			SendBufferRef sendBuf = ServerPacketHandler::Make_S_AddObject(AddedMonster);
+			gameRoom->Broadcast(sendBuf);
+			//gameRoom->PushBroadcastJob(sendBuf);
+			});
+	}
+}
+
 void GameRoom::Update()
 {
 	//uint64 start = GetTickCount64();
@@ -54,6 +75,10 @@ void GameRoom::Update()
 	{
 		item.second->Update();
 	}
+
+	TickMonsterSpawn();
+	
+
 	//uint64 end = GetTickCount64();
 	//cout << "[Update Time] " << (end - start) << " ms" << endl;
 }

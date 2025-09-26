@@ -36,16 +36,17 @@ const char descriptor_table_protodef_Enum_2eproto[] PROTOBUF_SECTION_VARIABLE(pr
   "ONE\020\000\022\026\n\022OBJECT_TYPE_PLAYER\020\001\022\027\n\023OBJECT_"
   "TYPE_MONSTER\020\002*P\n\013WEAPON_TYPE\022\025\n\021WEAPON_"
   "TYPE_SWORD\020\000\022\023\n\017WEAPON_TYPE_BOW\020\001\022\025\n\021WEA"
-  "PON_TYPE_STAFF\020\002*h\n\021OBJECT_STATE_TYPE\022\032\n"
-  "\026OBJECT_STATE_TYPE_IDLE\020\000\022\032\n\026OBJECT_STAT"
-  "E_TYPE_MOVE\020\001\022\033\n\027OBJECT_STATE_TYPE_SKILL"
-  "\020\002*U\n\010DIR_TYPE\022\017\n\013DIR_TYPE_UP\020\000\022\021\n\rDIR_T"
-  "YPE_DOWN\020\001\022\021\n\rDIR_TYPE_LEFT\020\002\022\022\n\016DIR_TYP"
-  "E_RIGHT\020\003b\006proto3"
+  "PON_TYPE_STAFF\020\002*\203\001\n\021OBJECT_STATE_TYPE\022\032"
+  "\n\026OBJECT_STATE_TYPE_IDLE\020\000\022\032\n\026OBJECT_STA"
+  "TE_TYPE_MOVE\020\001\022\033\n\027OBJECT_STATE_TYPE_SKIL"
+  "L\020\002\022\031\n\025OBJECT_STATE_TYPE_HIT\020\003*U\n\010DIR_TY"
+  "PE\022\017\n\013DIR_TYPE_UP\020\000\022\021\n\rDIR_TYPE_DOWN\020\001\022\021"
+  "\n\rDIR_TYPE_LEFT\020\002\022\022\n\016DIR_TYPE_RIGHT\020\003b\006p"
+  "roto3"
   ;
 static ::_pbi::once_flag descriptor_table_Enum_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Enum_2eproto = {
-    false, false, 497, descriptor_table_protodef_Enum_2eproto,
+    false, false, 525, descriptor_table_protodef_Enum_2eproto,
     "Enum.proto",
     &descriptor_table_Enum_2eproto_once, nullptr, 0, 0,
     schemas, file_default_instances, TableStruct_Enum_2eproto::offsets,
@@ -114,6 +115,7 @@ bool OBJECT_STATE_TYPE_IsValid(int value) {
     case 0:
     case 1:
     case 2:
+    case 3:
       return true;
     default:
       return false;

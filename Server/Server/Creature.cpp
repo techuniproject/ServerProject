@@ -29,6 +29,9 @@ void Creature::Update()//어차피 메인스레드 로직이라 lock신경X, send도 메인이 해�
 	case SKILL:
 		UpdateSkill();
 		break;
+	case HIT:
+		UpdateHit();
+		break;
 	default:
 		break;
 

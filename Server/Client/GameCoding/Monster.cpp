@@ -19,6 +19,10 @@ Monster::Monster()
 	_flipbookMove[DIR_LEFT] = GET_SINGLE(GameInstance)->GetFlipbook(L"FB_SnakeLeft");
 	_flipbookMove[DIR_RIGHT] = GET_SINGLE(GameInstance)->GetFlipbook(L"FB_SnakeRight");
 
+	_flipbookHit[DIR_UP] = GET_SINGLE(GameInstance)->GetFlipbook(L"FB_SnakeHitUp");
+	_flipbookHit[DIR_DOWN] = GET_SINGLE(GameInstance)->GetFlipbook(L"FB_SnakeHitDown");
+	_flipbookHit[DIR_LEFT] = GET_SINGLE(GameInstance)->GetFlipbook(L"FB_SnakeHitLeft");
+	_flipbookHit[DIR_RIGHT] = GET_SINGLE(GameInstance)->GetFlipbook(L"FB_SnakeHitRight");
 }
 
 Monster::~Monster()
@@ -190,7 +194,8 @@ void Monster::TickSkill()
 		shared_ptr<Creature> creature = scene->GetCreatureAt(GetFrontCellPos());
 		if (creature)
 		{
-			scene->SpawnObject<HitEffect>(GetFrontCellPos());
+			scene->SpawnObject<HitEffect>(GetFrontCellPos())->SetEffectType(SNAKE_PLAYER);
+			
 			//creature->OnDamaged(dynamic_pointer_cast<Creature>(shared_from_this()));
 		}
 
@@ -200,5 +205,10 @@ void Monster::TickSkill()
 
 void Monster::UpdateAnimation()
 {
-	SetFlipbook(_flipbookMove[info.dir()]);
+	if (info.state()==HIT) {
+		SetFlipbook(_flipbookHit[info.dir()]);
+	}
+	else {
+		SetFlipbook(_flipbookMove[info.dir()]);
+	}
 }

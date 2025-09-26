@@ -28,6 +28,7 @@ private:
 
 private:
 	shared_ptr<Flipbook> _flipbookMove[4] = {};
+	shared_ptr<Flipbook> _flipbookHit[4] = {};
 	float _waitSeconds = 0.f;
 
 	shared_ptr<Player> _target = nullptr; // TEMP
