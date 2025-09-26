@@ -35,22 +35,7 @@ void GameObject::Tick()
 
 	Super::Tick();
 
-	//GET_SINGLE(GameInstance)->GetDeltaTime();
-	//Vec2 servPos = Vec2(info.posx(), info.posy());
-	//Vec2 diff = servPos - _pos;
-	//float dist = diff.Length();
-	//float lerpSpeed = 10.f;
-	//if (dist > 200.f) {
-	//	_pos = servPos;  // 순간이동
-	//}
-	//else if (dist > 50.f) {
-	//	// 빠른 보간
-	//	_pos += diff * (GET_SINGLE(GameInstance)->GetDeltaTime() * (lerpSpeed * 3.f));
-	//}
-	//else {
-	//	// 천천히 보간
-	//	_pos += diff * (GET_SINGLE(GameInstance)->GetDeltaTime() * lerpSpeed);
-	//}
+
 
 
 	switch (info.state())
@@ -87,11 +72,16 @@ void GameObject::SetState(ObjectState state)
 
 void GameObject::SetDir(Dir dir)
 {
-	info.set_dir(dir);
-	//_dir = dir;
-	UpdateAnimation();
 	//상태 바뀜
-	_dirtyFlag = true;
+	if (dir != info.dir()) { //이걸 없애면 벽에 충돌시 해당 방향가면 dirtyflag 참이되어 계속 패킷보냄
+		_dirtyFlag = true;
+		info.set_dir(dir);
+		UpdateAnimation();
+	}
+	
+	//_dir = dir;
+	
+	
 }
 
 bool GameObject::HasReachedDest()

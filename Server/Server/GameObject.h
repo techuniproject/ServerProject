@@ -25,12 +25,25 @@ public:
 
 	int64 GetObjectID() { return info.objectid(); }
 	void SetObjectID(int64 id) { info.set_objectid(id); }
+	int32 GetObjectMaxHp() { return info.maxhp(); }
+	int32 GetObjectHp() { return info.hp(); }
+	int32 GetObjectAttack() { return info.attack(); }
+	int32 GetObjectDefence() { return info.defence(); }
+	void SetObjectMaxHp(int32 maxHp) { info.set_maxhp(maxHp); }
+	void SetObjectHp(int32 hp) { info.set_hp(hp); }
+	void SetObjectAttack(int32 attack) { info.set_attack(attack); }
+	void SetObjectDefence(int32 defence) { info.set_defence(defence); }
+
 public:
 	Protocol::ObjectInfo info;
 	shared_ptr<class GameRoom> room; //순환참조 생길수도 순서 잘 안지키면
 	//weak_ptr<class GameRoom>room;
 private:
 	static atomic<uint64> s_idGenerator;
+public:
+	bool _attackRequested = false;
+	uint64 _attackReadyAt = 0;
+	uint64 _stateExitAt = 0;
 };
 
 

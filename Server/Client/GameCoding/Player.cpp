@@ -177,16 +177,16 @@ void Player::TickSkill()
 		if (scene == nullptr)
 			return;
 
-		if (_weaponType == WeaponType::Sword)
+		if (_weaponType == SWORD)
 		{
 			shared_ptr<Creature> creature = scene->GetCreatureAt(GetFrontCellPos());
 			if (creature)
 			{
 				scene->SpawnObject<HitEffect>(GetFrontCellPos());
-				creature->OnDamaged(dynamic_pointer_cast<Creature>(shared_from_this()));
+				//creature->OnDamaged(dynamic_pointer_cast<Creature>(shared_from_this()));
 			}
 		}
-		else if (_weaponType == WeaponType::Bow)
+		else if (_weaponType == BOW)
 		{
 			shared_ptr<Arrow> arrow = scene->SpawnObject<Arrow>(GetCellPos());
 			arrow->SetDir(info.dir());	
@@ -210,9 +210,9 @@ void Player::UpdateAnimation()
 		SetFlipbook(_flipbookMove[info.dir()]);
 		break;
 	case SKILL:
-		if (_weaponType == WeaponType::Sword)
+		if (_weaponType == SWORD)
 			SetFlipbook(_flipbookAttack[info.dir()]);
-		else if (_weaponType == WeaponType::Bow)
+		else if (_weaponType == BOW)
 			SetFlipbook(_flipbookBow[info.dir()]);
 		else
 			SetFlipbook(_flipbookStaff[info.dir()]);

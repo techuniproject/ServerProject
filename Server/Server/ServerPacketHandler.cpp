@@ -87,11 +87,20 @@ bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move& pkt)//받아와서 시�
             shared_ptr<GameObject> object = gameRoom->FindObject(pkt.info().objectid());
             if (object == nullptr)return;
            
-        	//TODO Validation 해킹 체킹
-        	object->info.set_state(pkt.info().state());
-        	object->info.set_dir(pkt.info().dir());
-        	object->info.set_posx(pkt.info().posx());
-        	object->info.set_posy(pkt.info().posy());
+            Vec2Int nextPos{ pkt.info().posx(), pkt.info().posy() };
+            object->info.set_state(pkt.info().state());
+            object->info.set_dir(pkt.info().dir());
+            if (object->CanGo(nextPos)) {
+                //TODO Validation 해킹 체킹                           
+                object->info.set_posx(pkt.info().posx());
+                object->info.set_posy(pkt.info().posy());
+                int x = pkt.info().posx();
+                int y = pkt.info().posy();
+            }
+
+            if (pkt.info().state() == Protocol::OBJECT_STATE_TYPE_SKILL) {
+                object->_attackRequested = true;       // 신규 멤버(서버 전용)                          
+            }
 
             SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Move(pkt.info());
             gameRoom->Broadcast(sendBuffer);

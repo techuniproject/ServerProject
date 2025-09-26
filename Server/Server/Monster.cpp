@@ -7,8 +7,8 @@
 Monster::Monster()
 {
 	info.set_name("MonsterName");
-	info.set_hp(50);
-	info.set_maxhp(50);
+	info.set_hp(100);
+	info.set_maxhp(100);
 	info.set_attack(5);
 	info.set_defence(0); //나중엔 data sheet으로 읽어오는 방식
 }
@@ -25,23 +25,8 @@ void Monster::Init()
 
 void Monster::Update()//어차피 메인스레드 로직이라 lock신경X, send도 메인이 해도되긴함
 {
-	//Super::Update();
-
-	switch (info.state())
-	{
-	case IDLE:
-		UpdateIdle();
-		break;
-	case MOVE:
-		UpdateMove();
-		break;
-	case SKILL:
-		UpdateSkill();
-		break;
-	default:
-		break;
-
-	}
+	//여기서 호출하는 로직은 Job으로 처리안해도됨 메인스레드가 함
+	Super::Update();
 }
 
 //void Monster::UpdateIdle()
@@ -161,6 +146,12 @@ void Monster::UpdateSkill()
 
 	if (_waitUntil > now)
 		return;
+
+	shared_ptr<Creature> creature=GRoom->GetCreatureAt(GetFrontCellPos());
+
+	if (creature) {
+		creature->OnDamaged(dynamic_pointer_cast<Creature>(shared_from_this()));
+	}
 
 	//SetState(IDLE,true);//차이?
 	SetState(IDLE);

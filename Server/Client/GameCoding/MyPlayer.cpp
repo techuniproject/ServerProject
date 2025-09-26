@@ -58,23 +58,24 @@ void MyPlayer::TickInput()
 
 	if (GET_SINGLE(GameInstance)->GetButtonDown(KeyType::KEY_1))
 	{
-		SetWeaponType(WeaponType::Sword);
+		SetWeaponType(SWORD);
 	}
 	else if (GET_SINGLE(GameInstance)->GetButtonDown(KeyType::KEY_2))
 	{
-		SetWeaponType(WeaponType::Bow);
+		SetWeaponType(BOW);
 	}
 	else if (GET_SINGLE(GameInstance)->GetButtonDown(KeyType::KEY_3))
 	{
-		SetWeaponType(WeaponType::Staff);
+		SetWeaponType(STAFF);
 	}
 
 	if (GET_SINGLE(GameInstance)->GetButton(KeyType::SpaceBar))
 	{
 		SetState(SKILL);
 	}
-}
 
+ }
+//Myplayer은 지금 클라에서 미리 움직이고, 서버에 통보하고 나머지 클라에 broadcast
 void MyPlayer::TryMove()
 {
 	if (_keyPressed == false)
@@ -96,7 +97,9 @@ void MyPlayer::SyncToServer()
 
 	SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Move();
 	GET_SINGLE(GameInstance)->SendPacket(sendBuffer);
-
+	d++;//디버그용
+	//벽에 충돌하면 이 함수 호출이 엄청 많아짐 ->원인 찾기
+	// 이동 및 스킬 사용시 2번씩 호출됨.
 
 }
 

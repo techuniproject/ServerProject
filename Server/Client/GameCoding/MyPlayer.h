@@ -25,6 +25,6 @@ private:
 
 private:	
 	bool _keyPressed = false;
-
+	int d = 0;
 };
 

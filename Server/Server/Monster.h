@@ -14,9 +14,9 @@ public:
 
 
 private:
-	virtual void UpdateIdle();
-	virtual void UpdateMove();
-	virtual void UpdateSkill();
+	virtual void UpdateIdle()override;
+	virtual void UpdateMove()override;
+	virtual void UpdateSkill()override;
 
 
 private:

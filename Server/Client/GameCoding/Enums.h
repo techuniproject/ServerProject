@@ -61,6 +61,11 @@ using Dir = Protocol::DIR_TYPE;
 #define MOVE Protocol::OBJECT_STATE_TYPE_MOVE
 #define SKILL Protocol::OBJECT_STATE_TYPE_SKILL
 
+#define SWORD Protocol::WEAPON_TYPE_SWORD
+#define BOW Protocol::WEAPON_TYPE_BOW
+#define STAFF Protocol::WEAPON_TYPE_STAFF
+
+
 enum class WeaponType
 {
 	Sword,
