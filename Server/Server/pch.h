@@ -61,6 +61,7 @@ struct VectorInt
 		return ret;
 	}
 
+
 	VectorInt operator-(const VectorInt& other)
 	{
 		VectorInt ret;
@@ -76,6 +77,7 @@ struct VectorInt
 		ret.y = y * value;
 		return ret;
 	}
+
 
 	bool operator<(const VectorInt& other) const
 	{
@@ -98,6 +100,11 @@ struct VectorInt
 		return x == other.x && y == other.y;
 	}
 
+	bool operator!=(const VectorInt& other)const
+	{
+		return x != other.x && y != other.y;
+	}
+
 	void operator+=(const VectorInt& other)
 	{
 		x += other.x;
@@ -109,6 +116,7 @@ struct VectorInt
 		x -= other.x;
 		y -= other.y;
 	}
+
 
 	int32 LengthSquared()
 	{

@@ -69,11 +69,19 @@ void MyPlayer::TickInput()
 		SetWeaponType(STAFF);
 	}
 
-	if (GET_SINGLE(GameInstance)->GetButton(KeyType::SpaceBar))
+	/*if (GET_SINGLE(GameInstance)->GetButton(KeyType::SpaceBar))
 	{
 		SetState(SKILL);
-	}
+	}*/
+	uint64 now = GetTickCount64();
+	bool pressed = GET_SINGLE(GameInstance)->GetButton(KeyType::SpaceBar);
+	bool justPressed = pressed && !prevPressed;
+	prevPressed = pressed;
 
+	if (pressed&& now >= _nextSkillAt) {
+		SetState(SKILL);    
+		_nextSkillAt = now + SKILL_CD;       
+	}
  }
 //Myplayer은 지금 클라에서 미리 움직이고, 서버에 통보하고 나머지 클라에 broadcast
 void MyPlayer::TryMove()

@@ -84,6 +84,7 @@ void Monster::Update()//어차피 메인스레드 로직이라 lock신경X, send도 메인이 해도
 //}
 
 
+
 void Monster::UpdateIdle()
 {
 	
@@ -94,6 +95,7 @@ void Monster::UpdateIdle()
 	// Find Player
 	if (_target.lock() == nullptr)
 		_target = room->FindClosestPlayer(GetCellPos());
+
 	shared_ptr<Player> player = _target.lock();
 
 	if (player)
@@ -104,7 +106,7 @@ void Monster::UpdateIdle()
 		{
 			SetDir(GetLookAtDir(player->GetCellPos()));
 			SetState(SKILL,true);
-			_waitUntil = GetTickCount64() + 500; //+1초
+			_waitUntil = GetTickCount64() + 1000; //+1초
 		}
 		else
 		{
@@ -137,7 +139,7 @@ void Monster::UpdateMove()
 		return;
 	
 	//SetState(IDLE,true);
-	SetState(IDLE);
+	SetState(IDLE, true);
 }
 
 void Monster::UpdateSkill()
@@ -155,7 +157,7 @@ void Monster::UpdateSkill()
 	}
 
 	//SetState(IDLE,true);//차이?
-	SetState(IDLE);
+	SetState(IDLE, true);
 }
 
 void Monster::UpdateHit()
@@ -165,7 +167,7 @@ void Monster::UpdateHit()
 	if (_waitUntil > now)
 		return;
 
-	SetState(IDLE);
+	SetState(IDLE,true);
 }
 
 void Monster::ApplyHitStun(uint32 ms) {

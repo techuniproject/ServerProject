@@ -328,10 +328,10 @@ bool  GameRoom::FindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int32
 	return true;
 }
 
-bool GameRoom::MyFindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int32 maxDepth)
-{
+bool GameRoom::MyFindPath(Vec2Int start, Vec2Int dest, vector<Vec2Int>& path, int32 maxDepth)
+{//f=g+h
 	priority_queue<MyPQNode, vector<MyPQNode>, greater<MyPQNode>> pq;
-	map<Vec2Int, int32> gCost;
+	map<Vec2Int, int32> bestbyfar;
 	map<Vec2Int, Vec2Int> parent;
 
 	auto heuristic = [](const Vec2Int& a, const Vec2Int& b) {
@@ -339,15 +339,17 @@ bool GameRoom::MyFindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int3
 		};
 
 	// 초기화
-	gCost[src] = 0;
-	parent[src] = src;
-	pq.push({ heuristic(src, dest), 0, src });
+	bestbyfar[start] = 0;
+	parent[start] = start;
+	pq.push({ heuristic(start, dest), 0, start });//f,g,pos
+
+	//시작점은 g가 0이므로 f=g+h에서 h만 남아 heuristic만 반영 g는 0 
 
 	Vec2Int dirs[4] = { {0,1},{0,-1},{1,0},{-1,0} };
 	bool found = false;
 
 	// maxDepth: 너무 작으면 돌아가는 길 포기하므로, 최소 보장
-	int heuristicDist = heuristic(src, dest);
+	int heuristicDist = heuristic(start, dest);
 	if (maxDepth < heuristicDist * 4)  // 여유를 충분히 준다
 		maxDepth = heuristicDist * 4;
 
@@ -362,7 +364,7 @@ bool GameRoom::MyFindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int3
 			break;
 		}
 
-		if (cur.g > gCost[cur.pos])
+		if (cur.g > bestbyfar[cur.pos])
 			continue;
 
 		for (int i = 0; i < 4; i++)
@@ -373,9 +375,9 @@ bool GameRoom::MyFindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int3
 			int nextG = cur.g + 1;
 			if (nextG > maxDepth) continue;
 
-			if (gCost.find(next) == gCost.end() || nextG < gCost[next])
+			if (bestbyfar.find(next) == bestbyfar.end() || nextG < bestbyfar[next])
 			{
-				gCost[next] = nextG;
+				bestbyfar[next] = nextG;
 
 				// Weighted A* : h에 가중치 (조금 더 목적지 쪽으로 치우치게)
 				int h = heuristic(next, dest);
@@ -391,16 +393,16 @@ bool GameRoom::MyFindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int3
 	if (!found)
 	{
 		int bestH = INT_MAX;
-		Vec2Int fallback = src;
+		Vec2Int fallback = start;
 
-		for (auto& item : gCost)
+		for (auto& item : bestbyfar)
 		{
 			Vec2Int pos = item.first;
 			int g = item.second;
 			int h = heuristic(pos, dest);
 
 			// h가 더 작거나, 동점이면 g가 더 큰 쪽 선택 (멀리 간 후보 선호)
-			if (h < bestH || (h == bestH && g > gCost[fallback]))
+			if (h < bestH || (h == bestH && g > bestbyfar[fallback]))
 			{
 				bestH = h;
 				fallback = pos;
