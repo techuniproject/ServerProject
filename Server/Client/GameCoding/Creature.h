@@ -40,9 +40,10 @@ public:
 	void SetStat(Stat stat) { _stat = stat;}
 	Stat& GetStat() { return _stat;}
 
-
-
+	
+protected:
+	void DrawHealthBar(HDC hdc, POINT center, int tileSize, int hp, int hpMax);
 protected:
 	Stat _stat;
-};
 
+};

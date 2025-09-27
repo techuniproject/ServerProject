@@ -123,6 +123,8 @@ void MyPlayer::Tick()
 	
 	//프레임마다 상태 바뀜을 감지하여 서버에 통보 (서버라 매 프레임 보내는게 정석은 아님)
 	SyncToServer();
+
+	
 }
 
 void MyPlayer::Render(HDC hdc)

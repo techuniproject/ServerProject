@@ -17,6 +17,7 @@ PKT_C_Move = 4,
 PKT_S_Move = 5,
 PKT_C_CHAT = 6,
 PKT_S_CHAT = 7,
+PKT_S_ATTACK = 8,
 };
 
 bool Handle_INVALID(ServerSessionRef& session, BYTE* buffer, int32 length);
@@ -27,6 +28,7 @@ bool Handle_S_RemoveObject(ServerSessionRef& session, Protocol::S_RemoveObject&p
 bool Handle_S_Move(ServerSessionRef& session, Protocol::S_Move&pkt);
 bool Handle_S_Move(ServerSessionRef& session, Protocol::S_Move& pkt);
 bool Handle_S_CHAT(ServerSessionRef& session, Protocol::S_CHAT& pkt);
+bool Handle_S_ATTACK(ServerSessionRef& session, Protocol::S_ATTACK& pkt);
 
 class ClientPacketHandler
 {
@@ -58,6 +60,10 @@ public:
         g_packet_handler[PKT_S_CHAT] = [](ServerSessionRef& session, BYTE* buffer, int32 length)
             {
                 return ParsePacket < Protocol::S_CHAT >(Handle_S_CHAT, session, buffer, length);
+            };
+        g_packet_handler[PKT_S_ATTACK] = [](ServerSessionRef& session, BYTE* buffer, int32 length)
+            {
+                return ParsePacket < Protocol::S_ATTACK >(Handle_S_ATTACK, session, buffer, length);
             };
     }
 

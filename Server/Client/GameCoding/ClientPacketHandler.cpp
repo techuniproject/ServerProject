@@ -4,6 +4,7 @@
 #include "BufferReader.h"
 #include "DevScene.h"
 #include "MyPlayer.h"
+#include "Creature.h"
 
 extern HWND g_hWnd;
 PacketHandlerFunc g_packet_handler[HANDLER_MAX];
@@ -149,14 +150,26 @@ bool Handle_S_Move(ServerSessionRef& session, Protocol::S_Move& pkt)
  	if (scene)
  	{
  		uint64 myPlayerId = GET_SINGLE(GameInstance)->GetMyPlayerId();
- 		if (myPlayerId == info.objectid())
- 			return false;
+        if (myPlayerId == info.objectid())
+        {
+            GET_SINGLE(GameInstance)->GetMyPlayer()->SetMaxHp(info.maxhp());
+            GET_SINGLE(GameInstance)->GetMyPlayer()->SetDefence(info.defence());
+            return false;
+        }
+ 			
  
  		shared_ptr<GameObject> gameObject=scene->GetGameObject(info.objectid());
  		if (gameObject) {
             gameObject->SetState(info.state());
  			gameObject->SetDir(info.dir());
  			gameObject->SetCellPos(Vec2Int(info.posx(), info.posy()));
+            gameObject->SetMaxHp(info.maxhp());
+            gameObject->SetDefence(info.defence());
+            gameObject->SetName(info.name());
+            auto ifplayer = dynamic_pointer_cast<Player>(gameObject);
+            if (ifplayer) {
+                ifplayer->SetWeaponType(info.weapontype());
+            }
             return true;
  		}
  	    
@@ -175,6 +188,18 @@ bool Handle_S_CHAT(ServerSessionRef& session, Protocol::S_CHAT& pkt)
     // 메인 윈도우에 메시지 전달
     PostMessage(g_hWnd, WM_CHATMSG, (WPARAM)pkt.playerid(), (LPARAM)new std::wstring(formatted));
     return true;
+}
+
+bool Handle_S_ATTACK(ServerSessionRef& session, Protocol::S_ATTACK& pkt)
+{
+    DevScene* scene = GET_SINGLE(GameInstance)->GetCurrentScene<DevScene>();
+    if (scene) {
+        shared_ptr<GameObject> gameObject = scene->GetGameObject(pkt.attackedid());
+        if (gameObject) {
+            gameObject->SetHp(pkt.hp());        
+        }
+    }
+    return false;
 }
 
 

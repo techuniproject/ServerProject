@@ -10,6 +10,7 @@
 #include "DevScene.h"
 #include "Player.h"
 #include "HitEffect.h"
+#include "Tilemap.h"
 
 
 Monster::Monster()
@@ -47,6 +48,13 @@ void Monster::Tick()
 void Monster::Render(HDC hdc)
 {
 	Super::Render(hdc);
+
+	DevScene* dev = GET_SINGLE(GameInstance)->GetCurrentScene<DevScene>();
+	int tileSize = 48;
+	if (dev && GET_SINGLE(GameInstance)->GetTilemap(L"Tilemap_01")) tileSize = GET_SINGLE(GameInstance)->GetTilemap(L"Tilemap_01")->GetTileSize();
+
+	POINT center{ (LONG)_pos.x, (LONG)_pos.y };
+	DrawHealthBar(hdc, center, tileSize, info.hp(), info.maxhp());
 
 }
 

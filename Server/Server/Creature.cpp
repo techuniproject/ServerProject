@@ -65,4 +65,13 @@ void Creature::OnDamaged(shared_ptr<Creature>  attacker)
 			
 		}
 	}
+	else {
+		Protocol::S_ATTACK pkt;
+		pkt.set_attackedid(GetObjectID());
+		pkt.set_hp(info.hp());
+		SendBufferRef sendBuf = ServerPacketHandler::Make_S_Attack(pkt);
+		GRoom->Broadcast(sendBuf);
+	}
+	
 }
+

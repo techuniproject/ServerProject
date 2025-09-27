@@ -25,9 +25,9 @@ protected:
 	virtual void TickSkill() override;
 
 	virtual void UpdateAnimation() override;
-
-	void SetWeaponType(Protocol::WEAPON_TYPE weaponType) { _weaponType = weaponType; }
-	Protocol::WEAPON_TYPE GetWeaponType() { return _weaponType; }
+public:
+	void SetWeaponType(Protocol::WEAPON_TYPE weaponType);
+	Protocol::WEAPON_TYPE GetWeaponType() { return info.weapontype(); }
 	
 private:
 	shared_ptr<Flipbook> _flipbookIdle[4] = {};
@@ -37,6 +37,5 @@ private:
 	shared_ptr<Flipbook> _flipbookStaff[4] = {};
 
 	bool _keyPressed = false;
-	Protocol::WEAPON_TYPE _weaponType = SWORD;
 };
 

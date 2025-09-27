@@ -60,7 +60,7 @@ void Player::UpdateSkill()
 
 	}
 	//_attackReadyAt = now + 350;       // 쿨다운
-	SetState(IDLE);
+	SetState(IDLE,true);
 }
 
 void Player::UpdateHit()

@@ -65,6 +65,11 @@ SendBufferRef ServerPacketHandler::Make_S_Move(const Protocol::ObjectInfo& info)
     return MakeSendBuffer(pkt);
 }
 
+SendBufferRef ServerPacketHandler::Make_S_Attack(const Protocol::S_ATTACK& pkt)
+{
+    return MakeSendBuffer(pkt);
+}
+
 
 bool Handle_INVALID(GameSessionRef& session, BYTE* buffer, int32 length)
 {
@@ -93,12 +98,11 @@ bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move& pkt)//받아와서 시�
             if (object->CanGo(nextPos)) {
                 //TODO Validation 해킹 체킹                           
                 object->info.set_posx(pkt.info().posx());
-                object->info.set_posy(pkt.info().posy());
-                int x = pkt.info().posx();
-                int y = pkt.info().posy();
+                object->info.set_posy(pkt.info().posy());             
             }
 
             if (pkt.info().state() == Protocol::OBJECT_STATE_TYPE_SKILL) {
+                object->info.set_weapontype(pkt.info().weapontype());
                 object->_attackRequested = true;       // 신규 멤버(서버 전용)                          
             }
 

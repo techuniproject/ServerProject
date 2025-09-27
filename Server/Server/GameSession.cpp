@@ -40,9 +40,9 @@ void GameSession::OnConnected()
 		curPlayer->info.set_posx(5);
 		curPlayer->info.set_posy(5);
 		curPlayer->info.set_defence(0);
-		curPlayer->info.set_maxhp(200);
-		curPlayer->info.set_hp(200);
-		curPlayer->info.set_attack(2);
+		curPlayer->info.set_maxhp(100);
+		curPlayer->info.set_hp(100);
+		curPlayer->info.set_attack(5);
 		curPlayer->info.set_weapontype(Protocol::WEAPON_TYPE_SWORD);
 		
 		room->Enter(curPlayer);

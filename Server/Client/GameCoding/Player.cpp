@@ -10,6 +10,7 @@
 #include "DevScene.h"
 #include "Arrow.h"
 #include "HitEffect.h"
+#include "Tilemap.h"
 
 
 Player::Player()
@@ -82,7 +83,17 @@ void Player::Tick()
 void Player::Render(HDC hdc)
 {
 	Super::Render(hdc);
+	// 타일 크기 얻기
+	auto& scene = GET_SINGLE(GameInstance)->GetCurrentScene(); // DevScene 파생
+	DevScene* dev = dynamic_cast<DevScene*>(&scene);
+	int tileSize = 48; // 기본값
+	if (dev && GET_SINGLE(GameInstance)->GetTilemap(L"Tilemap_01")) tileSize = GET_SINGLE(GameInstance)->GetTilemap(L"Tilemap_01")->GetTileSize();
 
+	// 월드좌표는 GameObject가 유지(_pos). 중심을 POINT로 변환
+	POINT center{ (LONG)_pos.x, (LONG)_pos.y };
+
+	// info().hp, info().maxhp 사용
+	DrawHealthBar(hdc, center, tileSize, info.hp(), info.maxhp());
 }
 
 
@@ -177,7 +188,7 @@ void Player::TickSkill()
 		if (scene == nullptr)
 			return;
 
-		if (_weaponType == SWORD)
+		if (info.weapontype() == SWORD)
 		{
 			shared_ptr<Creature> creature = scene->GetCreatureAt(GetFrontCellPos());
 			if (creature)
@@ -185,7 +196,7 @@ void Player::TickSkill()
 				//scene->SpawnObject<HitEffect>(GetFrontCellPos())->SetEffectType(SWORD_SNAKE);
 			}
 		}
-		else if (_weaponType == BOW)
+		else if (info.weapontype() == BOW)
 		{
 			shared_ptr<Arrow> arrow = scene->SpawnObject<Arrow>(GetCellPos());
 			arrow->SetDir(info.dir());	
@@ -209,12 +220,19 @@ void Player::UpdateAnimation()
 		SetFlipbook(_flipbookMove[info.dir()]);
 		break;
 	case SKILL:
-		if (_weaponType == SWORD)
+		if (info.weapontype() == SWORD)
 			SetFlipbook(_flipbookAttack[info.dir()]);
-		else if (_weaponType == BOW)
+		else if (info.weapontype() == BOW)
 			SetFlipbook(_flipbookBow[info.dir()]);
 		else
 			SetFlipbook(_flipbookStaff[info.dir()]);
 		break;
 	}
+}
+
+void Player::SetWeaponType(Protocol::WEAPON_TYPE weaponType)
+{
+	if (info.weapontype() == weaponType)return;
+
+	info.set_weapontype(weaponType);
 }

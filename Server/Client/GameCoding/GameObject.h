@@ -4,7 +4,6 @@
 class GameObject : public FlipbookActor
 {
 	using Super = FlipbookActor;
-
 public:
 	GameObject();
 	virtual ~GameObject() override;
@@ -34,6 +33,11 @@ public:
 
 	int64 GetObjectID() { return info.objectid(); }
 	void SetObjectID(int64 id) { info.set_objectid(id); }
+
+	void SetMaxHp(int32 maxHp) { info.set_maxhp(maxHp); }
+	void SetHp(int32 hp) { info.set_hp(hp); }
+	void SetDefence(int32 defence) { info.set_defence(defence); }
+	void SetName(string name) { info.set_name(name); }
 
 protected:
 	//int64 _objectID = 0;

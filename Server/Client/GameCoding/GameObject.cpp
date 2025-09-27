@@ -49,6 +49,8 @@ void GameObject::Tick()
 	case SKILL:
 		TickSkill();
 		break;
+	default:
+		break;
 	}
 }
 
@@ -158,3 +160,4 @@ Vec2Int GameObject::GetFrontCellPos()
 
 	return GetCellPos();
 }
+

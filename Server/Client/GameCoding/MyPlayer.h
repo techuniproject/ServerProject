@@ -29,5 +29,6 @@ private:
 	uint64 _nextSkillAt = 0;          
 	static constexpr uint64 SKILL_CD = 1000; 
 	bool prevPressed = false;
+
 };
 

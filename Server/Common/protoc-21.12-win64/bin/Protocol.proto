@@ -46,3 +46,10 @@ message S_CHAT
 	uint64 playerId = 1;
 	string msg = 2; 
 }
+//Hit 당한 state는 따로 보내어 클라가 해당 이펙트 처리
+// 데미지 자체는 따로 메시지 보내게
+message S_ATTACK
+{
+	uint64 attackedId=1;
+	int32 hp=2;
+}

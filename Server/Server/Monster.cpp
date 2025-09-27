@@ -9,7 +9,7 @@ Monster::Monster()
 	info.set_name("MonsterName");
 	info.set_hp(100);
 	info.set_maxhp(100);
-	info.set_attack(5);
+	info.set_attack(10);
 	info.set_defence(0); //나중엔 data sheet으로 읽어오는 방식
 }
 
@@ -153,6 +153,7 @@ void Monster::UpdateSkill()
 
 	if (creature) {
 		creature->OnDamaged(dynamic_pointer_cast<Creature>(shared_from_this()));
+		creature->SetState(HIT, true);
 		//플레이어 맞았을 때 보류
 	}
 
