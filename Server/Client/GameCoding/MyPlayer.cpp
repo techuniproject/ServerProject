@@ -69,10 +69,8 @@ void MyPlayer::TickInput()
 		SetWeaponType(STAFF);
 	}
 
-	/*if (GET_SINGLE(GameInstance)->GetButton(KeyType::SpaceBar))
-	{
-		SetState(SKILL);
-	}*/
+	
+
 	uint64 now = GetTickCount64();
 	bool pressed = GET_SINGLE(GameInstance)->GetButton(KeyType::SpaceBar);
 	bool justPressed = pressed && !prevPressed;
@@ -105,6 +103,7 @@ void MyPlayer::SyncToServer()
 
 	SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Move();
 	GET_SINGLE(GameInstance)->SendPacket(sendBuffer);
+	a = info.state();
 	d++;//디버그용
 	//벽에 충돌하면 이 함수 호출이 엄청 많아짐 ->원인 찾기
 	// 이동 및 스킬 사용시 2번씩 호출됨.

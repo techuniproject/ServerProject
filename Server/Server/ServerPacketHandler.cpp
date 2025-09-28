@@ -77,17 +77,12 @@ bool Handle_INVALID(GameSessionRef& session, BYTE* buffer, int32 length)
     return false;
 }
 
-bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move& pkt)//받아와서 시리얼라이즈해줌
+bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move& pkt)
 {
-   // uint64 enqueueTime = GetTickCount64();
     
     shared_ptr<GameRoom> gameRoom = session->gameRoom.lock();
     if (gameRoom) {
-        gameRoom->PushJob([gameRoom, pkt/*, enqueueTime*/]() {
-         /*   uint64 startTime = GetTickCount64();
-            uint64 delay = startTime - enqueueTime;
-          
-            cout << "[JobQueue Delay] " << delay << " ms" << endl;*/
+        gameRoom->PushJob([gameRoom, pkt]() {
             
             shared_ptr<GameObject> object = gameRoom->FindObject(pkt.info().objectid());
             if (object == nullptr)return;
@@ -95,16 +90,19 @@ bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move& pkt)//받아와서 시�
             Vec2Int nextPos{ pkt.info().posx(), pkt.info().posy() };
             object->info.set_state(pkt.info().state());
             object->info.set_dir(pkt.info().dir());
+            int a = pkt.info().state();
             if (object->CanGo(nextPos)) {
                 //TODO Validation 해킹 체킹                           
                 object->info.set_posx(pkt.info().posx());
                 object->info.set_posy(pkt.info().posy());             
             }
+            object->info.set_weapontype(pkt.info().weapontype());
 
-            if (pkt.info().state() == Protocol::OBJECT_STATE_TYPE_SKILL) {
+          /*  if (pkt.info().state() == Protocol::OBJECT_STATE_TYPE_SKILL) {
                 object->info.set_weapontype(pkt.info().weapontype());
-                object->_attackRequested = true;       // 신규 멤버(서버 전용)                          
-            }
+                object->_attackRequested = true;     //데미지 2중 들어감                          
+            }*/
+           
 
             SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Move(pkt.info());
             gameRoom->Broadcast(sendBuffer);

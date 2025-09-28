@@ -26,6 +26,7 @@ private:
 private:	
 	bool _keyPressed = false;
 	int d = 0;
+	int a = 0;
 	uint64 _nextSkillAt = 0;          
 	static constexpr uint64 SKILL_CD = 1000; 
 	bool prevPressed = false;

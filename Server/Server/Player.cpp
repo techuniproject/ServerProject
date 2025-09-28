@@ -26,12 +26,11 @@ void Player::Update()//어차피 메인스레드 로직이라 lock신경X, send�
 
 void Player::UpdateIdle()
 {
-	uint64 now = GetTickCount64();
-	if (_attackRequested)// && now >= _attackReadyAt) {
+ 	uint64 now = GetTickCount64();
+	if (_attackRequested)
 	{
 		_attackRequested = false;
-		SetState(SKILL, true);          // 서버가 상태 전이 확정
-		//_stateExitAt = now + 150;       // startup 150ms
+		SetState(SKILL, true);         
 	}
 
 }
@@ -45,7 +44,7 @@ void Player::UpdateSkill()
 {
 	uint64 now = GetTickCount64();
 	//if (now < _stateExitAt) return;
-
+	int a = info.state();
 	if (info.weapontype() == Protocol::WEAPON_TYPE_SWORD) {
 		if (auto monster = GRoom->GetCreatureAt(GetFrontCellPos())) // 전방 셀 타격
 		{
@@ -59,8 +58,8 @@ void Player::UpdateSkill()
 	{
 
 	}
-	//_attackReadyAt = now + 350;       // 쿨다운
-	SetState(IDLE,true);
+	
+	SetState(IDLE);
 }
 
 void Player::UpdateHit()

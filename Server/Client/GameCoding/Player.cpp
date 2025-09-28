@@ -235,4 +235,6 @@ void Player::SetWeaponType(Protocol::WEAPON_TYPE weaponType)
 	if (info.weapontype() == weaponType)return;
 
 	info.set_weapontype(weaponType);
+
+	_dirtyFlag = true;
 }
