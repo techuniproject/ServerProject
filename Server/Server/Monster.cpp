@@ -106,7 +106,7 @@ void Monster::UpdateIdle()
 		{
 			SetDir(GetLookAtDir(player->GetCellPos()));
 			SetState(SKILL,true);
-			_waitUntil = GetTickCount64() + 1000; //+1초
+			//_waitUntil = GetTickCount64() + 500; //+1초
 		}
 		else
 		{
@@ -153,6 +153,7 @@ void Monster::UpdateSkill()
 
 	if (creature) {
 		creature->OnDamaged(dynamic_pointer_cast<Creature>(shared_from_this()));
+		_waitUntil = GetTickCount64() + 1000;
 		creature->SetState(HIT, true);
 		//플레이어 맞았을 때 보류
 	}

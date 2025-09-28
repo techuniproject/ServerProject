@@ -50,7 +50,7 @@ void Player::UpdateSkill()
 		{
 			monster->OnDamaged(dynamic_pointer_cast<Creature>(shared_from_this()));
 			if (auto m = std::dynamic_pointer_cast<Monster>(monster)) {
-				m->ApplyHitStun(500); 
+				m->ApplyHitStun(505); //플레이어 공격 쿨타임 500이라 같이 500이면 둘다 동시에 때림
 			}
 		}
 	}

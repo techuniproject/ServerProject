@@ -28,7 +28,7 @@ void MyPlayer::AttatchDefaultComponent()
 
 void MyPlayer::TickInput()
 {
-	
+
 	_keyPressed = true;
 
 	if (GET_SINGLE(GameInstance)->GetButton(KeyType::W))
@@ -43,12 +43,12 @@ void MyPlayer::TickInput()
 	else if (GET_SINGLE(GameInstance)->GetButton(KeyType::A))
 	{
 		SetDir(DIR_LEFT);
-		
+
 	}
 	else if (GET_SINGLE(GameInstance)->GetButton(KeyType::D))
 	{
 		SetDir(DIR_RIGHT);
-	
+
 	}
 	else
 	{
@@ -69,7 +69,10 @@ void MyPlayer::TickInput()
 		SetWeaponType(STAFF);
 	}
 
-	
+	/*if (GET_SINGLE(GameInstance)->GetButton(KeyType::SpaceBar))
+	{
+		SetState(SKILL);
+	}*/
 
 	uint64 now = GetTickCount64();
 	bool pressed = GET_SINGLE(GameInstance)->GetButton(KeyType::SpaceBar);
@@ -78,7 +81,7 @@ void MyPlayer::TickInput()
 
 	if (pressed&& now >= _nextSkillAt) {
 		SetState(SKILL);    
-		_nextSkillAt = now + SKILL_CD;       
+		_nextSkillAt = now + SKILL_CD;    //공격 애니메이션 다 0.5초   
 	}
  }
 //Myplayer은 지금 클라에서 미리 움직이고, 서버에 통보하고 나머지 클라에 broadcast
