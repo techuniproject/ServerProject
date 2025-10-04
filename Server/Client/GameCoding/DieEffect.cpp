@@ -1,27 +1,29 @@
 #include "pch.h"
+#include "DieEffect.h"
 #include "GameInstance.h"
-#include "HitEffect.h"
 #include "ResourceManager.h"
 #include "SceneManager.h"
 #include "Scene.h"
 
-HitEffect::HitEffect()
+
+
+DieEffect::DieEffect()
 {
 	SetLayer(LAYER_EFFECT);
 	UpdateAnimation();
 }
 
-HitEffect::~HitEffect()
+DieEffect::~DieEffect()
 {
 
 }
 
-void HitEffect::BeginPlay()
+void DieEffect::BeginPlay()
 {
-	Super::BeginPlay();	
+	Super::BeginPlay();
 }
 
-void HitEffect::Tick()
+void DieEffect::Tick()
 {
 	Super::Tick();
 
@@ -34,19 +36,13 @@ void HitEffect::Tick()
 	}
 }
 
-void HitEffect::Render(HDC hdc)
+void DieEffect::Render(HDC hdc)
 {
 	Super::Render(hdc);
 
 }
 
-void HitEffect::UpdateAnimation()
+void DieEffect::UpdateAnimation()
 {
-	
-
-		SetFlipbook(GET_SINGLE(GameInstance)->GetFlipbook(L"FB_Hit"));
-	
-
-	
-	
+	SetFlipbook(GET_SINGLE(GameInstance)->GetFlipbook(L"FB_Die"));	
 }

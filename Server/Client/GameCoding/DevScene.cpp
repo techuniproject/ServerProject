@@ -18,8 +18,10 @@
 #include "TilemapActor.h"
 #include "Tilemap.h"
 #include "SoundManager.h"
+#include "HitEffect.h"
 #include "Sound.h"
 #include "Monster.h"
+#include "DieEffect.h"
 
 DevScene::DevScene()
 {
@@ -327,6 +329,11 @@ void DevScene::LoadEffect()
 		shared_ptr<Flipbook> fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_Hit");
 		fb->SetInfo({ texture, L"FB_Hit", {50, 47}, 0, 5, 0, 0.5f, false});
 	}
+	{
+		shared_ptr<Texture> texture = GET_SINGLE(GameInstance)->GetTexture(L"Snake");
+		shared_ptr<Flipbook> fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_Die");
+		fb->SetInfo({ texture, L"FB_Die", {100, 100}, 4,12, 4, 0.75f, false });
+	}
 	
 }
 
@@ -383,6 +390,9 @@ void DevScene::Handle_S_RemoveObject(Protocol::S_RemoveObject& pkt)
 		int32 id = pkt.ids(i);
 
 		shared_ptr<GameObject> object = GetGameObject(id);
+
+		SpawnObject<DieEffect>(object->GetCellPos());
+
 		if (object)
 			RemoveActor(object);
 	}

@@ -92,7 +92,7 @@ bool FlipbookActor::IsAnimationEnded()
 		return true;
 
 	const FlipbookInfo& info = _flipbook->GetInfo();
-	if (info.loop == false && _idx == info.end)
+	if (info.loop == false && _idx == info.end-info.start)
 		return true;
 
 	return false;

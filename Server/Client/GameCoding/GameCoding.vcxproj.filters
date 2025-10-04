@@ -233,6 +233,9 @@
     <ClInclude Include="MyPlayer.h">
       <Filter>소스 파일\03. Objects\Game\Creature</Filter>
     </ClInclude>
+    <ClInclude Include="DieEffect.h">
+      <Filter>소스 파일\03. Objects\Game\Effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GameCoding.rc">
@@ -376,6 +379,9 @@
     </ClCompile>
     <ClCompile Include="MyPlayer.cpp">
       <Filter>소스 파일\03. Objects\Game\Creature</Filter>
+    </ClCompile>
+    <ClCompile Include="DieEffect.cpp">
+      <Filter>소스 파일\03. Objects\Game\Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

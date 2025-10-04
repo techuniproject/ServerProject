@@ -137,6 +137,7 @@ bool Handle_S_RemoveObject(ServerSessionRef& session, Protocol::S_RemoveObject& 
 	DevScene* scene = gameInstance->GetCurrentScene<DevScene>();
 	if (scene)
 	{
+        
 		scene->Handle_S_RemoveObject(pkt);
         return true;
 	}

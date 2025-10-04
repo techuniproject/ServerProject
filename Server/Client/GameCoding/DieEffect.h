@@ -2,18 +2,18 @@
 #include "GameObject.h"
 
 
-class HitEffect : public GameObject
+class DieEffect : public GameObject
 {
 	using Super = GameObject;
 
 public:
-	HitEffect();
-	virtual ~HitEffect() override;
+	DieEffect();
+	virtual ~DieEffect() override;
 
 	virtual void BeginPlay() override;
 	virtual void Tick() override;
 	virtual void Render(HDC hdc) override;
-	
+
 	virtual void UpdateAnimation() override;
 };
 

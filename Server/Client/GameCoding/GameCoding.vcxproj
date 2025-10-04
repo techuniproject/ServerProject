@@ -154,6 +154,7 @@
     <ClInclude Include="Creature.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="DevScene.h" />
+    <ClInclude Include="DieEffect.h" />
     <ClInclude Include="EditScene.h" />
     <ClInclude Include="Enum.pb.h" />
     <ClInclude Include="Enums.h" />
@@ -205,6 +206,7 @@
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Creature.cpp" />
     <ClCompile Include="DevScene.cpp" />
+    <ClCompile Include="DieEffect.cpp" />
     <ClCompile Include="EditScene.cpp" />
     <ClCompile Include="Enum.pb.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
