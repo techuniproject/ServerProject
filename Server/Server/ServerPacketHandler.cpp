@@ -6,6 +6,7 @@
 #include "GameRoom.h"
 #include "GameObject.h"
 #include "AIQueue.h"
+#include "Monster.h"
 
 extern AIQueue GAIQueue;
 
@@ -168,6 +169,32 @@ bool Handle_C_CHAT(GameSessionRef& session, Protocol::C_CHAT& pkt)
     }
     return true;
     
+}
+
+bool Handle_C_ARROW(GameSessionRef& session, Protocol::C_ARROW& pkt)
+{
+    shared_ptr<GameRoom> gameRoom = session->gameRoom.lock();
+    if (gameRoom) {
+        gameRoom->PushJob([gameRoom, pkt]() {
+
+            Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
+            Vec2Int nextPos{ pkt.posx() + deltaXY[pkt.dir()].x,pkt.posy() + deltaXY[pkt.dir()].y };
+
+           
+
+            if (auto monster = gameRoom->GetCreatureAt(nextPos))
+            {
+                monster->OnDamaged(dynamic_pointer_cast<Creature>(gameRoom->FindObject(pkt.playerid())));
+                if (auto m = std::dynamic_pointer_cast<Monster>(monster)) {
+                    m->ApplyHitStun(505); //플레이어 공격 쿨타임 500이라 같이 500이면 둘다 동시에 때림
+                }
+            }
+
+            });
+        return true;
+    }
+    return false;
+
 }
 
 /*

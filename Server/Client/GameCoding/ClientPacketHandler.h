@@ -18,6 +18,7 @@ PKT_S_Move = 5,
 PKT_C_CHAT = 6,
 PKT_S_CHAT = 7,
 PKT_S_ATTACK = 8,
+PKT_C_ARROW=9,
 };
 
 bool Handle_INVALID(ServerSessionRef& session, BYTE* buffer, int32 length);
@@ -70,8 +71,10 @@ public:
     static bool HandlePacket(ServerSessionRef session, BYTE * buffer, int32 length);
     static SendBufferRef MakeSendBuffer(Protocol::C_Move&pkt) { return MakeSendBuffer(pkt, PKT_C_Move); }
     static SendBufferRef MakeSendBuffer(Protocol::C_CHAT&pkt) { return MakeSendBuffer(pkt, PKT_C_CHAT); }
+    static SendBufferRef MakeSendBuffer(Protocol::C_ARROW&pkt) { return MakeSendBuffer(pkt, PKT_C_ARROW); }
 
     static SendBufferRef Make_C_Move();
+    static SendBufferRef Make_C_Arrow(uint64 playerId, int32 posX, int32 posY, Protocol::DIR_TYPE dir, Protocol::OBJECT_STATE_TYPE state);
     static SendBufferRef Make_C_Chat(wstring& str);
 
 private:

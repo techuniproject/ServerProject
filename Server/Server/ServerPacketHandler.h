@@ -17,11 +17,13 @@ PKT_S_Move = 5,
 PKT_C_CHAT = 6,
 PKT_S_CHAT = 7,
 PKT_S_ATTACK =8,
+PKT_C_ARROW=9,
 };
 
 bool Handle_INVALID(GameSessionRef& session, BYTE* buffer, int32 length);
 bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move&pkt);
 bool Handle_C_CHAT(GameSessionRef& session, Protocol::C_CHAT&pkt);
+bool Handle_C_ARROW(GameSessionRef& session, Protocol::C_ARROW&pkt);
 
 class ServerPacketHandler
 {
@@ -37,6 +39,10 @@ public:
         g_packet_handler[PKT_C_CHAT] = [](GameSessionRef& session, BYTE* buffer, int32 length)
             {
                 return ParsePacket < Protocol::C_CHAT > (Handle_C_CHAT, session, buffer, length);
+            };
+        g_packet_handler[PKT_C_ARROW] = [](GameSessionRef& session, BYTE* buffer, int32 length)
+            {
+                return ParsePacket < Protocol::C_ARROW >(Handle_C_ARROW, session, buffer, length);
             };
     }
 

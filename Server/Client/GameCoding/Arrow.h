@@ -18,6 +18,11 @@ public:
 
 	virtual void UpdateAnimation() override;
 
+	void SyncToServer();
+	
+	void SetBelongingPlayer(uint32 id) { belongingId = id; }
+private:
+	uint64 belongingId;
 protected:
 	shared_ptr<Flipbook> _flipbookMove[4] = {};
 };

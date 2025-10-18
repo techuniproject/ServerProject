@@ -64,6 +64,19 @@ SendBufferRef ClientPacketHandler::Make_C_Move()
 	return MakeSendBuffer(pkt);
 }
 
+SendBufferRef ClientPacketHandler::Make_C_Arrow(uint64 playerId,int32 posX,int32 posY, Protocol::DIR_TYPE dir, Protocol::OBJECT_STATE_TYPE state )
+{
+    Protocol::C_ARROW pkt;
+    pkt.set_playerid(playerId);
+    pkt.set_posx(posX);
+    pkt.set_posy(posY);
+    pkt.set_dir(dir);
+    pkt.set_state(state);
+
+
+    return MakeSendBuffer(pkt);
+}
+
 SendBufferRef ClientPacketHandler::Make_C_Chat(wstring& wstr)
 {
     Protocol::C_CHAT pkt;

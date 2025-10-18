@@ -56,7 +56,7 @@ void Player::UpdateSkill()
 	}
 	else if (info.weapontype() == Protocol::WEAPON_TYPE_BOW)
 	{
-
+		
 	}
 	
 	SetState(IDLE);

@@ -17,6 +17,7 @@ public:
 	virtual void TickIdle() {}
 	virtual void TickMove() {}
 	virtual void TickSkill() {}
+	virtual void TickHit(){}
 
 	void SetState(ObjectState state);
 	void SetDir(Dir dir);

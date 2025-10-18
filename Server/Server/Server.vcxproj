@@ -148,6 +148,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AIWorker.cpp" />
+    <ClCompile Include="Arrow.cpp" />
     <ClCompile Include="Creature.cpp" />
     <ClCompile Include="Enum.pb.cc">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
@@ -183,6 +184,7 @@
   <ItemGroup>
     <ClInclude Include="AIQueue.h" />
     <ClInclude Include="AIWorker.h" />
+    <ClInclude Include="Arrow.h" />
     <ClInclude Include="Creature.h" />
     <ClInclude Include="Enum.pb.h" />
     <ClInclude Include="GameObject.h" />

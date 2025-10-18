@@ -33,12 +33,24 @@ void Arrow::Tick()
 {
 	Super::Tick();
 	
+	SyncToServer();
+
 }
 
 void Arrow::Render(HDC hdc)
 {
 	Super::Render(hdc);
 
+
+}
+
+void Arrow::SyncToServer()
+{
+	if (_dirtyFlag == false)
+		return;
+
+	SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Arrow(belongingId, info.posx(), info.posy(), info.dir(), info.state());
+	GET_SINGLE(GameInstance)->SendPacket(sendBuffer);
 
 }
 
@@ -74,29 +86,37 @@ void Arrow::TickMove()
 {
 	float deltaTime = GET_SINGLE(GameInstance)->GetDeltaTime();
 
-	Vec2 dir = (_destPos - _pos);
-	if (dir.Length() < 5.f)
+	switch (info.dir())
 	{
-		SetState(IDLE);
-		_pos = _destPos;
-	}
-	else
-	{
-		switch (info.dir())
-		{
-		case DIR_UP:
-			_pos.y -= 600 * deltaTime;
-			break;
-		case DIR_DOWN:
-			_pos.y += 600 * deltaTime;
-			break;
-		case DIR_LEFT:
-			_pos.x -= 600 * deltaTime;
-			break;
-		case DIR_RIGHT:
-			_pos.x += 600 * deltaTime;
-			break;
+
+	case DIR_UP:
+		_pos.y -= 600 * deltaTime;
+		if (_pos.y <= _destPos.y) {
+			_pos = _destPos;
+			SetState(IDLE);
 		}
+		break;
+	case DIR_DOWN:
+		_pos.y += 600 * deltaTime;
+		if (_pos.y >= _destPos.y) {
+			_pos = _destPos;
+			SetState(IDLE);
+		}
+		break;
+	case DIR_LEFT:
+		_pos.x -= 600 * deltaTime;
+		if (_pos.x <= _destPos.x) {
+			_pos = _destPos;
+			SetState(IDLE);
+		}
+		break;
+	case DIR_RIGHT:
+		_pos.x += 600 * deltaTime;
+		if (_pos.x >= _destPos.x) {
+			_pos = _destPos;
+			SetState(IDLE);
+		}
+		break;
 	}
 }
 

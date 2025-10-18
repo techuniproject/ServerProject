@@ -149,3 +149,8 @@ void MyPlayer::TickSkill()
 {
 	Super::TickSkill();
 }
+
+void MyPlayer::TickHit()
+{
+	Super::TickHit();
+}

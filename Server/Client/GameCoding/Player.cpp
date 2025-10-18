@@ -200,10 +200,16 @@ void Player::TickSkill()
 		{
 			shared_ptr<Arrow> arrow = scene->SpawnObject<Arrow>(GetCellPos());
 			arrow->SetDir(info.dir());	
+			arrow->SetBelongingPlayer(info.objectid());
 		}
 
 		SetState(IDLE);
 	}
+}
+
+void Player::TickHit()
+{
+
 }
 
 void Player::UpdateAnimation()

@@ -35,8 +35,8 @@ void Monster::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SetState(MOVE);
-	SetState(IDLE);
+	//SetState(MOVE);
+	//SetState(IDLE);
 }
 
 void Monster::Tick()
@@ -60,6 +60,15 @@ void Monster::Render(HDC hdc)
 
 void Monster::TickIdle()
 {
+	float deltaTime = GET_SINGLE(GameInstance)->GetDeltaTime();
+	
+	float alpha = 1.0f - std::exp(-5 * deltaTime);
+	_pos.x = std::lerp(_pos.x, _destPos.x, alpha);
+	_pos.y = std::lerp(_pos.y, _destPos.y, alpha);
+
+	// 스냅
+	if (std::hypot(_destPos.x - _pos.x, _destPos.y - _pos.y) < 0.001f) _pos = _destPos;
+	
 	////DevScene* scene = dynamic_cast<DevScene*>(&GET_SINGLE(GameInstance)->GetCurrentScene());
 	//DevScene* scene = GET_SINGLE(GameInstance)->GetCurrentScene<DevScene>();
 	//
@@ -105,80 +114,59 @@ void Monster::TickIdle()
 
 void Monster::TickMove()
 {
-	/*float deltaTime = GET_SINGLE(GameInstance)->GetDeltaTime();
+	float deltaTime = GET_SINGLE(GameInstance)->GetDeltaTime();
 
-	Vec2 dir = (_destPos - _pos);
-	if (dir.Length() < 5.f)
-	{
-		SetState(IDLE);
-		_pos = _destPos;
-	}
-	else
-	{
-		bool horizontal = abs(dir.x) > abs(dir.y);
-		if (horizontal)
-			SetDir(dir.x < 0 ? DIR_LEFT : DIR_RIGHT);
-		else
-			SetDir(dir.y < 0 ? DIR_UP : DIR_DOWN);
+	float alpha = 1.0f - std::exp(-5 * deltaTime);
+	_pos.x = std::lerp(_pos.x, _destPos.x, alpha);
+	_pos.y = std::lerp(_pos.y, _destPos.y, alpha);
 
-		switch (info.dir())
-		{
-		case DIR_UP:
-			_pos.y -= 150 * deltaTime;
-			break;
-		case DIR_DOWN:
-			_pos.y += 150 * deltaTime;
-			break;
-		case DIR_LEFT:
-			_pos.x -= 150 * deltaTime;
-			break;
-		case DIR_RIGHT:
-			_pos.x += 150 * deltaTime;
-			break;
-		}
-	}*/
+	// 스냅
+	if (std::hypot(_destPos.x - _pos.x, _destPos.y - _pos.y) < 0.001f) _pos = _destPos;
 
 	
-	float deltaTime = GET_SINGLE(GameInstance)->GetDeltaTime();
-	deltaTime = min(deltaTime, 0.05f); //프레임드랍 심해져서 0.05보다 커지면 보정
-	Vec2 dir = (_destPos - _pos);
-	bool horizontal = abs(dir.x) > abs(dir.y);
-	//if (horizontal)
-	//	SetDir(dir.x < 0 ? DIR_LEFT : DIR_RIGHT);
-	//else
-	//	SetDir(dir.y < 0 ? DIR_UP : DIR_DOWN);
-	switch (info.dir())
-	{
-		
-	case DIR_UP:
-		_pos.y -= 100 * deltaTime;
-		if (_pos.y <= _destPos.y) {
-			_pos = _destPos;
-			SetState(IDLE);
-		}
-		break;
-	case DIR_DOWN:
-		_pos.y += 100 * deltaTime;
-		if (_pos.y >= _destPos.y) {
-			_pos = _destPos;
-			SetState(IDLE);
-		}
-		break;
-	case DIR_LEFT:
-		_pos.x -= 100 * deltaTime;
-		if (_pos.x <= _destPos.x) {
-			_pos = _destPos;
-			SetState(IDLE);
-		}
-		break;
-	case DIR_RIGHT:
-		_pos.x += 100 * deltaTime;
-		if (_pos.x >= _destPos.x) {
-			_pos = _destPos;
-			SetState(IDLE);
-		}
-		break;
-	}
+	
+	
+	//deltaTime = min(deltaTime, 0.05f); //프레임드랍 심해져서 0.05보다 커지면 보정
+	//Vec2 dir = (_destPos - _pos);
+	//bool horizontal = abs(dir.x) > abs(dir.y);
+	////if (horizontal)
+	////	SetDir(dir.x < 0 ? DIR_LEFT : DIR_RIGHT);
+	////else
+	////	SetDir(dir.y < 0 ? DIR_UP : DIR_DOWN);
+	//
+	//
+	//switch (info.dir())
+	//{
+	//	
+	//case DIR_UP:
+	//	_pos.y -= 100 * deltaTime;
+	//	if (_pos.y <= _destPos.y) {
+	//		_pos = _destPos;
+	//		SetState(IDLE);
+	//	}
+	//	break;
+	//case DIR_DOWN:
+	//	_pos.y += 100 * deltaTime;
+	//	if (_pos.y >= _destPos.y) {
+	//		_pos = _destPos;
+	//		SetState(IDLE);
+	//	}
+	//	break;
+	//case DIR_LEFT:
+	//	_pos.x -= 100 * deltaTime;
+	//	if (_pos.x <= _destPos.x) {
+	//		_pos = _destPos;
+	//		SetState(IDLE);
+	//	}
+	//	break;
+	//case DIR_RIGHT:
+	//	_pos.x += 100 * deltaTime;
+	//	if (_pos.x >= _destPos.x) {
+	//		_pos = _destPos;
+	//		SetState(IDLE);
+	//	}
+	//	break;
+	//}
 }
 
 void Monster::TickSkill()
@@ -209,6 +197,20 @@ void Monster::TickSkill()
 
 		SetState(IDLE);
 	}
+}
+
+void Monster::TickHit()
+{
+	float deltaTime = GET_SINGLE(GameInstance)->GetDeltaTime();
+
+	//while (_pos.x != _destPos.x&&_pos.y!=_destPos.y) {
+	//	float alpha = 1.0f - std::exp(-5 * deltaTime);
+	//	_pos.x = std::lerp(_pos.x, _destPos.x, alpha);
+	//	_pos.y = std::lerp(_pos.y, _destPos.y, alpha);
+
+	//	// 스냅
+	//	if (std::hypot(_destPos.x - _pos.x, _destPos.y - _pos.y) < 0.001f) _pos = _destPos;
+	//}
 }
 
 void Monster::UpdateAnimation()

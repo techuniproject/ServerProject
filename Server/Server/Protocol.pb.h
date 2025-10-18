@@ -47,6 +47,9 @@ struct TableStruct_Protocol_2eproto {
 };
 extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_Protocol_2eproto;
 namespace Protocol {
+class C_ARROW;
+struct C_ARROWDefaultTypeInternal;
+extern C_ARROWDefaultTypeInternal _C_ARROW_default_instance_;
 class C_CHAT;
 struct C_CHATDefaultTypeInternal;
 extern C_CHATDefaultTypeInternal _C_CHAT_default_instance_;
@@ -76,6 +79,7 @@ struct S_RemoveObjectDefaultTypeInternal;
 extern S_RemoveObjectDefaultTypeInternal _S_RemoveObject_default_instance_;
 }  // namespace Protocol
 PROTOBUF_NAMESPACE_OPEN
+template<> ::Protocol::C_ARROW* Arena::CreateMaybeMessage<::Protocol::C_ARROW>(Arena*);
 template<> ::Protocol::C_CHAT* Arena::CreateMaybeMessage<::Protocol::C_CHAT>(Arena*);
 template<> ::Protocol::C_Move* Arena::CreateMaybeMessage<::Protocol::C_Move>(Arena*);
 template<> ::Protocol::S_ATTACK* Arena::CreateMaybeMessage<::Protocol::S_ATTACK>(Arena*);
@@ -1524,6 +1528,198 @@ class S_ATTACK final :
   union { Impl_ _impl_; };
   friend struct ::TableStruct_Protocol_2eproto;
 };
+// -------------------------------------------------------------------
+
+class C_ARROW final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.C_ARROW) */ {
+ public:
+  inline C_ARROW() : C_ARROW(nullptr) {}
+  ~C_ARROW() override;
+  explicit PROTOBUF_CONSTEXPR C_ARROW(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  C_ARROW(const C_ARROW& from);
+  C_ARROW(C_ARROW&& from) noexcept
+    : C_ARROW() {
+    *this = ::std::move(from);
+  }
+
+  inline C_ARROW& operator=(const C_ARROW& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline C_ARROW& operator=(C_ARROW&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const C_ARROW& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const C_ARROW* internal_default_instance() {
+    return reinterpret_cast<const C_ARROW*>(
+               &_C_ARROW_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    9;
+
+  friend void swap(C_ARROW& a, C_ARROW& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(C_ARROW* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(C_ARROW* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  C_ARROW* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<C_ARROW>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const C_ARROW& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const C_ARROW& from) {
+    C_ARROW::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(C_ARROW* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.C_ARROW";
+  }
+  protected:
+  explicit C_ARROW(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kPlayerIdFieldNumber = 1,
+    kPosXFieldNumber = 2,
+    kPosYFieldNumber = 3,
+    kDirFieldNumber = 4,
+    kStateFieldNumber = 5,
+  };
+  // uint64 playerId = 1;
+  void clear_playerid();
+  uint64_t playerid() const;
+  void set_playerid(uint64_t value);
+  private:
+  uint64_t _internal_playerid() const;
+  void _internal_set_playerid(uint64_t value);
+  public:
+
+  // int32 posX = 2;
+  void clear_posx();
+  int32_t posx() const;
+  void set_posx(int32_t value);
+  private:
+  int32_t _internal_posx() const;
+  void _internal_set_posx(int32_t value);
+  public:
+
+  // int32 posY = 3;
+  void clear_posy();
+  int32_t posy() const;
+  void set_posy(int32_t value);
+  private:
+  int32_t _internal_posy() const;
+  void _internal_set_posy(int32_t value);
+  public:
+
+  // .Protocol.DIR_TYPE dir = 4;
+  void clear_dir();
+  ::Protocol::DIR_TYPE dir() const;
+  void set_dir(::Protocol::DIR_TYPE value);
+  private:
+  ::Protocol::DIR_TYPE _internal_dir() const;
+  void _internal_set_dir(::Protocol::DIR_TYPE value);
+  public:
+
+  // .Protocol.OBJECT_STATE_TYPE state = 5;
+  void clear_state();
+  ::Protocol::OBJECT_STATE_TYPE state() const;
+  void set_state(::Protocol::OBJECT_STATE_TYPE value);
+  private:
+  ::Protocol::OBJECT_STATE_TYPE _internal_state() const;
+  void _internal_set_state(::Protocol::OBJECT_STATE_TYPE value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.C_ARROW)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    uint64_t playerid_;
+    int32_t posx_;
+    int32_t posy_;
+    int dir_;
+    int state_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Protocol_2eproto;
+};
 // ===================================================================
 
 
@@ -2126,9 +2322,115 @@ inline void S_ATTACK::set_hp(int32_t value) {
   // @@protoc_insertion_point(field_set:Protocol.S_ATTACK.hp)
 }
 
+// -------------------------------------------------------------------
+
+// C_ARROW
+
+// uint64 playerId = 1;
+inline void C_ARROW::clear_playerid() {
+  _impl_.playerid_ = uint64_t{0u};
+}
+inline uint64_t C_ARROW::_internal_playerid() const {
+  return _impl_.playerid_;
+}
+inline uint64_t C_ARROW::playerid() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_ARROW.playerId)
+  return _internal_playerid();
+}
+inline void C_ARROW::_internal_set_playerid(uint64_t value) {
+  
+  _impl_.playerid_ = value;
+}
+inline void C_ARROW::set_playerid(uint64_t value) {
+  _internal_set_playerid(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_ARROW.playerId)
+}
+
+// int32 posX = 2;
+inline void C_ARROW::clear_posx() {
+  _impl_.posx_ = 0;
+}
+inline int32_t C_ARROW::_internal_posx() const {
+  return _impl_.posx_;
+}
+inline int32_t C_ARROW::posx() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_ARROW.posX)
+  return _internal_posx();
+}
+inline void C_ARROW::_internal_set_posx(int32_t value) {
+  
+  _impl_.posx_ = value;
+}
+inline void C_ARROW::set_posx(int32_t value) {
+  _internal_set_posx(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_ARROW.posX)
+}
+
+// int32 posY = 3;
+inline void C_ARROW::clear_posy() {
+  _impl_.posy_ = 0;
+}
+inline int32_t C_ARROW::_internal_posy() const {
+  return _impl_.posy_;
+}
+inline int32_t C_ARROW::posy() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_ARROW.posY)
+  return _internal_posy();
+}
+inline void C_ARROW::_internal_set_posy(int32_t value) {
+  
+  _impl_.posy_ = value;
+}
+inline void C_ARROW::set_posy(int32_t value) {
+  _internal_set_posy(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_ARROW.posY)
+}
+
+// .Protocol.DIR_TYPE dir = 4;
+inline void C_ARROW::clear_dir() {
+  _impl_.dir_ = 0;
+}
+inline ::Protocol::DIR_TYPE C_ARROW::_internal_dir() const {
+  return static_cast< ::Protocol::DIR_TYPE >(_impl_.dir_);
+}
+inline ::Protocol::DIR_TYPE C_ARROW::dir() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_ARROW.dir)
+  return _internal_dir();
+}
+inline void C_ARROW::_internal_set_dir(::Protocol::DIR_TYPE value) {
+  
+  _impl_.dir_ = value;
+}
+inline void C_ARROW::set_dir(::Protocol::DIR_TYPE value) {
+  _internal_set_dir(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_ARROW.dir)
+}
+
+// .Protocol.OBJECT_STATE_TYPE state = 5;
+inline void C_ARROW::clear_state() {
+  _impl_.state_ = 0;
+}
+inline ::Protocol::OBJECT_STATE_TYPE C_ARROW::_internal_state() const {
+  return static_cast< ::Protocol::OBJECT_STATE_TYPE >(_impl_.state_);
+}
+inline ::Protocol::OBJECT_STATE_TYPE C_ARROW::state() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_ARROW.state)
+  return _internal_state();
+}
+inline void C_ARROW::_internal_set_state(::Protocol::OBJECT_STATE_TYPE value) {
+  
+  _impl_.state_ = value;
+}
+inline void C_ARROW::set_state(::Protocol::OBJECT_STATE_TYPE value) {
+  _internal_set_state(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_ARROW.state)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

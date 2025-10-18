@@ -53,3 +53,12 @@ message S_ATTACK
 	uint64 attackedId=1;
 	int32 hp=2;
 }
+
+message C_ARROW
+{
+	uint64 playerId=1;
+	int32 posX=2;
+	int32 posY=3;
+	DIR_TYPE dir=4;
+	OBJECT_STATE_TYPE state=5;
+}
