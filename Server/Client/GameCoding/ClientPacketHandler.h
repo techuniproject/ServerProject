@@ -19,6 +19,8 @@ PKT_C_CHAT = 6,
 PKT_S_CHAT = 7,
 PKT_S_ATTACK = 8,
 PKT_C_ARROW=9,
+PKT_C_SPEED=10,
+PKT_S_SPEED=11,
 };
 
 bool Handle_INVALID(ServerSessionRef& session, BYTE* buffer, int32 length);
@@ -30,6 +32,7 @@ bool Handle_S_Move(ServerSessionRef& session, Protocol::S_Move&pkt);
 bool Handle_S_Move(ServerSessionRef& session, Protocol::S_Move& pkt);
 bool Handle_S_CHAT(ServerSessionRef& session, Protocol::S_CHAT& pkt);
 bool Handle_S_ATTACK(ServerSessionRef& session, Protocol::S_ATTACK& pkt);
+bool Handle_S_SPEED(ServerSessionRef& session, Protocol::S_SPEED& pkt);
 
 class ClientPacketHandler
 {
@@ -66,16 +69,23 @@ public:
             {
                 return ParsePacket < Protocol::S_ATTACK >(Handle_S_ATTACK, session, buffer, length);
             };
+        g_packet_handler[PKT_S_SPEED] = [](ServerSessionRef& session, BYTE* buffer, int32 length)
+            {
+                return ParsePacket < Protocol::S_SPEED >(Handle_S_SPEED, session, buffer, length);
+            };
     }
 
     static bool HandlePacket(ServerSessionRef session, BYTE * buffer, int32 length);
     static SendBufferRef MakeSendBuffer(Protocol::C_Move&pkt) { return MakeSendBuffer(pkt, PKT_C_Move); }
     static SendBufferRef MakeSendBuffer(Protocol::C_CHAT&pkt) { return MakeSendBuffer(pkt, PKT_C_CHAT); }
     static SendBufferRef MakeSendBuffer(Protocol::C_ARROW&pkt) { return MakeSendBuffer(pkt, PKT_C_ARROW); }
+    static SendBufferRef MakeSendBuffer(Protocol::C_SPEED&pkt) { return MakeSendBuffer(pkt, PKT_C_SPEED); }
 
     static SendBufferRef Make_C_Move();
     static SendBufferRef Make_C_Arrow(uint64 playerId, int32 posX, int32 posY, Protocol::DIR_TYPE dir, Protocol::OBJECT_STATE_TYPE state);
     static SendBufferRef Make_C_Chat(wstring& str);
+    static SendBufferRef Make_C_Speed(float attackSpeed, float moveSpeed);
+
 
 private:
     template<typename PacketType, typename ProcessFunc>

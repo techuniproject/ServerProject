@@ -35,7 +35,7 @@ void FlipbookActor::Tick()
 
 	float deltaTime = GET_SINGLE(GameInstance)->GetDeltaTime();
 
-	_sumTime += deltaTime;
+	_sumTime += deltaTime*_speed;
 
 	int32 frameCount = (info.end - info.start + 1);
 	float delta = info.duration / frameCount;

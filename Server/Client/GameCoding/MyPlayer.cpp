@@ -69,6 +69,10 @@ void MyPlayer::TickInput()
 		SetWeaponType(STAFF);
 	}
 
+	if (GET_SINGLE(GameInstance)->GetButtonDown(KeyType::Q)) {
+		SetMoveSpeed(GetMoveSpeed() + 100);
+	}
+
 	/*if (GET_SINGLE(GameInstance)->GetButton(KeyType::SpaceBar))
 	{
 		SetState(SKILL);
@@ -103,14 +107,15 @@ void MyPlayer::SyncToServer()
 {
 	if (_dirtyFlag == false)
 		return;
-
+	SendBufferRef sendBuffer2 = ClientPacketHandler::Make_C_Speed(0, GetMoveSpeed());
+	GET_SINGLE(GameInstance)->SendPacket(sendBuffer2);
 	SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Move();
 	GET_SINGLE(GameInstance)->SendPacket(sendBuffer);
 	a = info.state();
 	d++;//디버그용
 	//벽에 충돌하면 이 함수 호출이 엄청 많아짐 ->원인 찾기
 	// 이동 및 스킬 사용시 2번씩 호출됨.
-
+	
 }
 
 
@@ -125,7 +130,6 @@ void MyPlayer::Tick()
 	
 	//프레임마다 상태 바뀜을 감지하여 서버에 통보 (서버라 매 프레임 보내는게 정석은 아님)
 	SyncToServer();
-
 	
 }
 

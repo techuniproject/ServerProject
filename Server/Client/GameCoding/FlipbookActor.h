@@ -16,6 +16,8 @@ public:
 
 	void SetFlipbook(shared_ptr<Flipbook> flipbook);
 	void Reset();
+	void SetFlipbookSpeed(float speed) { _speed = speed; }
+	float GetFlipbookSpeed() { return _speed; }
 
 	bool IsAnimationEnded();
 
@@ -23,5 +25,6 @@ protected:
 	shared_ptr<Flipbook> _flipbook = nullptr;
 	float _sumTime = 0.f;
 	int32 _idx = 0;
+	float _speed = 1.f;
 };
 

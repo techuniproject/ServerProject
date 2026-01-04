@@ -30,12 +30,16 @@ public:
 	void SetWeaponType(Protocol::WEAPON_TYPE weaponType);
 	Protocol::WEAPON_TYPE GetWeaponType() { return info.weapontype(); }
 	
+	void SetMoveSpeed(float _speed);
+	float GetMoveSpeed() { return _moveSpeed; }
 private:
 	shared_ptr<Flipbook> _flipbookIdle[4] = {};
 	shared_ptr<Flipbook> _flipbookMove[4] = {};
 	shared_ptr<Flipbook> _flipbookAttack[4] = {};
 	shared_ptr<Flipbook> _flipbookBow[4] = {};
 	shared_ptr<Flipbook> _flipbookStaff[4] = {};
+
+	float _moveSpeed = 200.f;
 
 	bool _keyPressed = false;
 };

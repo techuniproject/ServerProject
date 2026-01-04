@@ -71,6 +71,11 @@ SendBufferRef ServerPacketHandler::Make_S_Attack(const Protocol::S_ATTACK& pkt)
     return MakeSendBuffer(pkt);
 }
 
+SendBufferRef ServerPacketHandler::Make_S_Speed(const Protocol::S_SPEED& pkt)
+{
+    return MakeSendBuffer(pkt);
+}
+
 
 bool Handle_INVALID(GameSessionRef& session, BYTE* buffer, int32 length)
 {
@@ -91,6 +96,7 @@ bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move& pkt)
             Vec2Int nextPos{ pkt.info().posx(), pkt.info().posy() };
             object->info.set_state(pkt.info().state());
             object->info.set_dir(pkt.info().dir());
+           
             int a = pkt.info().state();
             if (object->CanGo(nextPos)) {
                 //TODO Validation 해킹 체킹                           
@@ -189,6 +195,27 @@ bool Handle_C_ARROW(GameSessionRef& session, Protocol::C_ARROW& pkt)
                     m->ApplyHitStun(505); //플레이어 공격 쿨타임 500이라 같이 500이면 둘다 동시에 때림
                 }
             }
+
+            });
+        return true;
+    }
+    return false;
+
+}
+
+bool Handle_C_SPEED(GameSessionRef& session, Protocol::C_SPEED& pkt)
+{
+    shared_ptr<GameRoom> gameRoom = session->gameRoom.lock();
+    if (gameRoom) {
+        gameRoom->PushJob([gameRoom, pkt]() {
+
+            Protocol::S_SPEED sendpkt;
+            sendpkt.set_playerid(pkt.playerid());
+            sendpkt.set_movespeed(pkt.movespeed());
+            sendpkt.set_attackspeed(pkt.attackspeed());
+
+            SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Speed(sendpkt);
+            gameRoom->Broadcast(sendBuffer);
 
             });
         return true;

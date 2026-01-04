@@ -18,12 +18,15 @@ PKT_C_CHAT = 6,
 PKT_S_CHAT = 7,
 PKT_S_ATTACK =8,
 PKT_C_ARROW=9,
+PKT_C_SPEED=10,
+PKT_S_SPEED=11,
 };
 
 bool Handle_INVALID(GameSessionRef& session, BYTE* buffer, int32 length);
 bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move&pkt);
 bool Handle_C_CHAT(GameSessionRef& session, Protocol::C_CHAT&pkt);
 bool Handle_C_ARROW(GameSessionRef& session, Protocol::C_ARROW&pkt);
+bool Handle_C_SPEED(GameSessionRef& session, Protocol::C_SPEED&pkt);
 
 class ServerPacketHandler
 {
@@ -44,6 +47,10 @@ public:
             {
                 return ParsePacket < Protocol::C_ARROW >(Handle_C_ARROW, session, buffer, length);
             };
+        g_packet_handler[PKT_C_SPEED] = [](GameSessionRef& session, BYTE* buffer, int32 length)
+            {
+                return ParsePacket < Protocol::C_SPEED >(Handle_C_SPEED, session, buffer, length);
+            };
     }
 
     static bool HandlePacket(GameSessionRef session, BYTE * buffer, int32 length);
@@ -54,6 +61,7 @@ public:
     static SendBufferRef MakeSendBuffer(const Protocol::S_Move&pkt) { return MakeSendBuffer(pkt, PKT_S_Move); }
     static SendBufferRef MakeSendBuffer(const Protocol::S_CHAT&pkt) { return MakeSendBuffer(pkt, PKT_S_CHAT); }
     static SendBufferRef MakeSendBuffer(const Protocol::S_ATTACK&pkt) { return MakeSendBuffer(pkt, PKT_S_ATTACK); }
+    static SendBufferRef MakeSendBuffer(const Protocol::S_SPEED&pkt) { return MakeSendBuffer(pkt, PKT_S_SPEED); }
 
     static SendBufferRef Make_S_EnterGame();
     static SendBufferRef Make_S_MyPlayer(const Protocol::ObjectInfo& info);
@@ -61,6 +69,7 @@ public:
     static SendBufferRef Make_S_RemoveObject(const Protocol::S_RemoveObject& pkt);
     static SendBufferRef Make_S_Move(const Protocol::ObjectInfo& info);
     static SendBufferRef Make_S_Attack(const Protocol::S_ATTACK& pkt);
+    static SendBufferRef Make_S_Speed(const Protocol::S_SPEED& pkt);
 private:
     template<typename PacketType, typename ProcessFunc>
     static bool ParsePacket(ProcessFunc func, GameSessionRef& session, BYTE * buffer, int32 length)

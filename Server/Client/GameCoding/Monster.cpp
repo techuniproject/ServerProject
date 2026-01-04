@@ -69,45 +69,7 @@ void Monster::TickIdle()
 	// 스냅
 	if (std::hypot(_destPos.x - _pos.x, _destPos.y - _pos.y) < 0.001f) _pos = _destPos;
 	
-	////DevScene* scene = dynamic_cast<DevScene*>(&GET_SINGLE(GameInstance)->GetCurrentScene());
-	//DevScene* scene = GET_SINGLE(GameInstance)->GetCurrentScene<DevScene>();
-	//
-	//if (scene == nullptr)
-	//	return;
-
-	//// Find Player
-	//if (_target == nullptr)
-	//	_target = scene->FindClosestPlayer(GetCellPos());
-
-	//if (_target)
-	//{
-	//	Vec2Int dir = _target->GetCellPos() - GetCellPos();
-	//	int32 dist = abs(dir.x) + abs(dir.y);
-	//	if (dist == 1)
-	//	{
-	//		SetDir(GetLookAtDir(_target->GetCellPos()));
-	//		SetState(SKILL);
-	//		_waitSeconds = 0.5f; // 공격 종료 시간
-	//	}
-	//	else
-	//	{
-	//		vector<Vec2Int> path;
-	//		if (scene->FindPath(GetCellPos(), _target->GetCellPos(), OUT path))
-	//		{
-	//			if (path.size() > 1)
-	//			{
-	//				Vec2Int nextPos = path[1];
-	//				if (scene->CanGo(nextPos))
-	//				{
-	//					SetCellPos(nextPos);
-	//					SetState(MOVE);
-	//				}
-	//			}
-	//			else
-	//				SetCellPos(path[0]);
-	//		}
-	//	}
-	//}
+	
 	
 	
 }

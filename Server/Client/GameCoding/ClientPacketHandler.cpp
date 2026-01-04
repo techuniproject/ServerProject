@@ -101,6 +101,18 @@ SendBufferRef ClientPacketHandler::Make_C_Chat(wstring& wstr)
     return MakeSendBuffer(pkt);
 }
 
+SendBufferRef ClientPacketHandler::Make_C_Speed(float attackSpeed, float moveSpeed)
+{
+    Protocol::C_SPEED pkt;
+    shared_ptr<MyPlayer> myPlayer = GET_SINGLE(GameInstance)->GetMyPlayer();
+
+    pkt.set_playerid(myPlayer->info.objectid());
+
+    pkt.set_movespeed(moveSpeed);
+
+    return MakeSendBuffer(pkt);
+}
+
 bool Handle_INVALID(ServerSessionRef& session, BYTE* buffer, int32 length)
 {
     return false;
@@ -211,6 +223,20 @@ bool Handle_S_ATTACK(ServerSessionRef& session, Protocol::S_ATTACK& pkt)
         shared_ptr<GameObject> gameObject = scene->GetGameObject(pkt.attackedid());
         if (gameObject) {
             gameObject->SetHp(pkt.hp());        
+        }
+    }
+    return false;
+}
+
+bool Handle_S_SPEED(ServerSessionRef& session, Protocol::S_SPEED& pkt)
+{
+    DevScene* scene = GET_SINGLE(GameInstance)->GetCurrentScene<DevScene>();
+    if (scene) {
+        shared_ptr<GameObject> gameObject = scene->GetGameObject(pkt.playerid());
+        auto ifplayer = dynamic_pointer_cast<Player>(gameObject);
+        if (ifplayer) {
+            ifplayer->SetMoveSpeed(pkt.movespeed());
+            ifplayer->SetFlipbookSpeed(pkt.movespeed() / 100 - 1);
         }
     }
     return false;

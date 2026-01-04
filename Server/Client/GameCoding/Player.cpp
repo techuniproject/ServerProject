@@ -143,28 +143,28 @@ void Player::TickMove()
 		switch (info.dir())
 		{
 		case DIR_UP:
-			_pos.y -= 200 * deltaTime;
+			_pos.y -= _moveSpeed * deltaTime;
 			if (_pos.y <= _destPos.y) {
 				_pos = _destPos;
 				SetState(IDLE);
 			}
 			break;
 		case DIR_DOWN:
-			_pos.y += 200 * deltaTime;
+			_pos.y += _moveSpeed * deltaTime;
 			if (_pos.y >= _destPos.y) {
 				_pos = _destPos;
 				SetState(IDLE);
 			}
 			break;
 		case DIR_LEFT:
-			_pos.x -= 200 * deltaTime;
+			_pos.x -= _moveSpeed * deltaTime;
 			if (_pos.x <= _destPos.x) {
 				_pos = _destPos;
 				SetState(IDLE);
 			}
 			break;
 		case DIR_RIGHT:
-			_pos.x += 200 * deltaTime;
+			_pos.x += _moveSpeed * deltaTime;
 			if (_pos.x >= _destPos.x) {
 				_pos = _destPos;
 				SetState(IDLE);
@@ -201,6 +201,10 @@ void Player::TickSkill()
 			shared_ptr<Arrow> arrow = scene->SpawnObject<Arrow>(GetCellPos());
 			arrow->SetDir(info.dir());	
 			arrow->SetBelongingPlayer(info.objectid());
+		}
+		else if (info.weapontype() == STAFF)
+		{
+
 		}
 
 		SetState(IDLE);
@@ -242,5 +246,11 @@ void Player::SetWeaponType(Protocol::WEAPON_TYPE weaponType)
 
 	info.set_weapontype(weaponType);
 
+	_dirtyFlag = true;
+}
+
+void Player::SetMoveSpeed(float _speed)
+{
+	_moveSpeed = _speed;
 	_dirtyFlag = true;
 }

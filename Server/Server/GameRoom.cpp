@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "GameRoom.h"
 #include "GameObject.h"
 #include "Player.h"
@@ -36,7 +36,7 @@ void GameRoom::Init()
 		});
 
 
-	_tilemap.LoadFile(L"C:\\Users\\¼­Á¤¿ø\\Desktop\\ServerClient\\ServerProject\\Server\\Client\\Resources\\Tilemap\\Tilemap_01.txt");
+	_tilemap.LoadFile(L"C:\\Users\\ì„œì •ì›\\Desktop\\ServerClient\\ServerProject\\Server\\Client\\Resources\\Tilemap\\Tilemap_01.txt");
 //	shared_ptr<Monster> monster = GameObject::CreateMonster();
 //	monster->info.set_posx(8);
 //	monster->info.set_posy(8);
@@ -182,7 +182,7 @@ vector<Protocol::ObjectInfo> GameRoom::GetRoomMonsterInfo()
 	return infos;
 }
 
-//astar ÄÁÅÙÃ÷ ÄÚµå
+//astar ì»¨í…ì¸  ì½”ë“œ
 
 
 
@@ -221,7 +221,7 @@ bool  GameRoom::FindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int32
 	map<Vec2Int, int32> best;
 	map<Vec2Int, Vec2Int> parent;
 
-	// ÃÊ±â°ª
+	// ì´ˆê¸°ê°’
 	{
 		int32 cost = abs(dest.y - src.y) + abs(dest.x - src.x);
 
@@ -242,22 +242,22 @@ bool  GameRoom::FindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int32
 
 	while (pq.empty() == false)
 	{
-		// Á¦ÀÏ ÁÁÀº ÈÄº¸¸¦ Ã£´Â´Ù
+		// ì œì¼ ì¢‹ì€ í›„ë³´ë¥¼ ì°¾ëŠ”ë‹¤
 		PQNode node = pq.top();
 		pq.pop();
 
-		// ´õ ÂªÀº °æ·Î¸¦ µÚ´Ê°Ô Ã£¾Ò´Ù¸é ½ºÅµ
+		// ë” ì§§ì€ ê²½ë¡œë¥¼ ë’¤ëŠ¦ê²Œ ì°¾ì•˜ë‹¤ë©´ ìŠ¤í‚µ
 		if (best[node.pos] < node.cost)
 			continue;
 
-		// ¸ñÀûÁö¿¡ µµÂøÇßÀ¸¸é ¹Ù·Î Á¾·á
+		// ëª©ì ì§€ì— ë„ì°©í–ˆìœ¼ë©´ ë°”ë¡œ ì¢…ë£Œ
 		if (node.pos == dest)
 		{
 			found = true;
 			break;
 		}
 
-		// ¹æ¹®
+		// ë°©ë¬¸
 		for (int32 dir = 0; dir < 4; dir++)
 		{
 			Vec2Int nextPos = node.pos + front[dir];
@@ -273,12 +273,12 @@ bool  GameRoom::FindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int32
 			int32 bestValue = best[nextPos];
 			if (bestValue != 0)
 			{
-				// ´Ù¸¥ °æ·Î¿¡¼­ ´õ ºü¸¥ ±æÀ» Ã£¾ÒÀ¸¸é ½ºÅµ
+				// ë‹¤ë¥¸ ê²½ë¡œì—ì„œ ë” ë¹ ë¥¸ ê¸¸ì„ ì°¾ì•˜ìœ¼ë©´ ìŠ¤í‚µ
 				if (bestValue <= cost)
 					continue;
 			}
 
-			// ¿¹¾à ÁøÇà
+			// ì˜ˆì•½ ì§„í–‰
 			best[nextPos] = cost;
 			pq.push(PQNode(cost, nextPos));
 			parent[nextPos] = node.pos;
@@ -294,7 +294,7 @@ bool  GameRoom::FindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int32
 			Vec2Int pos = item.first;
 			int32 score = item.second;
 
-			// µ¿Á¡ÀÌ¶ó¸é, ÃÖÃÊ À§Ä¡¿¡¼­ °¡Àå ´ú ÀÌµ¿ÇÏ´Â ÂÊÀ¸·Î
+			// ë™ì ì´ë¼ë©´, ìµœì´ˆ ìœ„ì¹˜ì—ì„œ ê°€ì¥ ëœ ì´ë™í•˜ëŠ” ìª½ìœ¼ë¡œ
 			if (bestScore == score)
 			{
 				int32 dist1 = abs(dest.x - src.x) + abs(dest.y - src.y);
@@ -317,7 +317,7 @@ bool  GameRoom::FindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int32
 	{
 		path.push_back(pos);
 
-		// ½ÃÀÛÁ¡
+		// ì‹œì‘ì 
 		if (pos == parent[pos])
 			break;
 
@@ -335,22 +335,22 @@ bool GameRoom::MyFindPath(Vec2Int start, Vec2Int dest, vector<Vec2Int>& path, in
 	map<Vec2Int, Vec2Int> parent;
 
 	auto heuristic = [](const Vec2Int& a, const Vec2Int& b) {
-		return abs(b.x - a.x) + abs(b.y - a.y); // ¸ÇÇØÆ° °Å¸®
+		return abs(b.x - a.x) + abs(b.y - a.y); // ë§¨í•´íŠ¼ ê±°ë¦¬
 		};
 
-	// ÃÊ±âÈ­
+	// ì´ˆê¸°í™”
 	bestbyfar[start] = 0;
 	parent[start] = start;
 	pq.push({ heuristic(start, dest), 0, start });//f,g,pos
 
-	//½ÃÀÛÁ¡Àº g°¡ 0ÀÌ¹Ç·Î f=g+h¿¡¼­ h¸¸ ³²¾Æ heuristic¸¸ ¹İ¿µ g´Â 0 
+	//ì‹œì‘ì ì€ gê°€ 0ì´ë¯€ë¡œ f=g+hì—ì„œ hë§Œ ë‚¨ì•„ heuristicë§Œ ë°˜ì˜ gëŠ” 0 
 
 	Vec2Int dirs[4] = { {0,1},{0,-1},{1,0},{-1,0} };
 	bool found = false;
 
-	// maxDepth: ³Ê¹« ÀÛÀ¸¸é µ¹¾Æ°¡´Â ±æ Æ÷±âÇÏ¹Ç·Î, ÃÖ¼Ò º¸Àå
+	// maxDepth: ë„ˆë¬´ ì‘ìœ¼ë©´ ëŒì•„ê°€ëŠ” ê¸¸ í¬ê¸°í•˜ë¯€ë¡œ, ìµœì†Œ ë³´ì¥
 	int heuristicDist = heuristic(start, dest);
-	if (maxDepth < heuristicDist * 4)  // ¿©À¯¸¦ ÃæºĞÈ÷ ÁØ´Ù
+	if (maxDepth < heuristicDist * 4)  // ì—¬ìœ ë¥¼ ì¶©ë¶„íˆ ì¤€ë‹¤
 		maxDepth = heuristicDist * 4;
 
 	while (!pq.empty())
@@ -379,7 +379,7 @@ bool GameRoom::MyFindPath(Vec2Int start, Vec2Int dest, vector<Vec2Int>& path, in
 			{
 				bestbyfar[next] = nextG;
 
-				// Weighted A* : h¿¡ °¡ÁßÄ¡ (Á¶±İ ´õ ¸ñÀûÁö ÂÊÀ¸·Î Ä¡¿ìÄ¡°Ô)
+				// Weighted A* : hì— ê°€ì¤‘ì¹˜ (ì¡°ê¸ˆ ë” ëª©ì ì§€ ìª½ìœ¼ë¡œ ì¹˜ìš°ì¹˜ê²Œ)
 				int h = heuristic(next, dest);
 				int f = nextG + h * 2; // W = 2
 
@@ -389,7 +389,7 @@ bool GameRoom::MyFindPath(Vec2Int start, Vec2Int dest, vector<Vec2Int>& path, in
 		}
 	}
 
-	// ¸ñÀûÁö¿¡ µµ´Ş ¸ø ÇßÀ» ¶§ fallback
+	// ëª©ì ì§€ì— ë„ë‹¬ ëª» í–ˆì„ ë•Œ fallback
 	if (!found)
 	{
 		int bestH = INT_MAX;
@@ -401,7 +401,7 @@ bool GameRoom::MyFindPath(Vec2Int start, Vec2Int dest, vector<Vec2Int>& path, in
 			int g = item.second;
 			int h = heuristic(pos, dest);
 
-			// h°¡ ´õ ÀÛ°Å³ª, µ¿Á¡ÀÌ¸é g°¡ ´õ Å« ÂÊ ¼±ÅÃ (¸Ö¸® °£ ÈÄº¸ ¼±È£)
+			// hê°€ ë” ì‘ê±°ë‚˜, ë™ì ì´ë©´ gê°€ ë” í° ìª½ ì„ íƒ (ë©€ë¦¬ ê°„ í›„ë³´ ì„ í˜¸)
 			if (h < bestH || (h == bestH && g > bestbyfar[fallback]))
 			{
 				bestH = h;
@@ -411,7 +411,7 @@ bool GameRoom::MyFindPath(Vec2Int start, Vec2Int dest, vector<Vec2Int>& path, in
 		dest = fallback;
 	}
 
-	// °æ·Î º¹¿ø
+	// ê²½ë¡œ ë³µì›
 	path.clear();
 	Vec2Int pos = dest;
 	while (true)
@@ -429,7 +429,7 @@ bool GameRoom::MyFindPath(Vec2Int start, Vec2Int dest, vector<Vec2Int>& path, in
 //{
 //
 //	priority_queue<MyPQNode, vector<MyPQNode>, greater<MyPQNode>>pq;
-//	map<Vec2Int, int32> gCost; //½ÃÀÛÁ¡À¸·ÎºÎÅÍ °¢ ³ëµå±îÁö ÃÖ´Ü ºñ¿ë
+//	map<Vec2Int, int32> gCost; //ì‹œì‘ì ìœ¼ë¡œë¶€í„° ê° ë…¸ë“œê¹Œì§€ ìµœë‹¨ ë¹„ìš©
 //	map<Vec2Int, Vec2Int> parent;
 //
 //	//
@@ -444,7 +444,7 @@ bool GameRoom::MyFindPath(Vec2Int start, Vec2Int dest, vector<Vec2Int>& path, in
 //
 //	Vec2Int dir[4] = { {0,1},{0,-1},{1,0},{-1,0} };
 //	int cost[] = { 1,1,1,1 };
-//	bool found = false; //½ÇÁ¦ °æ·Î°¡ ¾øÀ»¼öµµ ÀÖÀ¸´Ï Ã£¾Ò´ÂÁö ¿©ºÎ µûÁö±â ¿ëµµ
+//	bool found = false; //ì‹¤ì œ ê²½ë¡œê°€ ì—†ì„ìˆ˜ë„ ìˆìœ¼ë‹ˆ ì°¾ì•˜ëŠ”ì§€ ì—¬ë¶€ ë”°ì§€ê¸° ìš©ë„
 //
 //	while (!pq.empty())
 //	{
@@ -456,16 +456,16 @@ bool GameRoom::MyFindPath(Vec2Int start, Vec2Int dest, vector<Vec2Int>& path, in
 //			break;
 //		}
 //
-//		if (cur.g > gCost[cur.pos])//ÇöÀç ³ëµå ±âÁØ ½ÃÀÛÁ¡À¸·ÎºÎÅÍ ºñ¿ëÀÌ Áö±İ²¯ ¹æ¹®ÇÑ ÇöÀç ³ëµå ºñ¿ëº¸´Ù Å©´Ù¸é ³Ñ±è
+//		if (cur.g > gCost[cur.pos])//í˜„ì¬ ë…¸ë“œ ê¸°ì¤€ ì‹œì‘ì ìœ¼ë¡œë¶€í„° ë¹„ìš©ì´ ì§€ê¸ˆê» ë°©ë¬¸í•œ í˜„ì¬ ë…¸ë“œ ë¹„ìš©ë³´ë‹¤ í¬ë‹¤ë©´ ë„˜ê¹€
 //			continue;
 //
 //		for (int i = 0; i < 4; ++i) {
 //			Vec2Int next = cur.pos + dir[i];
 //
-//			if (!CanGo(next))continue; //ÇöÀç ÁÂÇ¥ ±âÁØ 4¹æÇâÀ» ¼øÂ÷·Î °¥¶§ ¸ø°¡´Â ÁÂÇ¥¸é ³Ñ±è
+//			if (!CanGo(next))continue; //í˜„ì¬ ì¢Œí‘œ ê¸°ì¤€ 4ë°©í–¥ì„ ìˆœì°¨ë¡œ ê°ˆë•Œ ëª»ê°€ëŠ” ì¢Œí‘œë©´ ë„˜ê¹€
 //
-//			int nextG = cur.g + cost[i]; // ½ÃÀÛÁ¡¿¡¼­ ÇöÀçÁÂÇ¥±îÁö ÃÖ¼Ò ºñ¿ë + cost(1)
-//			if (nextG >= maxDepth)continue; //½ÃÀÛÁ¡¿¡¼­ ÀÌ ³ëµå±îÁö °Å¸®°¡ maxDepth(10)º¸´Ù Å©¸é Å½»ö ±×¸¸
+//			int nextG = cur.g + cost[i]; // ì‹œì‘ì ì—ì„œ í˜„ì¬ì¢Œí‘œê¹Œì§€ ìµœì†Œ ë¹„ìš© + cost(1)
+//			if (nextG >= maxDepth)continue; //ì‹œì‘ì ì—ì„œ ì´ ë…¸ë“œê¹Œì§€ ê±°ë¦¬ê°€ maxDepth(10)ë³´ë‹¤ í¬ë©´ íƒìƒ‰ ê·¸ë§Œ
 //
 //			if (gCost.find(next) == gCost.end() || nextG < gCost[next])
 //			{
@@ -487,7 +487,7 @@ bool GameRoom::MyFindPath(Vec2Int start, Vec2Int dest, vector<Vec2Int>& path, in
 //			int32 score = g + h;
 //
 //			//if (bestScore == score) {
-//			//	// µ¿Á¡ÀÌ¸é ½ÃÀÛÁ¡¿¡¼­ ´õ °¡±î¿î ÂÊ ¼±ÅÃ
+//			//	// ë™ì ì´ë©´ ì‹œì‘ì ì—ì„œ ë” ê°€ê¹Œìš´ ìª½ ì„ íƒ
 //			//	int32 dist1 = abs(dest.x - src.x) + abs(dest.y - src.y);
 //			//	int32 dist2 = abs(pos.x - src.x) + abs(pos.y - src.y);
 //			//	if (dist2 < dist1)
@@ -534,7 +534,7 @@ Vec2Int  GameRoom::GetRandomEmptyCellPos() {
 
 	Vec2Int size = _tilemap.GetMapSize();
 
-	// ¸î ¹ø ½Ãµµ?
+	// ëª‡ ë²ˆ ì‹œë„?
 	while (true)
 	{
 		int32 x = rand() % size.x;
@@ -598,7 +598,7 @@ shared_ptr<Creature>  GameRoom::GetCreatureAt(Vec2Int cellPos) {
 //{
 //	shared_ptr<Player> curPlayer = GameObject::CreatePlayer();
 //
-//	//¼­·ÎÀÇ Á¸Àç¸¦ ¿¬°á
+//	//ì„œë¡œì˜ ì¡´ì¬ë¥¼ ì—°ê²°
 //	session->gameRoom = shared_from_this();
 //	session->player = curPlayer;
 //	curPlayer->session = session;
@@ -607,19 +607,19 @@ shared_ptr<Creature>  GameRoom::GetCreatureAt(Vec2Int cellPos) {
 //	curPlayer->info.set_posy(5);
 //	
 //
-//	//ÀÔÀåÇÑ Å¬¶ó¿¡°Ô Á¤º¸¸¦ º¸³»ÁÖ±â
+//	//ì…ì¥í•œ í´ë¼ì—ê²Œ ì •ë³´ë¥¼ ë³´ë‚´ì£¼ê¸°
 //	{
 //		SendBufferRef sendBuffer=ServerPacketHandler::Make_S_MyPlayer(curPlayer->info);
 //		session->Send(sendBuffer);
 //	}
-//	//¸ğµç ¿ÀºêÁ§Æ®ÀÇ Á¤º¸ Àü¼Û
+//	//ëª¨ë“  ì˜¤ë¸Œì íŠ¸ì˜ ì •ë³´ ì „ì†¡
 //	{
 //		Protocol::S_AddObject pkt;
 //
 //		for (auto& item : _players)
 //		{
 //			//read - pkt.object(1) index
-//			//write - Protocol::ObjectInfo* info =  pkt.add_objects() -pointer ¹İÈ¯
+//			//write - Protocol::ObjectInfo* info =  pkt.add_objects() -pointer ë°˜í™˜
 //			Protocol::ObjectInfo* info = pkt.add_objects();
 //			*info = item.second->info;
 //		}
@@ -673,7 +673,7 @@ shared_ptr<Creature>  GameRoom::GetCreatureAt(Vec2Int cellPos) {
 //	if (gameObject == nullptr)
 //		return;
 //
-//	//TODO Validation ÇØÅ· Ã¼Å·
+//	//TODO Validation í•´í‚¹ ì²´í‚¹
 //	gameObject->info.set_state(pkt.info().state());
 //	gameObject->info.set_dir(pkt.info().dir());
 //	gameObject->info.set_posx(pkt.info().posx());
@@ -709,10 +709,10 @@ shared_ptr<Creature>  GameRoom::GetCreatureAt(Vec2Int cellPos) {
 //
 //		
 //		Protocol::ObjectInfo* info = pkt.add_objects();
-//		*info = gameObject->info; //ÇöÀç Ãß°¡µÉ ¾Ö Á¤º¸
+//		*info = gameObject->info; //í˜„ì¬ ì¶”ê°€ë  ì•  ì •ë³´
 //		
 //		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_AddObject(pkt);
-//		//session->Send(sendBuffer); ¸ğµç ¾ÖµéÇÑÅ× º¸³»Áà¾ßÇÔ
+//		//session->Send(sendBuffer); ëª¨ë“  ì• ë“¤í•œí…Œ ë³´ë‚´ì¤˜ì•¼í•¨
 //		Broadcast(sendBuffer);
 //	}
 //}
@@ -739,7 +739,7 @@ shared_ptr<Creature>  GameRoom::GetCreatureAt(Vec2Int cellPos) {
 //
 //	gameObject->room = nullptr;
 //
-//	//TODO ¿ÀºêÁ§Æ® »èÁ¦ ¸Ş½ÃÁö Àü¼Û
+//	//TODO ì˜¤ë¸Œì íŠ¸ ì‚­ì œ ë©”ì‹œì§€ ì „ì†¡
 //
 //	{
 //		Protocol::S_RemoveObject pkt;

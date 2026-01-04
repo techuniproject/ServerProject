@@ -62,3 +62,17 @@ message C_ARROW
 	DIR_TYPE dir=4;
 	OBJECT_STATE_TYPE state=5;
 }
+
+message C_SPEED
+{
+	uint64 playerId=1;
+	float moveSpeed=2;
+	float attackSpeed=3;
+}
+
+message S_SPEED
+{
+	uint64 playerId=1;
+	float moveSpeed=2;
+	float attackSpeed=3;
+}
