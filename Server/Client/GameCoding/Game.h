@@ -1,5 +1,7 @@
 #pragma once
 
+class Button;
+
 class Game
 {
 public:
@@ -32,5 +34,7 @@ private:
 	HDC hdcBack = {};
 	HBITMAP _bmpBack = {};
 	bool _chatVisible = true;
+
+	shared_ptr<Button> chaticon;
 };
 

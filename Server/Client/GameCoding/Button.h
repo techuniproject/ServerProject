@@ -29,8 +29,13 @@ public:
 
 	void SetCurrentSprite(shared_ptr<Sprite> sprite) { _currentSprite = sprite; }
 	void SetSprite(shared_ptr<Sprite> sprite, ButtonState state) { _sprites[state] = sprite; }
+	void SwapSprite(ButtonState from, ButtonState to);
+	void CopySprite(ButtonState from, ButtonState to);
 	void SetButtonState(ButtonState state);
 
+	ButtonState GetState() { return _state; }
+
+	void GI(){}
 protected:
 	shared_ptr<Sprite> _currentSprite = nullptr;
 	shared_ptr<Sprite> _sprites[BS_MaxCount] = {};
@@ -44,7 +49,13 @@ public:
 	{
 		_onClick = [owner, func]()
 		{
-			(owner->*func)();
+				(owner->*func)();
+			/*	if (owner == nullptr) {
+					*func();
+				}
+				else {
+					(owner->*func)();
+				}*/
 		};
 	}
 

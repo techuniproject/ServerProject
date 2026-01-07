@@ -130,6 +130,10 @@ void GameInstance::SetMyPlayer(shared_ptr<MyPlayer> myPlayer)
 	_SceneManager->SetMyPlayer(myPlayer);
 }
 
+void GameInstance::AddUI(shared_ptr<UI> ui) {
+	_SceneManager->GetCurrentScene().AddUI(ui);
+}
+
 //TimeManager
 
 uint32 GameInstance::GetFps()

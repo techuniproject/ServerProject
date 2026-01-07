@@ -11,7 +11,7 @@ Texture::~Texture()
 
 }
 
-Texture* Texture::LoadBmp(HWND hwnd, const wstring& path)
+void Texture::LoadBmp(HWND hwnd, const wstring& path)
 {
 	HDC hdc = ::GetDC(hwnd);
 
@@ -32,7 +32,7 @@ Texture* Texture::LoadBmp(HWND hwnd, const wstring& path)
 	_size.x = bit.bmWidth;
 	_size.y = bit.bmHeight;
 
-	return this;
+	
 }
 
 HDC Texture::GetDC()

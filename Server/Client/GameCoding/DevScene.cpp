@@ -20,6 +20,7 @@
 #include "SoundManager.h"
 #include "HitEffect.h"
 #include "Sound.h"
+#include "Game.h"
 #include "Monster.h"
 #include "DieEffect.h"
 
@@ -49,6 +50,9 @@ void DevScene::Init()
 	GET_SINGLE(GameInstance)->LoadTexture(L"Start", L"Sprite\\UI\\Start.bmp");
 	GET_SINGLE(GameInstance)->LoadTexture(L"Edit", L"Sprite\\UI\\Edit.bmp");
 	GET_SINGLE(GameInstance)->LoadTexture(L"Exit", L"Sprite\\UI\\Exit.bmp");
+	GET_SINGLE(GameInstance)->LoadTexture(L"ChatOn", L"Sprite\\UI\\ChatOn.bmp",RGB(0,0,0));
+	GET_SINGLE(GameInstance)->LoadTexture(L"ChatOff", L"Sprite\\UI\\ChatOff.bmp",RGB(0,0,0));
+	
 
 	GET_SINGLE(GameInstance)->CreateSprite(L"Stage01", GET_SINGLE(GameInstance)->GetTexture(L"Stage01"));
 	GET_SINGLE(GameInstance)->CreateSprite(L"TileO", GET_SINGLE(GameInstance)->GetTexture(L"Tile"), 0, 0, 48, 48);
@@ -59,6 +63,12 @@ void DevScene::Init()
 	GET_SINGLE(GameInstance)->CreateSprite(L"Edit_On", GET_SINGLE(GameInstance)->GetTexture(L"Edit"), 150, 0, 150, 150);
 	GET_SINGLE(GameInstance)->CreateSprite(L"Exit_Off", GET_SINGLE(GameInstance)->GetTexture(L"Exit"), 0, 0, 150, 150);
 	GET_SINGLE(GameInstance)->CreateSprite(L"Exit_On", GET_SINGLE(GameInstance)->GetTexture(L"Exit"), 150, 0, 150, 150);
+	
+	GET_SINGLE(GameInstance)->CreateSprite(L"ChatOn", GET_SINGLE(GameInstance)->GetTexture(L"ChatOn"), 0, 0, 200, 100);
+	GET_SINGLE(GameInstance)->CreateSprite(L"ChatOff", GET_SINGLE(GameInstance)->GetTexture(L"ChatOff"), 0, 0, 200, 100);
+	//1536 1024
+	// 500
+
 
 	LoadMap();
 	LoadPlayer();
@@ -66,6 +76,7 @@ void DevScene::Init()
 	LoadProjectiles();
 	LoadEffect();
 	LoadTilemap();
+	LoadUI();
 	
 	GET_SINGLE(GameInstance)->LoadSound(L"BGM", L"Sound\\BGM.wav");
 	GET_SINGLE(GameInstance)->LoadSound(L"Attack", L"Sound\\Sword.wav");
@@ -235,6 +246,12 @@ void DevScene::LoadPlayer()
 		fb->SetInfo({ texture, L"FB_StaffRight", {200, 200}, 0, 10, 6, 0.5f, false });
 	}
 
+}
+
+void DevScene::LoadUI()
+{
+	
+	
 }
 
 void DevScene::LoadMonster()

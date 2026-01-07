@@ -5,6 +5,7 @@
 #include "TimeManager.h"
 #include "Sprite.h"
 
+
 Button::Button()
 {
 
@@ -20,6 +21,7 @@ void Button::BeginPlay()
 	Super::BeginPlay();
 
 	SetButtonState(BS_Default);
+
 }
 
 void Button::Tick()
@@ -33,6 +35,7 @@ void Button::Tick()
 		if (_sumTime >= 0.2f)
 		{
 			_sumTime = 0.f;
+			
 			SetButtonState(BS_Default);
 		}
 	}
@@ -49,6 +52,8 @@ void Button::Tick()
 			if (_state == BS_Pressed)
 			{
 				SetButtonState(BS_Clicked);
+				SwapSprite(BS_Default, BS_Clicked);
+				CopySprite(BS_Default, BS_Pressed);
 				// OnClicked
 				if (_onClick)
 					_onClick();
@@ -81,6 +86,19 @@ void Button::Render(HDC hdc)
 	{
 		Utils::DrawRect(hdc, _pos, _size.x, _size.y);
 	}
+}
+
+void Button::SwapSprite(ButtonState from, ButtonState to)
+{
+	weak_ptr<Sprite> temp = _sprites[to];
+	_sprites[to] = _sprites[from];
+	_sprites[from] = temp.lock();
+
+}
+
+void Button::CopySprite(ButtonState from, ButtonState to)
+{
+	_sprites[to] = _sprites[from];
 }
 
 void Button::SetButtonState(ButtonState state)

@@ -7,6 +7,7 @@
 #include "ResourceManager.h"
 #include "SoundManager.h"
 #include "ClientPacketHandler.h"
+#include "Button.h"
 
 HWND Game::_chathwnd=nullptr;
 HWND Game::_chatInput=nullptr;
@@ -50,9 +51,22 @@ void Game::Init(HWND hwnd,HINSTANCE hInstance)
 	//GET_SINGLE(SoundManager)->Init(hwnd);
 
 	CreateChatUI();
+	
+	
 
 	GET_SINGLE(GameInstance)->ChangeScene(SceneType::DevScene);
+	
+	chaticon = make_shared<Button>();
+	shared_ptr<Sprite> spriteOn = GET_SINGLE(GameInstance)->GetSprite(L"ChatOn");
+	shared_ptr<Sprite> spriteOff = GET_SINGLE(GameInstance)->GetSprite(L"ChatOff");
+	chaticon->SetSprite(spriteOff, BS_Default);
+	chaticon->SetSprite(spriteOn, BS_Pressed);
+	chaticon->SetSprite(spriteOn, BS_Clicked);
+	chaticon->SetPos(Vec2(650, 100));
+	chaticon->SetSize(Vec2Int(150, 75));
+	chaticon->AddOnClickDelegate(this, &Game::ShowChatUI);
 
+	GET_SINGLE(GameInstance)->AddUI(chaticon);
 	//GET_SINGLE(SceneManager)->ChangeScene(SceneType::DevScene);
 }
 
@@ -60,11 +74,13 @@ void Game::Update()
 {
 	GET_SINGLE(GameInstance)->Update();
 	
+
 	
-	if (GetAsyncKeyState(VK_F1) & 0x0001) // 눌릴 때만
-	{
-		ShowChatUI();
-	}
+	//if (GetAsyncKeyState(VK_F1) & 0x0001) // 눌릴 때만
+	//{
+	//	ShowChatUI();
+	//}
+	// 
 	//GET_SINGLE(TimeManager)->Update();
 	//GET_SINGLE(InputManager)->Update();
 	//GET_SINGLE(SceneManager)->Update();
@@ -102,15 +118,15 @@ void Game::CreateChatUI()
 {
 	_chathwnd = CreateWindowExW(WS_EX_CLIENTEDGE, MSFTEDIT_CLASS, L"",
 		WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY,
-		20, 50, 400, 200, _hwnd, (HMENU)1001, _hInstance, nullptr);
+		20, 340, 400, 200, _hwnd, (HMENU)1001, _hInstance, nullptr);
 
 	_chatInput = CreateWindowExW(WS_EX_CLIENTEDGE, L"EDIT", L"",
 		WS_CHILD | WS_VISIBLE | ES_AUTOHSCROLL,
-		20, 260, 300, 25, _hwnd, (HMENU)1002, nullptr, nullptr);
+		20, 550, 300, 25, _hwnd, (HMENU)1002, nullptr, nullptr);
 
 	_chatSendBtn = CreateWindowW(L"BUTTON", L"Send",
 		WS_CHILD | WS_VISIBLE | BS_DEFPUSHBUTTON,
-		330, 260, 90, 25, _hwnd, (HMENU)1003, nullptr, nullptr);
+		330, 550, 90, 25, _hwnd, (HMENU)1003, nullptr, nullptr);
 }
 
 void Game::AppendChat(const wstring& msg,  COLORREF color)
@@ -181,10 +197,10 @@ COLORREF Game::GetDiversedColorFromId(int id)
 void Game::ShowChatUI()
 {
 	_chatVisible = !_chatVisible;
-
+	
 	int cmd = _chatVisible ? SW_SHOW : SW_HIDE;
 
-	if (_chathwnd)   ShowWindow(_chathwnd, cmd);
-	if (_chatInput)  ShowWindow(_chatInput, cmd);
-	if (_chatSendBtn) ShowWindow(_chatSendBtn, cmd);
+	if (_chathwnd)   ShowWindow(_chathwnd, _chatVisible);
+	if (_chatInput)  ShowWindow(_chatInput, _chatVisible);
+	if (_chatSendBtn) ShowWindow(_chatSendBtn, _chatVisible);
 }

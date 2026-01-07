@@ -17,6 +17,7 @@ class Sound;
 class GameObject;
 class DevScene;
 class MyPlayer;
+class UI;
 
 
 
@@ -56,6 +57,7 @@ public: //SceneManager
 	shared_ptr<MyPlayer> GetMyPlayer();
 	uint64 GetMyPlayerId();
 	void SetMyPlayer(shared_ptr<MyPlayer> myPlayer);
+	void AddUI(shared_ptr<UI> ui);
 
 public:
 	//TimeManager

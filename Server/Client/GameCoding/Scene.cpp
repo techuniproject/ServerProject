@@ -94,3 +94,8 @@ shared_ptr<Creature> Scene::GetCreatureAt(Vec2Int cellPos)
 
 	return nullptr;
 }
+
+void Scene::AddUI(shared_ptr<UI> ui)
+{
+	_uis.push_back(ui);
+}
