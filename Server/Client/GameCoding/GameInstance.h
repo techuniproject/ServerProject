@@ -57,7 +57,8 @@ public: //SceneManager
 	shared_ptr<MyPlayer> GetMyPlayer();
 	uint64 GetMyPlayerId();
 	void SetMyPlayer(shared_ptr<MyPlayer> myPlayer);
-	void AddUI(shared_ptr<UI> ui);
+	void AddUI(const wstring& key, shared_ptr<UI> ui);
+	shared_ptr<UI> GetUI(const wstring& key);
 
 public:
 	//TimeManager

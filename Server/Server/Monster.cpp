@@ -4,6 +4,7 @@
 #include "Player.h"
 
 
+
 Monster::Monster()
 {
 	info.set_name("MonsterName");
@@ -11,6 +12,11 @@ Monster::Monster()
 	info.set_maxhp(100);
 	info.set_attack(10);
 	info.set_defence(0); //나중엔 data sheet으로 읽어오는 방식
+
+	item.SetAliveState(false);
+	item.SetBelongingId(0);
+	item.SetItemType(Item::GetRandomItemType());
+	item.SetPos(GetPos());
 }
 
 Monster::~Monster()
@@ -178,4 +184,36 @@ void Monster::ApplyHitStun(uint32 ms) {
 	_waitUntil = std::max<uint64>(_waitUntil, now + static_cast<uint64>(ms));
 
 	SetState(HIT, true);
+}
+
+void Monster::OnDamaged(shared_ptr<Creature> attacker)
+{
+	Super::OnDamaged(attacker);
+
+	if (attacker == nullptr)
+		return;
+
+	if (GetObjectHp() == 0) {
+		if (GRoom) {
+			item.SetAliveState(true);
+			item.SetBelongingId(attacker->GetObjectID());
+			item.SetItemType(Item::GetRandomItemType());
+			item.SetPos(GetPos());
+
+		//패킷 전달
+
+			Protocol::S_ITEM pkt;
+			pkt.set_isalive(item._isAlive);
+			pkt.set_itemtype(item._itemType);
+			pkt.set_posx(item._pos.x);
+			pkt.set_posy(item._pos.y);
+			pkt.set_playerid(item._belongingid);
+			SendBufferRef sendBuf = ServerPacketHandler::Make_S_Item(pkt);
+			GRoom->Broadcast(sendBuf);
+		}
+	}
+	else {
+		item.SetAliveState(false);
+		item.SetBelongingId(-1);
+	}
 }

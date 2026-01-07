@@ -23,6 +23,7 @@ enum class KeyType
 	Left = VK_LEFT,
 	Right = VK_RIGHT,
 	SpaceBar = VK_SPACE,
+	Shift=VK_LSHIFT,
 
 	KEY_1 = '1',
 	KEY_2 = '2',

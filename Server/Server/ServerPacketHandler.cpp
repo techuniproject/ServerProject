@@ -76,6 +76,13 @@ SendBufferRef ServerPacketHandler::Make_S_Speed(const Protocol::S_SPEED& pkt)
     return MakeSendBuffer(pkt);
 }
 
+SendBufferRef ServerPacketHandler::Make_S_Item(const Protocol::S_ITEM& pkt)
+{
+
+
+    return MakeSendBuffer(pkt);
+}
+
 
 bool Handle_INVALID(GameSessionRef& session, BYTE* buffer, int32 length)
 {

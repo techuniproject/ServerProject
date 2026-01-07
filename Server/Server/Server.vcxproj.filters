@@ -89,6 +89,9 @@
     <ClCompile Include="Arrow.cpp">
       <Filter>소스 파일\Object</Filter>
     </ClCompile>
+    <ClCompile Include="Item.cpp">
+      <Filter>소스 파일\Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -140,6 +143,9 @@
       <Filter>소스 파일\AI</Filter>
     </ClInclude>
     <ClInclude Include="Arrow.h">
+      <Filter>소스 파일\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Item.h">
       <Filter>소스 파일\Object</Filter>
     </ClInclude>
   </ItemGroup>

@@ -76,3 +76,12 @@ message S_SPEED
 	float moveSpeed=2;
 	float attackSpeed=3;
 }
+
+message S_ITEM
+{
+	bool isAlive=1;
+	ITEM_TYPE itemType=2;
+	uint32 playerId=3;
+	int32 posX=4;
+	int32 posY=5;
+}

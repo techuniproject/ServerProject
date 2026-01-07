@@ -35,6 +35,5 @@ private:
 	HBITMAP _bmpBack = {};
 	bool _chatVisible = true;
 
-	shared_ptr<Button> chaticon;
 };
 

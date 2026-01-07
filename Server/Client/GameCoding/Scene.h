@@ -25,9 +25,10 @@ public:
 
 	shared_ptr<Creature> GetCreatureAt(Vec2Int cellPos);
 
-	void AddUI(shared_ptr<UI>ui);
+	void AddUI(const wstring& key,shared_ptr<UI>ui);
+	shared_ptr<UI> GetUI(const wstring& key);
 public:
 	vector<shared_ptr<Actor>> _actors[LAYER_MAXCOUNT];
-	vector<shared_ptr<UI>> _uis;
+	unordered_map<wstring,shared_ptr<UI>> _uis;
 };
 

@@ -22,7 +22,7 @@ namespace _pbi = _pb::internal;
 
 namespace Protocol {
 }  // namespace Protocol
-static const ::_pb::EnumDescriptor* file_level_enum_descriptors_Enum_2eproto[5];
+static const ::_pb::EnumDescriptor* file_level_enum_descriptors_Enum_2eproto[6];
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_Enum_2eproto = nullptr;
 const uint32_t TableStruct_Enum_2eproto::offsets[1] = {};
 static constexpr ::_pbi::MigrationSchema* schemas = nullptr;
@@ -42,11 +42,13 @@ const char descriptor_table_protodef_Enum_2eproto[] PROTOBUF_SECTION_VARIABLE(pr
   "\020\001\022\033\n\027OBJECT_STATE_TYPE_SKILL\020\002\022\031\n\025OBJEC"
   "T_STATE_TYPE_HIT\020\003*U\n\010DIR_TYPE\022\017\n\013DIR_TY"
   "PE_UP\020\000\022\021\n\rDIR_TYPE_DOWN\020\001\022\021\n\rDIR_TYPE_L"
-  "EFT\020\002\022\022\n\016DIR_TYPE_RIGHT\020\003b\006proto3"
+  "EFT\020\002\022\022\n\016DIR_TYPE_RIGHT\020\003*L\n\tITEM_TYPE\022\024"
+  "\n\020ITEM_TYPE_ATTACK\020\000\022\022\n\016ITEM_TYPE_MOVE\020\001"
+  "\022\025\n\021ITEM_TYPE_MAX_CNT\020\002b\006proto3"
   ;
 static ::_pbi::once_flag descriptor_table_Enum_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Enum_2eproto = {
-    false, false, 553, descriptor_table_protodef_Enum_2eproto,
+    false, false, 631, descriptor_table_protodef_Enum_2eproto,
     "Enum.proto",
     &descriptor_table_Enum_2eproto_once, nullptr, 0, 0,
     schemas, file_default_instances, TableStruct_Enum_2eproto::offsets,
@@ -133,6 +135,21 @@ bool DIR_TYPE_IsValid(int value) {
     case 1:
     case 2:
     case 3:
+      return true;
+    default:
+      return false;
+  }
+}
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ITEM_TYPE_descriptor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_Enum_2eproto);
+  return file_level_enum_descriptors_Enum_2eproto[5];
+}
+bool ITEM_TYPE_IsValid(int value) {
+  switch (value) {
+    case 0:
+    case 1:
+    case 2:
       return true;
     default:
       return false;

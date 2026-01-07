@@ -32,8 +32,8 @@ void Scene::Init()
 		for (const shared_ptr<Actor>& actor : actors)
 			actor->BeginPlay();
 
-	for (shared_ptr<UI> ui : _uis)
-		ui->BeginPlay();
+	for (auto& ui : _uis)
+		ui.second->BeginPlay();
 }
 
 void Scene::Update()
@@ -45,8 +45,8 @@ void Scene::Update()
 		for (shared_ptr<Actor> actor : actors)
 			actor->Tick();
 
-	for (shared_ptr<UI> ui : _uis)
-		ui->Tick();
+	for (auto& ui : _uis)
+		ui.second->Tick();
 }
 
 void Scene::Render(HDC hdc)
@@ -61,8 +61,8 @@ void Scene::Render(HDC hdc)
 		for (shared_ptr<Actor> actor : actors)
 			actor->Render(hdc);
 
-	for (shared_ptr<UI>& ui : _uis)
-		ui->Render(hdc);
+	for (auto& ui : _uis)
+		ui.second->Render(hdc);
 }
 
 void Scene::AddActor(shared_ptr<Actor> actor)
@@ -95,7 +95,15 @@ shared_ptr<Creature> Scene::GetCreatureAt(Vec2Int cellPos)
 	return nullptr;
 }
 
-void Scene::AddUI(shared_ptr<UI> ui)
+void Scene::AddUI(const wstring& key, shared_ptr<UI> ui)
 {
-	_uis.push_back(ui);
+	_uis.insert({ key,ui });
+}
+
+shared_ptr<UI> Scene::GetUI(const wstring& key)
+{
+	if (_uis.find(key) != _uis.end()) {
+		return _uis.at(key);
+	}
+	return nullptr;
 }

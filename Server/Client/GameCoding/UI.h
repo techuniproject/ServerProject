@@ -1,5 +1,6 @@
 #pragma once
 
+class Sprite;
 
 class UI
 {
@@ -19,10 +20,11 @@ public:
 
 	RECT GetRect();
 	bool IsMouseInRect();
+	void SetCurrentSprite(shared_ptr<Sprite> sprite) { _currentSprite = sprite; }
 	
 protected:
 	Vec2	_pos = {400, 300};
 	Vec2Int _size = {150, 150};
-
+	shared_ptr<Sprite> _currentSprite = nullptr;
 };
 

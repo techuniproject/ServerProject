@@ -38,6 +38,8 @@ void DevScene::Init()
 	GET_SINGLE(GameInstance)->LoadTexture(L"Stage01", L"Sprite\\Map\\Stage01.bmp");
 	GET_SINGLE(GameInstance)->LoadTexture(L"Tile", L"Sprite\\Map\\Tile.bmp", RGB(128, 128, 128));
 	GET_SINGLE(GameInstance)->LoadTexture(L"Sword", L"Sprite\\Item\\Sword.bmp");
+	GET_SINGLE(GameInstance)->LoadTexture(L"Bow", L"Sprite\\Item\\Bow.bmp");
+	GET_SINGLE(GameInstance)->LoadTexture(L"Staff", L"Sprite\\Item\\Staff.bmp");
 	GET_SINGLE(GameInstance)->LoadTexture(L"Arrow", L"Sprite\\Item\\Arrow.bmp", RGB(128, 128, 128));
 	GET_SINGLE(GameInstance)->LoadTexture(L"Potion", L"Sprite\\UI\\Mp.bmp");
 	GET_SINGLE(GameInstance)->LoadTexture(L"PlayerDown", L"Sprite\\Player\\PlayerDown.bmp", RGB(128, 128, 128));
@@ -53,6 +55,13 @@ void DevScene::Init()
 	GET_SINGLE(GameInstance)->LoadTexture(L"ChatOn", L"Sprite\\UI\\ChatOn.bmp",RGB(0,0,0));
 	GET_SINGLE(GameInstance)->LoadTexture(L"ChatOff", L"Sprite\\UI\\ChatOff.bmp",RGB(0,0,0));
 	
+	GET_SINGLE(GameInstance)->LoadTexture(L"MoveSpeed", L"Sprite\\Item\\MoveSpeed.bmp",RGB(0,0,0));
+	GET_SINGLE(GameInstance)->LoadTexture(L"AttackSpeed", L"Sprite\\Item\\AttackSpeed.bmp",RGB(0,0,0));
+	
+	GET_SINGLE(GameInstance)->CreateSprite(L"Staff", GET_SINGLE(GameInstance)->GetTexture(L"Staff"),12,0,55,57);
+	GET_SINGLE(GameInstance)->CreateSprite(L"Sword", GET_SINGLE(GameInstance)->GetTexture(L"Sword"),12,0,55,57);
+	GET_SINGLE(GameInstance)->CreateSprite(L"Bow", GET_SINGLE(GameInstance)->GetTexture(L"Bow"),12,0,55,57);
+
 
 	GET_SINGLE(GameInstance)->CreateSprite(L"Stage01", GET_SINGLE(GameInstance)->GetTexture(L"Stage01"));
 	GET_SINGLE(GameInstance)->CreateSprite(L"TileO", GET_SINGLE(GameInstance)->GetTexture(L"Tile"), 0, 0, 48, 48);
@@ -68,6 +77,8 @@ void DevScene::Init()
 	GET_SINGLE(GameInstance)->CreateSprite(L"ChatOff", GET_SINGLE(GameInstance)->GetTexture(L"ChatOff"), 0, 0, 200, 100);
 	//1536 1024
 	// 500
+	GET_SINGLE(GameInstance)->CreateSprite(L"AttackSpeed", GET_SINGLE(GameInstance)->GetTexture(L"AttackSpeed"), 0, 0, 50, 50);
+	GET_SINGLE(GameInstance)->CreateSprite(L"MoveSpeed", GET_SINGLE(GameInstance)->GetTexture(L"MoveSpeed"), 0, 0, 50, 50);
 
 
 	LoadMap();

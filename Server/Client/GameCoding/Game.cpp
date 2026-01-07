@@ -56,17 +56,17 @@ void Game::Init(HWND hwnd,HINSTANCE hInstance)
 
 	GET_SINGLE(GameInstance)->ChangeScene(SceneType::DevScene);
 	
-	chaticon = make_shared<Button>();
+	shared_ptr<Button> chaticon = make_shared<Button>();
 	shared_ptr<Sprite> spriteOn = GET_SINGLE(GameInstance)->GetSprite(L"ChatOn");
 	shared_ptr<Sprite> spriteOff = GET_SINGLE(GameInstance)->GetSprite(L"ChatOff");
 	chaticon->SetSprite(spriteOff, BS_Default);
 	chaticon->SetSprite(spriteOn, BS_Pressed);
 	chaticon->SetSprite(spriteOn, BS_Clicked);
-	chaticon->SetPos(Vec2(650, 100));
+	chaticon->SetPos(Vec2(720, 565));
 	chaticon->SetSize(Vec2Int(150, 75));
 	chaticon->AddOnClickDelegate(this, &Game::ShowChatUI);
 
-	GET_SINGLE(GameInstance)->AddUI(chaticon);
+	GET_SINGLE(GameInstance)->AddUI(L"Chat",chaticon);
 	//GET_SINGLE(SceneManager)->ChangeScene(SceneType::DevScene);
 }
 

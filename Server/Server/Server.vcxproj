@@ -158,6 +158,7 @@
     <ClCompile Include="GameRoom.cpp" />
     <ClCompile Include="GameSession.cpp" />
     <ClCompile Include="GameSessionManager.cpp" />
+    <ClCompile Include="Item.cpp" />
     <ClCompile Include="Job.cpp" />
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="pch.cpp">
@@ -191,6 +192,7 @@
     <ClInclude Include="GameRoom.h" />
     <ClInclude Include="GameSession.h" />
     <ClInclude Include="GameSessionManager.h" />
+    <ClInclude Include="Item.h" />
     <ClInclude Include="Job.h" />
     <ClInclude Include="Monster.h" />
     <ClInclude Include="pch.h" />

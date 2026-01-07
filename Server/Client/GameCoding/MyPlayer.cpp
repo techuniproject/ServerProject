@@ -10,6 +10,7 @@
 #include "DevScene.h"
 #include "Arrow.h"
 #include "HitEffect.h"
+#include "UI.h"
 
 
 MyPlayer::MyPlayer()//카메라 달린 플레이어 이동관련 처리
@@ -24,6 +25,14 @@ void MyPlayer::AttatchDefaultComponent()
 {	
 	shared_ptr<CameraComponent> camera = make_shared<CameraComponent>();
 	AddComponent(camera);
+
+	shared_ptr<UI> curWeaponUI = make_shared<UI>();
+	curWeaponUI->SetPos(Vec2(745, 25));
+	curWeaponUI->SetCurrentSprite(GET_SINGLE(GameInstance)->GetSprite(L"Sword"));
+	curWeaponUI->SetSize(Vec2Int(50, 50));
+	
+	GET_SINGLE(GameInstance)->AddUI(L"MyPlayerWeapon", curWeaponUI);
+
 }
 
 void MyPlayer::TickInput()
@@ -58,14 +67,17 @@ void MyPlayer::TickInput()
 
 	if (GET_SINGLE(GameInstance)->GetButtonDown(KeyType::KEY_1))
 	{
+		GET_SINGLE(GameInstance)->GetUI(L"MyPlayerWeapon")->SetCurrentSprite(GET_SINGLE(GameInstance)->GetSprite(L"Sword"));
 		SetWeaponType(SWORD);
 	}
 	else if (GET_SINGLE(GameInstance)->GetButtonDown(KeyType::KEY_2))
 	{
+		GET_SINGLE(GameInstance)->GetUI(L"MyPlayerWeapon")->SetCurrentSprite(GET_SINGLE(GameInstance)->GetSprite(L"Bow"));
 		SetWeaponType(BOW);
 	}
 	else if (GET_SINGLE(GameInstance)->GetButtonDown(KeyType::KEY_3))
 	{
+		GET_SINGLE(GameInstance)->GetUI(L"MyPlayerWeapon")->SetCurrentSprite(GET_SINGLE(GameInstance)->GetSprite(L"Staff"));
 		SetWeaponType(STAFF);
 	}
 
@@ -141,6 +153,7 @@ void MyPlayer::Render(HDC hdc)
 void MyPlayer::TickIdle()
 {
 	TickInput();
+	if(!GET_SINGLE(GameInstance)->GetButton(KeyType::Shift))
 	TryMove();
 }
 

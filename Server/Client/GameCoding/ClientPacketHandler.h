@@ -21,6 +21,7 @@ PKT_S_ATTACK = 8,
 PKT_C_ARROW=9,
 PKT_C_SPEED=10,
 PKT_S_SPEED=11,
+PKT_S_ITEM=12,
 };
 
 bool Handle_INVALID(ServerSessionRef& session, BYTE* buffer, int32 length);
@@ -33,6 +34,7 @@ bool Handle_S_Move(ServerSessionRef& session, Protocol::S_Move& pkt);
 bool Handle_S_CHAT(ServerSessionRef& session, Protocol::S_CHAT& pkt);
 bool Handle_S_ATTACK(ServerSessionRef& session, Protocol::S_ATTACK& pkt);
 bool Handle_S_SPEED(ServerSessionRef& session, Protocol::S_SPEED& pkt);
+bool Handle_S_ITEM(ServerSessionRef& session, Protocol::S_ITEM& pkt);
 
 class ClientPacketHandler
 {
@@ -72,6 +74,10 @@ public:
         g_packet_handler[PKT_S_SPEED] = [](ServerSessionRef& session, BYTE* buffer, int32 length)
             {
                 return ParsePacket < Protocol::S_SPEED >(Handle_S_SPEED, session, buffer, length);
+            };
+        g_packet_handler[PKT_S_ITEM] = [](ServerSessionRef& session, BYTE* buffer, int32 length)
+            {
+                return ParsePacket < Protocol::S_ITEM>(Handle_S_ITEM, session, buffer, length);
             };
     }
 

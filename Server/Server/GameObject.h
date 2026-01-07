@@ -33,6 +33,7 @@ public:
 	void SetObjectHp(int32 hp) { info.set_hp(hp); }
 	void SetObjectAttack(int32 attack) { info.set_attack(attack); }
 	void SetObjectDefence(int32 defence) { info.set_defence(defence); }
+	Vec2Int GetPos() { return Vec2Int(info.posx(), info.posy()); }
 
 public:
 	Protocol::ObjectInfo info;

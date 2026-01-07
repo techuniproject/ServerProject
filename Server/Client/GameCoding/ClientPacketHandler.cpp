@@ -5,6 +5,8 @@
 #include "DevScene.h"
 #include "MyPlayer.h"
 #include "Creature.h"
+#include "Sprite.h"
+#include "UI.h"
 
 extern HWND g_hWnd;
 PacketHandlerFunc g_packet_handler[HANDLER_MAX];
@@ -194,6 +196,7 @@ bool Handle_S_Move(ServerSessionRef& session, Protocol::S_Move& pkt)
             gameObject->SetName(info.name());
             auto ifplayer = dynamic_pointer_cast<Player>(gameObject);
             if (ifplayer) {
+
                 ifplayer->SetWeaponType(info.weapontype());
             }
             return true;
@@ -238,6 +241,34 @@ bool Handle_S_SPEED(ServerSessionRef& session, Protocol::S_SPEED& pkt)
             ifplayer->SetMoveSpeed(pkt.movespeed());
             ifplayer->SetFlipbookSpeed(pkt.movespeed() / 100 - 1);
         }
+    }
+    return false;
+}
+
+bool Handle_S_ITEM(ServerSessionRef& session, Protocol::S_ITEM& pkt)
+{
+    DevScene* scene = GET_SINGLE(GameInstance)->GetCurrentScene<DevScene>();
+    shared_ptr<UI> itemUI = make_shared<UI>();
+    Vec2 cameraPos = GET_SINGLE(GameInstance)->GetCameraPos();
+   // const int screenCx = pkt.posx() - (cameraPos.x - GWinSizeX / 2);
+    const int screenCx = (pkt.posx()*-50 + cameraPos.x) ;
+    const int screenCy = (pkt.posy()*-50 + cameraPos.y);
+    
+    itemUI->SetPos(Vec2(400, 300));
+    itemUI->SetSize(Vec2Int(50, 50));
+    if (scene) {
+        switch (pkt.itemtype()) {
+        case Protocol::ITEM_TYPE_ATTACK:
+            itemUI->SetCurrentSprite(GET_SINGLE(GameInstance)->GetSprite(L"AttackSpeed"));
+            break;
+        case Protocol::ITEM_TYPE_MOVE:
+            itemUI->SetCurrentSprite(GET_SINGLE(GameInstance)->GetSprite(L"MoveSpeed"));
+            break;
+        default:
+            break;
+        }
+        wstring sen = to_wstring(pkt.playerid());
+        scene->AddUI(sen, itemUI);
     }
     return false;
 }

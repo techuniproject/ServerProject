@@ -130,9 +130,14 @@ void GameInstance::SetMyPlayer(shared_ptr<MyPlayer> myPlayer)
 	_SceneManager->SetMyPlayer(myPlayer);
 }
 
-void GameInstance::AddUI(shared_ptr<UI> ui) {
-	_SceneManager->GetCurrentScene().AddUI(ui);
+void GameInstance::AddUI(const wstring& key, shared_ptr<UI> ui) {
+	_SceneManager->GetCurrentScene().AddUI(key,ui );
 }
+
+shared_ptr<UI> GameInstance::GetUI(const wstring& key) {
+	return _SceneManager->GetCurrentScene().GetUI(key);
+}
+
 
 //TimeManager
 

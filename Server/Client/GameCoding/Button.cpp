@@ -68,7 +68,8 @@ void Button::Tick()
 
 void Button::Render(HDC hdc)
 {
-	if (_currentSprite)
+	Super::Render(hdc);
+	/*if (_currentSprite)
 	{
 		::TransparentBlt(hdc,
 			(int32)_pos.x - _size.x / 2,
@@ -85,7 +86,7 @@ void Button::Render(HDC hdc)
 	else
 	{
 		Utils::DrawRect(hdc, _pos, _size.x, _size.y);
-	}
+	}*/
 }
 
 void Button::SwapSprite(ButtonState from, ButtonState to)

@@ -20,6 +20,7 @@
 #include <thread>
 #include <atomic>
 #include <string_view>
+#include <random>
 
 #include <winsock2.h>
 #include <mswsock.h>
