@@ -35,7 +35,7 @@ void SpriteActor::Render(HDC hdc)
 	if (_sprite == nullptr)
 		return;
 
-	Vec2Int size = _sprite->GetSize();
+	_size = _sprite->GetSize();
 	Vec2 cameraPos = GET_SINGLE(GameInstance)->GetCameraPos();
 	
 	/*::TransparentBlt(hdc,
@@ -51,10 +51,10 @@ void SpriteActor::Render(HDC hdc)
 		_sprite->GetTransparent());*/
 
 	::BitBlt(hdc,
-		(int32)_pos.x - size.x / 2 - ((int32)cameraPos.x - GWinSizeX / 2),
-		(int32)_pos.y - size.y / 2 - ((int32)cameraPos.y - GWinSizeY / 2),
-		size.x,
-		size.y,
+		(int32)_pos.x - _size.x / 2 - ((int32)cameraPos.x - GWinSizeX / 2),
+		(int32)_pos.y - _size.y / 2 - ((int32)cameraPos.y - GWinSizeY / 2),
+		_size.x,
+		_size.y,
 		_sprite->GetDC(),
 		_sprite->GetPos().x,
 		_sprite->GetPos().y,

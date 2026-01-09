@@ -2195,56 +2195,25 @@ class S_ITEM final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kIsAliveFieldNumber = 1,
-    kItemTypeFieldNumber = 2,
-    kPlayerIdFieldNumber = 3,
-    kPosXFieldNumber = 4,
-    kPosYFieldNumber = 5,
+    kIteminfoFieldNumber = 1,
   };
-  // bool isAlive = 1;
-  void clear_isalive();
-  bool isalive() const;
-  void set_isalive(bool value);
+  // .Protocol.ItemInfo iteminfo = 1;
+  bool has_iteminfo() const;
   private:
-  bool _internal_isalive() const;
-  void _internal_set_isalive(bool value);
+  bool _internal_has_iteminfo() const;
   public:
-
-  // .Protocol.ITEM_TYPE itemType = 2;
-  void clear_itemtype();
-  ::Protocol::ITEM_TYPE itemtype() const;
-  void set_itemtype(::Protocol::ITEM_TYPE value);
+  void clear_iteminfo();
+  const ::Protocol::ItemInfo& iteminfo() const;
+  PROTOBUF_NODISCARD ::Protocol::ItemInfo* release_iteminfo();
+  ::Protocol::ItemInfo* mutable_iteminfo();
+  void set_allocated_iteminfo(::Protocol::ItemInfo* iteminfo);
   private:
-  ::Protocol::ITEM_TYPE _internal_itemtype() const;
-  void _internal_set_itemtype(::Protocol::ITEM_TYPE value);
+  const ::Protocol::ItemInfo& _internal_iteminfo() const;
+  ::Protocol::ItemInfo* _internal_mutable_iteminfo();
   public:
-
-  // uint32 playerId = 3;
-  void clear_playerid();
-  uint32_t playerid() const;
-  void set_playerid(uint32_t value);
-  private:
-  uint32_t _internal_playerid() const;
-  void _internal_set_playerid(uint32_t value);
-  public:
-
-  // int32 posX = 4;
-  void clear_posx();
-  int32_t posx() const;
-  void set_posx(int32_t value);
-  private:
-  int32_t _internal_posx() const;
-  void _internal_set_posx(int32_t value);
-  public:
-
-  // int32 posY = 5;
-  void clear_posy();
-  int32_t posy() const;
-  void set_posy(int32_t value);
-  private:
-  int32_t _internal_posy() const;
-  void _internal_set_posy(int32_t value);
-  public:
+  void unsafe_arena_set_allocated_iteminfo(
+      ::Protocol::ItemInfo* iteminfo);
+  ::Protocol::ItemInfo* unsafe_arena_release_iteminfo();
 
   // @@protoc_insertion_point(class_scope:Protocol.S_ITEM)
  private:
@@ -2254,11 +2223,7 @@ class S_ITEM final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    bool isalive_;
-    int itemtype_;
-    uint32_t playerid_;
-    int32_t posx_;
-    int32_t posy_;
+    ::Protocol::ItemInfo* iteminfo_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -3102,104 +3067,89 @@ inline void S_SPEED::set_attackspeed(float value) {
 
 // S_ITEM
 
-// bool isAlive = 1;
-inline void S_ITEM::clear_isalive() {
-  _impl_.isalive_ = false;
+// .Protocol.ItemInfo iteminfo = 1;
+inline bool S_ITEM::_internal_has_iteminfo() const {
+  return this != internal_default_instance() && _impl_.iteminfo_ != nullptr;
 }
-inline bool S_ITEM::_internal_isalive() const {
-  return _impl_.isalive_;
+inline bool S_ITEM::has_iteminfo() const {
+  return _internal_has_iteminfo();
 }
-inline bool S_ITEM::isalive() const {
-  // @@protoc_insertion_point(field_get:Protocol.S_ITEM.isAlive)
-  return _internal_isalive();
+inline const ::Protocol::ItemInfo& S_ITEM::_internal_iteminfo() const {
+  const ::Protocol::ItemInfo* p = _impl_.iteminfo_;
+  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::ItemInfo&>(
+      ::Protocol::_ItemInfo_default_instance_);
 }
-inline void S_ITEM::_internal_set_isalive(bool value) {
+inline const ::Protocol::ItemInfo& S_ITEM::iteminfo() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_ITEM.iteminfo)
+  return _internal_iteminfo();
+}
+inline void S_ITEM::unsafe_arena_set_allocated_iteminfo(
+    ::Protocol::ItemInfo* iteminfo) {
+  if (GetArenaForAllocation() == nullptr) {
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.iteminfo_);
+  }
+  _impl_.iteminfo_ = iteminfo;
+  if (iteminfo) {
+    
+  } else {
+    
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.S_ITEM.iteminfo)
+}
+inline ::Protocol::ItemInfo* S_ITEM::release_iteminfo() {
   
-  _impl_.isalive_ = value;
+  ::Protocol::ItemInfo* temp = _impl_.iteminfo_;
+  _impl_.iteminfo_ = nullptr;
+#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
+  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
+  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  if (GetArenaForAllocation() == nullptr) { delete old; }
+#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
+  if (GetArenaForAllocation() != nullptr) {
+    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+  }
+#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
+  return temp;
 }
-inline void S_ITEM::set_isalive(bool value) {
-  _internal_set_isalive(value);
-  // @@protoc_insertion_point(field_set:Protocol.S_ITEM.isAlive)
-}
-
-// .Protocol.ITEM_TYPE itemType = 2;
-inline void S_ITEM::clear_itemtype() {
-  _impl_.itemtype_ = 0;
-}
-inline ::Protocol::ITEM_TYPE S_ITEM::_internal_itemtype() const {
-  return static_cast< ::Protocol::ITEM_TYPE >(_impl_.itemtype_);
-}
-inline ::Protocol::ITEM_TYPE S_ITEM::itemtype() const {
-  // @@protoc_insertion_point(field_get:Protocol.S_ITEM.itemType)
-  return _internal_itemtype();
-}
-inline void S_ITEM::_internal_set_itemtype(::Protocol::ITEM_TYPE value) {
+inline ::Protocol::ItemInfo* S_ITEM::unsafe_arena_release_iteminfo() {
+  // @@protoc_insertion_point(field_release:Protocol.S_ITEM.iteminfo)
   
-  _impl_.itemtype_ = value;
+  ::Protocol::ItemInfo* temp = _impl_.iteminfo_;
+  _impl_.iteminfo_ = nullptr;
+  return temp;
 }
-inline void S_ITEM::set_itemtype(::Protocol::ITEM_TYPE value) {
-  _internal_set_itemtype(value);
-  // @@protoc_insertion_point(field_set:Protocol.S_ITEM.itemType)
-}
-
-// uint32 playerId = 3;
-inline void S_ITEM::clear_playerid() {
-  _impl_.playerid_ = 0u;
-}
-inline uint32_t S_ITEM::_internal_playerid() const {
-  return _impl_.playerid_;
-}
-inline uint32_t S_ITEM::playerid() const {
-  // @@protoc_insertion_point(field_get:Protocol.S_ITEM.playerId)
-  return _internal_playerid();
-}
-inline void S_ITEM::_internal_set_playerid(uint32_t value) {
+inline ::Protocol::ItemInfo* S_ITEM::_internal_mutable_iteminfo() {
   
-  _impl_.playerid_ = value;
+  if (_impl_.iteminfo_ == nullptr) {
+    auto* p = CreateMaybeMessage<::Protocol::ItemInfo>(GetArenaForAllocation());
+    _impl_.iteminfo_ = p;
+  }
+  return _impl_.iteminfo_;
 }
-inline void S_ITEM::set_playerid(uint32_t value) {
-  _internal_set_playerid(value);
-  // @@protoc_insertion_point(field_set:Protocol.S_ITEM.playerId)
+inline ::Protocol::ItemInfo* S_ITEM::mutable_iteminfo() {
+  ::Protocol::ItemInfo* _msg = _internal_mutable_iteminfo();
+  // @@protoc_insertion_point(field_mutable:Protocol.S_ITEM.iteminfo)
+  return _msg;
 }
-
-// int32 posX = 4;
-inline void S_ITEM::clear_posx() {
-  _impl_.posx_ = 0;
-}
-inline int32_t S_ITEM::_internal_posx() const {
-  return _impl_.posx_;
-}
-inline int32_t S_ITEM::posx() const {
-  // @@protoc_insertion_point(field_get:Protocol.S_ITEM.posX)
-  return _internal_posx();
-}
-inline void S_ITEM::_internal_set_posx(int32_t value) {
-  
-  _impl_.posx_ = value;
-}
-inline void S_ITEM::set_posx(int32_t value) {
-  _internal_set_posx(value);
-  // @@protoc_insertion_point(field_set:Protocol.S_ITEM.posX)
-}
-
-// int32 posY = 5;
-inline void S_ITEM::clear_posy() {
-  _impl_.posy_ = 0;
-}
-inline int32_t S_ITEM::_internal_posy() const {
-  return _impl_.posy_;
-}
-inline int32_t S_ITEM::posy() const {
-  // @@protoc_insertion_point(field_get:Protocol.S_ITEM.posY)
-  return _internal_posy();
-}
-inline void S_ITEM::_internal_set_posy(int32_t value) {
-  
-  _impl_.posy_ = value;
-}
-inline void S_ITEM::set_posy(int32_t value) {
-  _internal_set_posy(value);
-  // @@protoc_insertion_point(field_set:Protocol.S_ITEM.posY)
+inline void S_ITEM::set_allocated_iteminfo(::Protocol::ItemInfo* iteminfo) {
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.iteminfo_);
+  }
+  if (iteminfo) {
+    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
+        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(iteminfo));
+    if (message_arena != submessage_arena) {
+      iteminfo = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, iteminfo, submessage_arena);
+    }
+    
+  } else {
+    
+  }
+  _impl_.iteminfo_ = iteminfo;
+  // @@protoc_insertion_point(field_set_allocated:Protocol.S_ITEM.iteminfo)
 }
 
 #ifdef __GNUC__

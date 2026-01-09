@@ -1,5 +1,6 @@
 #pragma once
 #include "Job.h"
+#include "Item.h"
 #include "Tilemap.h"
 
 struct PQNode
@@ -54,10 +55,13 @@ public:
 	void Enter(shared_ptr<GameObject> gameObject);
 	void Leave(uint64 id);
 	void Broadcast(SendBufferRef sendBuffer);
+	void AddItem(Item item);
+	void DeleteItem(uint32 id);
 	
 	// 현재 게임룸에서 관리하는 게임오브젝트 정보 전파용도
 	vector<Protocol::ObjectInfo> GetRoomPlayerInfo();
 	vector<Protocol::ObjectInfo> GetRoomMonsterInfo();
+	vector<Protocol::ItemInfo> GetRoomItemInfo();
 	// 위 두 함수가 메인 스레드가 작업 큐에서 꺼내서 사용할땐 문제없음
 	//하지만, 워커스레드가(GameSession, SeverPacketHandler)에서 입출력이와서 
 	// 이 함수를 사용한다면, 컨테이너에 대한 정보가 복사본으로 넘어가기때문에 race condition
@@ -66,6 +70,7 @@ public:
 
 	map<uint64, shared_ptr<class Player>>& GetPlayersForJob() { return _players; }
 	map<uint64, shared_ptr<class Monster>>& GetMonstersForJob() { return _monsters; }
+	map<uint32, Item>& GetItemsForJob() { return _items; }
 public:
 	shared_ptr<Player> FindClosestPlayer(Vec2Int pos);
 	bool FindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int32 maxDepth = 10);
@@ -74,6 +79,7 @@ public:
 	Vec2Int GetRandomEmptyCellPos();
 	shared_ptr<GameObject> GetGameObjectAt(Vec2Int cellPos);
 	shared_ptr<class Creature> GetCreatureAt(Vec2Int cellPos);
+	optional<Item> GetItemAt(Vec2Int cellPos);
 
 	void TickMonsterSpawn();
 private:
@@ -82,7 +88,7 @@ private:
 private:
 	map<uint64, shared_ptr<class Player>> _players;
 	map<uint64, shared_ptr<class Monster>> _monsters;
-
+	map<uint32, Item> _items;
 private:
 	Tilemap _tilemap;
 	const int32 DESIRED_COUNT = 1;

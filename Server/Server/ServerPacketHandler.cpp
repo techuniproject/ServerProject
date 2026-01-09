@@ -78,8 +78,6 @@ SendBufferRef ServerPacketHandler::Make_S_Speed(const Protocol::S_SPEED& pkt)
 
 SendBufferRef ServerPacketHandler::Make_S_Item(const Protocol::S_ITEM& pkt)
 {
-
-
     return MakeSendBuffer(pkt);
 }
 
@@ -106,7 +104,20 @@ bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move& pkt)
            
             int a = pkt.info().state();
             if (object->CanGo(nextPos)) {
-                //TODO Validation 해킹 체킹                           
+                //TODO Validation 해킹 체킹   
+                auto optitem = gameRoom->GetItemAt(nextPos);
+                if (optitem.has_value()) {//플레이어 이동할때 다음칸 아이템 있으면
+                    Item& item = optitem.value();
+                    if (pkt.info().objectid() == item.itemInfo.playerid()) {
+                        gameRoom->DeleteItem(item.itemInfo.itemid());
+                        item.itemInfo.set_isalive(false);
+                        Protocol::S_ITEM pkt;
+                        Protocol::ItemInfo* iteminfo = pkt.mutable_iteminfo(); //message구성하는 struct pointer반환
+                        *iteminfo = item.itemInfo;
+                        SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Item(pkt);
+                        gameRoom->Broadcast(sendBuffer);
+                    }
+                }
                 object->info.set_posx(pkt.info().posx());
                 object->info.set_posy(pkt.info().posy());             
             }

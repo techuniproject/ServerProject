@@ -162,6 +162,16 @@ void GameRoom::Broadcast(SendBufferRef sendBuffer)
 
 }
 
+void GameRoom::AddItem(Item item)
+{
+	_items[item.GetItemID()] = item;
+}
+
+void GameRoom::DeleteItem(uint32 id)
+{
+	_items.erase(id);
+}
+
 vector<Protocol::ObjectInfo> GameRoom::GetRoomPlayerInfo()
 {
 	vector<Protocol::ObjectInfo> infos;
@@ -178,6 +188,16 @@ vector<Protocol::ObjectInfo> GameRoom::GetRoomMonsterInfo()
 
 	for (auto m : _monsters)
 		infos.push_back(m.second->info);
+
+	return infos;
+}
+
+vector<Protocol::ItemInfo> GameRoom::GetRoomItemInfo()
+{
+	vector<Protocol::ItemInfo> infos;
+
+	for (auto m : _items)
+		infos.push_back(m.second.itemInfo);
 
 	return infos;
 }
@@ -563,18 +583,28 @@ shared_ptr<GameObject>  GameRoom::GetGameObjectAt(Vec2Int cellPos) {
 
 
 shared_ptr<Creature>  GameRoom::GetCreatureAt(Vec2Int cellPos) {
-	for (auto& item : _players)
+	for (const auto& item : _players)
 	{
 		if (item.second->GetCellPos() == cellPos)
 			return item.second;
 	}
 
-	for (auto& item : _monsters)
+	for (const auto& item : _monsters)
 	{
 		if (item.second->GetCellPos() == cellPos)
 			return item.second;
 	}
 	return nullptr;
+}
+
+optional<Item> GameRoom::GetItemAt(Vec2Int cellPos)
+{
+	for (auto& item : _items)
+	{
+		if (item.second.GetCellPos() == cellPos)
+			return item.second;
+	}
+	return nullopt;
 }
 
 

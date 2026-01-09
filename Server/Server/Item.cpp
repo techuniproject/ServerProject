@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Item.h"
 
+atomic<uint64> Item::s_itemidGenerator = 1;
+
 Protocol::ITEM_TYPE Item::GetRandomItemType()
 {
   

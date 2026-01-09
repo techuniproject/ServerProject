@@ -25,3 +25,13 @@ message ObjectInfo
 	int32 posY=11;
 	WEAPON_TYPE weaponType=12;
 }
+
+message ItemInfo
+{
+	bool isAlive=1;
+	uint32 itemId=2;
+	ITEM_TYPE itemType=3;
+	uint32 playerId=4;
+	int32 posX=5;
+	int32 posY=6;
+}

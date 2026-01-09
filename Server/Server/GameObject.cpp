@@ -4,7 +4,7 @@
 #include "Player.h"
 #include "GameRoom.h"
 
-atomic<uint64> GameObject::s_idGenerator = 1;
+atomic<uint64> GameObject::s_idGenerator = 0;
 
 GameObject::GameObject()
 {

@@ -7,6 +7,7 @@ class Creature;
 class Player;
 class GameObject;
 class UI;
+class ItemActor;
 
 struct PQNode
 {
@@ -69,6 +70,7 @@ public:
 
 public:
 	shared_ptr<GameObject> GetGameObject(uint64 id);
+	shared_ptr<ItemActor> GetGameItemActor(uint32 id);
 
 	shared_ptr<Player> FindClosestPlayer(Vec2Int pos);
 

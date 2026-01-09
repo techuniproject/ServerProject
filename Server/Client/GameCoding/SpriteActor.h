@@ -16,7 +16,9 @@ public:
 
 	void SetSprite(shared_ptr<Sprite> sprite) { _sprite = sprite; }
 
+	void SetSize(Vec2Int size) { _size = size; }
 protected:
+	Vec2Int _size{ 50,50 };
 	shared_ptr<Sprite> _sprite = nullptr;
 };
 

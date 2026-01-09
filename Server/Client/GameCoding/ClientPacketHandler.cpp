@@ -6,7 +6,7 @@
 #include "MyPlayer.h"
 #include "Creature.h"
 #include "Sprite.h"
-#include "UI.h"
+#include "ItemActor.h"
 
 extern HWND g_hWnd;
 PacketHandlerFunc g_packet_handler[HANDLER_MAX];
@@ -248,28 +248,39 @@ bool Handle_S_SPEED(ServerSessionRef& session, Protocol::S_SPEED& pkt)
 bool Handle_S_ITEM(ServerSessionRef& session, Protocol::S_ITEM& pkt)
 {
     DevScene* scene = GET_SINGLE(GameInstance)->GetCurrentScene<DevScene>();
-    shared_ptr<UI> itemUI = make_shared<UI>();
-    Vec2 cameraPos = GET_SINGLE(GameInstance)->GetCameraPos();
-   // const int screenCx = pkt.posx() - (cameraPos.x - GWinSizeX / 2);
-    const int screenCx = (pkt.posx()*-50 + cameraPos.x) ;
-    const int screenCy = (pkt.posy()*-50 + cameraPos.y);
-    
-    itemUI->SetPos(Vec2(400, 300));
-    itemUI->SetSize(Vec2Int(50, 50));
-    if (scene) {
-        switch (pkt.itemtype()) {
-        case Protocol::ITEM_TYPE_ATTACK:
-            itemUI->SetCurrentSprite(GET_SINGLE(GameInstance)->GetSprite(L"AttackSpeed"));
-            break;
-        case Protocol::ITEM_TYPE_MOVE:
-            itemUI->SetCurrentSprite(GET_SINGLE(GameInstance)->GetSprite(L"MoveSpeed"));
-            break;
-        default:
-            break;
+    const Protocol::ItemInfo& info = pkt.iteminfo();
+    if (info.isalive()) {
+        shared_ptr<ItemActor> Dropitem = make_shared<ItemActor>();
+        Dropitem->SetCellPos(Vec2Int(info.posx(), info.posy()));
+        Dropitem->SetSize(Vec2Int(48, 48));
+        Dropitem->SetBelongingId(info.playerid());
+        Dropitem->SetAliveState(info.isalive());
+        Dropitem->SetItemType(info.itemtype());
+        Dropitem->SetItemId(info.itemid());
+
+        if (scene) {
+            switch (info.itemtype()) {
+            case Protocol::ITEM_TYPE_ATTACK:
+                Dropitem->SetSprite(GET_SINGLE(GameInstance)->GetSprite(L"AttackSpeed"));
+                break;
+            case Protocol::ITEM_TYPE_MOVE:
+                Dropitem->SetSprite(GET_SINGLE(GameInstance)->GetSprite(L"MoveSpeed"));
+                break;
+            default:
+                break;
+            }
         }
-        wstring sen = to_wstring(pkt.playerid());
-        scene->AddUI(sen, itemUI);
+        scene->AddActor(Dropitem);
     }
+    else {
+        if (scene) {
+            shared_ptr<ItemActor> item = scene->GetGameItemActor(info.itemid());
+            if (item) {
+                scene->RemoveActor(item);
+            }
+        }
+    }
+    
     return false;
 }
 

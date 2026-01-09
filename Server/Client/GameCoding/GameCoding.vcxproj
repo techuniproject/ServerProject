@@ -167,6 +167,7 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="HitEffect.h" />
     <ClInclude Include="InputManager.h" />
+    <ClInclude Include="ItemActor.h" />
     <ClInclude Include="Monster.h" />
     <ClInclude Include="MyPlayer.h" />
     <ClInclude Include="NetworkManager.h" />
@@ -220,6 +221,7 @@
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="HitEffect.cpp" />
     <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="ItemActor.cpp" />
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="MyPlayer.cpp" />
     <ClCompile Include="NetworkManager.cpp" />

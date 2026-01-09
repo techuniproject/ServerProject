@@ -23,6 +23,7 @@
 #include "Game.h"
 #include "Monster.h"
 #include "DieEffect.h"
+#include "ItemActor.h"
 
 DevScene::DevScene()
 {
@@ -145,7 +146,7 @@ void DevScene::LoadMap()
 	background->SetLayer(LAYER_BACKGROUND);
 	const Vec2Int size = sprite->GetSize();
 	background->SetPos(Vec2(size.x / 2, size.y / 2));
-
+	
 	AddActor(background);
 }
 
@@ -379,7 +380,7 @@ void DevScene::LoadTilemap()
 		GET_SINGLE(GameInstance)->LoadTilemap(L"Tilemap_01", L"Tilemap\\Tilemap_01.txt");
 
 		_tilemapActor->SetTilemap(tm);
-		_tilemapActor->SetShowDebug(false);
+		_tilemapActor->SetShowDebug(true);
 	}
 }
 
@@ -433,6 +434,17 @@ shared_ptr<GameObject> DevScene::GetGameObject(uint64 id)
 		shared_ptr<GameObject> gameObject = dynamic_pointer_cast<GameObject>(actor);
 		if (gameObject && gameObject->info.objectid() == id)
 			return gameObject;
+	}
+	return nullptr;
+}
+
+shared_ptr<ItemActor> DevScene::GetGameItemActor(uint32 id)
+{
+	for (shared_ptr<Actor> actor : _actors[LAYER_ITEM])
+	{
+		shared_ptr<ItemActor> gameItem = dynamic_pointer_cast<ItemActor>(actor);
+		if (gameItem && gameItem->GetItemID() == id)
+			return gameItem;
 	}
 	return nullptr;
 }

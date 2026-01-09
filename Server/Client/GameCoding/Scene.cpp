@@ -51,11 +51,22 @@ void Scene::Update()
 
 void Scene::Render(HDC hdc)
 {
-	vector<shared_ptr<Actor>>& actors = _actors[LAYER_OBJECT];
-	sort(actors.begin(), actors.end(), [=](shared_ptr<Actor>& a, shared_ptr<Actor>& b)
 	{
-		return a->GetPos().y < b->GetPos().y;
-	});
+		vector<shared_ptr<Actor>>& actors = _actors[LAYER_OBJECT];
+		sort(actors.begin(), actors.end(), [=](shared_ptr<Actor>& a, shared_ptr<Actor>& b)
+			{
+				if (a->GetPos().y != b->GetPos().y) return a->GetPos().y < b->GetPos().y;
+				return a->GetPos().x < b->GetPos().x;
+			});
+	}
+	{
+		vector<shared_ptr<Actor>>& actors = _actors[LAYER_ITEM];
+		sort(actors.begin(), actors.end(), [=](shared_ptr<Actor>& a, shared_ptr<Actor>& b)
+			{
+				if (a->GetPos().y != b->GetPos().y) return a->GetPos().y < b->GetPos().y;
+				return a->GetPos().x < b->GetPos().x;
+			});
+	}
 
 	for (const vector<shared_ptr<Actor>>& actors : _actors)
 		for (shared_ptr<Actor> actor : actors)

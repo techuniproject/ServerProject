@@ -236,6 +236,9 @@
     <ClInclude Include="DieEffect.h">
       <Filter>소스 파일\03. Objects\Game\Effect</Filter>
     </ClInclude>
+    <ClInclude Include="ItemActor.h">
+      <Filter>소스 파일\03. Objects\Unreal</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GameCoding.rc">
@@ -382,6 +385,9 @@
     </ClCompile>
     <ClCompile Include="DieEffect.cpp">
       <Filter>소스 파일\03. Objects\Game\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemActor.cpp">
+      <Filter>소스 파일\03. Objects\Unreal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
