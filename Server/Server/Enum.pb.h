@@ -184,7 +184,8 @@ inline bool DIR_TYPE_Parse(
 enum ITEM_TYPE : int {
   ITEM_TYPE_ATTACK = 0,
   ITEM_TYPE_MOVE = 1,
-  ITEM_TYPE_MAX_CNT = 2,
+  ITEM_TYPE_HEAL = 2,
+  ITEM_TYPE_MAX_CNT = 3,
   ITEM_TYPE_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
   ITEM_TYPE_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
 };

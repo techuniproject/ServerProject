@@ -44,7 +44,7 @@ Player::Player()
 	//AddComponent(camera);//여기서 shared_from_this 호출되어 문제
 	
 	
-	_stat.attack = 100;
+	//_stat.attack = 100;
 }
 
 Player::~Player()
@@ -190,11 +190,11 @@ void Player::TickSkill()
 
 		if (info.weapontype() == SWORD)
 		{
-			shared_ptr<Creature> creature = scene->GetCreatureAt(GetFrontCellPos());
-			if (creature)
-			{
-				//scene->SpawnObject<HitEffect>(GetFrontCellPos())->SetEffectType(SWORD_SNAKE);
-			}
+			//shared_ptr<Creature> creature = scene->GetCreatureAt(GetFrontCellPos());
+			//if (creature)
+			//{
+			//	scene->SpawnObject<HitEffect>(GetFrontCellPos())->SetEffectType(SWORD_SNAKE);
+			//}
 		}
 		else if (info.weapontype() == BOW)
 		{
@@ -233,13 +233,19 @@ void Player::UpdateAnimation()
 		break;
 	case SKILL:
 		_speed = info.attackspeed();
-		if (info.weapontype() == SWORD)
+		switch (info.weapontype()) {
+		case SWORD:
 			SetFlipbook(_flipbookAttack[info.dir()]);
-		else if (info.weapontype() == BOW)
+			break;
+		case BOW:
 			SetFlipbook(_flipbookBow[info.dir()]);
-		else
+			break;
+		case STAFF:
 			SetFlipbook(_flipbookStaff[info.dir()]);
-		break;
+			break;
+		default:
+			break;
+		}
 	}
 }
 

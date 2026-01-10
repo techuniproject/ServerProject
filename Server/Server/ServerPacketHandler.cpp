@@ -122,6 +122,9 @@ bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move& pkt)
                         case Protocol::ITEM_TYPE::ITEM_TYPE_MOVE:
                             object->info.set_movespeed(pkt.info().movespeed()+100);
                            break;
+                        case Protocol::ITEM_TYPE::ITEM_TYPE_HEAL:
+                            object->info.set_hp(pkt.info().hp() + 20);
+                            break;
                         default:
                             break;
                         }

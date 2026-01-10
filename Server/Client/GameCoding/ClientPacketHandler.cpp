@@ -7,6 +7,7 @@
 #include "Creature.h"
 #include "Sprite.h"
 #include "ItemActor.h"
+#include "HitEffect.h"
 
 extern HWND g_hWnd;
 PacketHandlerFunc g_packet_handler[HANDLER_MAX];
@@ -181,6 +182,7 @@ bool Handle_S_Move(ServerSessionRef& session, Protocol::S_Move& pkt)
         if (myPlayerId == info.objectid())
         {
             GET_SINGLE(GameInstance)->GetMyPlayer()->SetMaxHp(info.maxhp());
+            GET_SINGLE(GameInstance)->GetMyPlayer()->SetHp(info.hp());
             GET_SINGLE(GameInstance)->GetMyPlayer()->SetDefence(info.defence());
             GET_SINGLE(GameInstance)->GetMyPlayer()->SetAttackSpeed(info.attackspeed());
             GET_SINGLE(GameInstance)->GetMyPlayer()->SetMoveSpeed(info.movespeed());
@@ -194,6 +196,7 @@ bool Handle_S_Move(ServerSessionRef& session, Protocol::S_Move& pkt)
  			gameObject->SetDir(info.dir());
  			gameObject->SetCellPos(Vec2Int(info.posx(), info.posy()));
             gameObject->SetMaxHp(info.maxhp());
+            gameObject->SetHp(info.hp());
             gameObject->SetDefence(info.defence());
             gameObject->SetName(info.name());
             gameObject->SetAttackSpeed(info.attackspeed());
@@ -229,7 +232,8 @@ bool Handle_S_ATTACK(ServerSessionRef& session, Protocol::S_ATTACK& pkt)
     if (scene) {
         shared_ptr<GameObject> gameObject = scene->GetGameObject(pkt.attackedid());
         if (gameObject) {
-            gameObject->SetHp(pkt.hp());        
+            gameObject->SetHp(pkt.hp());      
+            scene->SpawnObject<HitEffect>(gameObject->GetCellPos());
         }
     }
     return false;
@@ -270,6 +274,9 @@ bool Handle_S_ITEM(ServerSessionRef& session, Protocol::S_ITEM& pkt)
             case Protocol::ITEM_TYPE_MOVE:
                 Dropitem->SetSprite(GET_SINGLE(GameInstance)->GetSprite(L"MoveSpeed"));
                 break;
+                case Protocol::ITEM_TYPE_HEAL:
+                    Dropitem->SetSprite(GET_SINGLE(GameInstance)->GetSprite(L"HealPack"));
+                    break;
             default:
                 break;
             }

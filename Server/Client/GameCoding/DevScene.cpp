@@ -58,6 +58,7 @@ void DevScene::Init()
 	
 	GET_SINGLE(GameInstance)->LoadTexture(L"MoveSpeed", L"Sprite\\Item\\MoveSpeed.bmp",RGB(0,0,0));
 	GET_SINGLE(GameInstance)->LoadTexture(L"AttackSpeed", L"Sprite\\Item\\AttackSpeed.bmp",RGB(0,0,0));
+	GET_SINGLE(GameInstance)->LoadTexture(L"HealPack", L"Sprite\\Item\\HealPack.bmp",RGB(0,0,0));
 	
 	GET_SINGLE(GameInstance)->CreateSprite(L"Staff", GET_SINGLE(GameInstance)->GetTexture(L"Staff"),12,0,55,57);
 	GET_SINGLE(GameInstance)->CreateSprite(L"Sword", GET_SINGLE(GameInstance)->GetTexture(L"Sword"),12,0,55,57);
@@ -80,6 +81,7 @@ void DevScene::Init()
 	// 500
 	GET_SINGLE(GameInstance)->CreateSprite(L"AttackSpeed", GET_SINGLE(GameInstance)->GetTexture(L"AttackSpeed"), 0, 0, 50, 50);
 	GET_SINGLE(GameInstance)->CreateSprite(L"MoveSpeed", GET_SINGLE(GameInstance)->GetTexture(L"MoveSpeed"), 0, 0, 50, 50);
+	GET_SINGLE(GameInstance)->CreateSprite(L"HealPack", GET_SINGLE(GameInstance)->GetTexture(L"HealPack"), 0, 0, 50, 50);
 
 
 	LoadMap();
