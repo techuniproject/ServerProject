@@ -51,6 +51,8 @@ PROTOBUF_CONSTEXPR ObjectInfo::ObjectInfo(
   , /*decltype(_impl_.posx_)*/0
   , /*decltype(_impl_.posy_)*/0
   , /*decltype(_impl_.weapontype_)*/0
+  , /*decltype(_impl_.attackspeed_)*/0
+  , /*decltype(_impl_.movespeed_)*/0
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct ObjectInfoDefaultTypeInternal {
   PROTOBUF_CONSTEXPR ObjectInfoDefaultTypeInternal()
@@ -112,6 +114,8 @@ const uint32_t TableStruct_Struct_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(p
   PROTOBUF_FIELD_OFFSET(::Protocol::ObjectInfo, _impl_.posx_),
   PROTOBUF_FIELD_OFFSET(::Protocol::ObjectInfo, _impl_.posy_),
   PROTOBUF_FIELD_OFFSET(::Protocol::ObjectInfo, _impl_.weapontype_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::ObjectInfo, _impl_.attackspeed_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::ObjectInfo, _impl_.movespeed_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::ItemInfo, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -128,7 +132,7 @@ const uint32_t TableStruct_Struct_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(p
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::Protocol::BuffData)},
   { 9, -1, -1, sizeof(::Protocol::ObjectInfo)},
-  { 27, -1, -1, sizeof(::Protocol::ItemInfo)},
+  { 29, -1, -1, sizeof(::Protocol::ItemInfo)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -140,14 +144,15 @@ static const ::_pb::Message* const file_default_instances[] = {
 const char descriptor_table_protodef_Struct_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n\014Struct.proto\022\010Protocol\032\nEnum.proto\"\?\n\010"
   "BuffData\022\016\n\006buffId\030\001 \001(\004\022\022\n\nremainTime\030\002"
-  " \001(\002\022\017\n\007victims\030\003 \003(\004\"\247\002\n\nObjectInfo\022\020\n\010"
+  " \001(\002\022\017\n\007victims\030\003 \003(\004\"\317\002\n\nObjectInfo\022\020\n\010"
   "objectId\030\001 \001(\004\022)\n\nobjectType\030\002 \001(\0162\025.Pro"
   "tocol.OBJECT_TYPE\022*\n\005state\030\003 \001(\0162\033.Proto"
   "col.OBJECT_STATE_TYPE\022\037\n\003dir\030\004 \001(\0162\022.Pro"
   "tocol.DIR_TYPE\022\014\n\004name\030\005 \001(\t\022\n\n\002hp\030\006 \001(\005"
   "\022\r\n\005maxHp\030\007 \001(\005\022\016\n\006attack\030\010 \001(\005\022\017\n\007defen"
   "ce\030\t \001(\005\022\014\n\004posX\030\n \001(\005\022\014\n\004posY\030\013 \001(\005\022)\n\n"
-  "weaponType\030\014 \001(\0162\025.Protocol.WEAPON_TYPE\""
+  "weaponType\030\014 \001(\0162\025.Protocol.WEAPON_TYPE\022"
+  "\023\n\013attackspeed\030\r \001(\002\022\021\n\tmovespeed\030\016 \001(\002\""
   "\200\001\n\010ItemInfo\022\017\n\007isAlive\030\001 \001(\010\022\016\n\006itemId\030"
   "\002 \001(\r\022%\n\010itemType\030\003 \001(\0162\023.Protocol.ITEM_"
   "TYPE\022\020\n\010playerId\030\004 \001(\r\022\014\n\004posX\030\005 \001(\005\022\014\n\004"
@@ -158,7 +163,7 @@ static const ::_pbi::DescriptorTable* const descriptor_table_Struct_2eproto_deps
 };
 static ::_pbi::once_flag descriptor_table_Struct_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Struct_2eproto = {
-    false, false, 538, descriptor_table_protodef_Struct_2eproto,
+    false, false, 578, descriptor_table_protodef_Struct_2eproto,
     "Struct.proto",
     &descriptor_table_Struct_2eproto_once, descriptor_table_Struct_2eproto_deps, 1, 3,
     schemas, file_default_instances, TableStruct_Struct_2eproto::offsets,
@@ -466,6 +471,8 @@ ObjectInfo::ObjectInfo(const ObjectInfo& from)
     , decltype(_impl_.posx_){}
     , decltype(_impl_.posy_){}
     , decltype(_impl_.weapontype_){}
+    , decltype(_impl_.attackspeed_){}
+    , decltype(_impl_.movespeed_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
@@ -478,8 +485,8 @@ ObjectInfo::ObjectInfo(const ObjectInfo& from)
       _this->GetArenaForAllocation());
   }
   ::memcpy(&_impl_.objectid_, &from._impl_.objectid_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.weapontype_) -
-    reinterpret_cast<char*>(&_impl_.objectid_)) + sizeof(_impl_.weapontype_));
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.movespeed_) -
+    reinterpret_cast<char*>(&_impl_.objectid_)) + sizeof(_impl_.movespeed_));
   // @@protoc_insertion_point(copy_constructor:Protocol.ObjectInfo)
 }
 
@@ -500,6 +507,8 @@ inline void ObjectInfo::SharedCtor(
     , decltype(_impl_.posx_){0}
     , decltype(_impl_.posy_){0}
     , decltype(_impl_.weapontype_){0}
+    , decltype(_impl_.attackspeed_){0}
+    , decltype(_impl_.movespeed_){0}
     , /*decltype(_impl_._cached_size_)*/{}
   };
   _impl_.name_.InitDefault();
@@ -534,8 +543,8 @@ void ObjectInfo::Clear() {
 
   _impl_.name_.ClearToEmpty();
   ::memset(&_impl_.objectid_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&_impl_.weapontype_) -
-      reinterpret_cast<char*>(&_impl_.objectid_)) + sizeof(_impl_.weapontype_));
+      reinterpret_cast<char*>(&_impl_.movespeed_) -
+      reinterpret_cast<char*>(&_impl_.objectid_)) + sizeof(_impl_.movespeed_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -644,6 +653,22 @@ const char* ObjectInfo::_InternalParse(const char* ptr, ::_pbi::ParseContext* ct
           uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
           _internal_set_weapontype(static_cast<::Protocol::WEAPON_TYPE>(val));
+        } else
+          goto handle_unusual;
+        continue;
+      // float attackspeed = 13;
+      case 13:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 109)) {
+          _impl_.attackspeed_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
+        } else
+          goto handle_unusual;
+        continue;
+      // float movespeed = 14;
+      case 14:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 117)) {
+          _impl_.movespeed_ = ::PROTOBUF_NAMESPACE_ID::internal::UnalignedLoad<float>(ptr);
+          ptr += sizeof(float);
         } else
           goto handle_unusual;
         continue;
@@ -756,6 +781,26 @@ uint8_t* ObjectInfo::_InternalSerialize(
       12, this->_internal_weapontype(), target);
   }
 
+  // float attackspeed = 13;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_attackspeed = this->_internal_attackspeed();
+  uint32_t raw_attackspeed;
+  memcpy(&raw_attackspeed, &tmp_attackspeed, sizeof(tmp_attackspeed));
+  if (raw_attackspeed != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteFloatToArray(13, this->_internal_attackspeed(), target);
+  }
+
+  // float movespeed = 14;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_movespeed = this->_internal_movespeed();
+  uint32_t raw_movespeed;
+  memcpy(&raw_movespeed, &tmp_movespeed, sizeof(tmp_movespeed));
+  if (raw_movespeed != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteFloatToArray(14, this->_internal_movespeed(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -838,6 +883,24 @@ size_t ObjectInfo::ByteSizeLong() const {
       ::_pbi::WireFormatLite::EnumSize(this->_internal_weapontype());
   }
 
+  // float attackspeed = 13;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_attackspeed = this->_internal_attackspeed();
+  uint32_t raw_attackspeed;
+  memcpy(&raw_attackspeed, &tmp_attackspeed, sizeof(tmp_attackspeed));
+  if (raw_attackspeed != 0) {
+    total_size += 1 + 4;
+  }
+
+  // float movespeed = 14;
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_movespeed = this->_internal_movespeed();
+  uint32_t raw_movespeed;
+  memcpy(&raw_movespeed, &tmp_movespeed, sizeof(tmp_movespeed));
+  if (raw_movespeed != 0) {
+    total_size += 1 + 4;
+  }
+
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
@@ -892,6 +955,20 @@ void ObjectInfo::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PRO
   if (from._internal_weapontype() != 0) {
     _this->_internal_set_weapontype(from._internal_weapontype());
   }
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_attackspeed = from._internal_attackspeed();
+  uint32_t raw_attackspeed;
+  memcpy(&raw_attackspeed, &tmp_attackspeed, sizeof(tmp_attackspeed));
+  if (raw_attackspeed != 0) {
+    _this->_internal_set_attackspeed(from._internal_attackspeed());
+  }
+  static_assert(sizeof(uint32_t) == sizeof(float), "Code assumes uint32_t and float are the same size.");
+  float tmp_movespeed = from._internal_movespeed();
+  uint32_t raw_movespeed;
+  memcpy(&raw_movespeed, &tmp_movespeed, sizeof(tmp_movespeed));
+  if (raw_movespeed != 0) {
+    _this->_internal_set_movespeed(from._internal_movespeed());
+  }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
@@ -916,8 +993,8 @@ void ObjectInfo::InternalSwap(ObjectInfo* other) {
       &other->_impl_.name_, rhs_arena
   );
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(ObjectInfo, _impl_.weapontype_)
-      + sizeof(ObjectInfo::_impl_.weapontype_)
+      PROTOBUF_FIELD_OFFSET(ObjectInfo, _impl_.movespeed_)
+      + sizeof(ObjectInfo::_impl_.movespeed_)
       - PROTOBUF_FIELD_OFFSET(ObjectInfo, _impl_.objectid_)>(
           reinterpret_cast<char*>(&_impl_.objectid_),
           reinterpret_cast<char*>(&other->_impl_.objectid_));

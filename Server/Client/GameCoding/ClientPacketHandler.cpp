@@ -182,6 +182,8 @@ bool Handle_S_Move(ServerSessionRef& session, Protocol::S_Move& pkt)
         {
             GET_SINGLE(GameInstance)->GetMyPlayer()->SetMaxHp(info.maxhp());
             GET_SINGLE(GameInstance)->GetMyPlayer()->SetDefence(info.defence());
+            GET_SINGLE(GameInstance)->GetMyPlayer()->SetAttackSpeed(info.attackspeed());
+            GET_SINGLE(GameInstance)->GetMyPlayer()->SetMoveSpeed(info.movespeed());
             return false;
         }
  			
@@ -194,6 +196,8 @@ bool Handle_S_Move(ServerSessionRef& session, Protocol::S_Move& pkt)
             gameObject->SetMaxHp(info.maxhp());
             gameObject->SetDefence(info.defence());
             gameObject->SetName(info.name());
+            gameObject->SetAttackSpeed(info.attackspeed());
+            gameObject->SetMoveSpeed(info.movespeed());
             auto ifplayer = dynamic_pointer_cast<Player>(gameObject);
             if (ifplayer) {
 
@@ -239,7 +243,7 @@ bool Handle_S_SPEED(ServerSessionRef& session, Protocol::S_SPEED& pkt)
         auto ifplayer = dynamic_pointer_cast<Player>(gameObject);
         if (ifplayer) {
             ifplayer->SetMoveSpeed(pkt.movespeed());
-            ifplayer->SetFlipbookSpeed(pkt.movespeed() / 100 - 1);
+           // ifplayer->SetFlipbookSpeed(pkt.movespeed() / 100 - 1);
         }
     }
     return false;

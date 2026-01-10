@@ -382,6 +382,8 @@ class ObjectInfo final :
     kPosXFieldNumber = 10,
     kPosYFieldNumber = 11,
     kWeaponTypeFieldNumber = 12,
+    kAttackspeedFieldNumber = 13,
+    kMovespeedFieldNumber = 14,
   };
   // string name = 5;
   void clear_name();
@@ -496,6 +498,24 @@ class ObjectInfo final :
   void _internal_set_weapontype(::Protocol::WEAPON_TYPE value);
   public:
 
+  // float attackspeed = 13;
+  void clear_attackspeed();
+  float attackspeed() const;
+  void set_attackspeed(float value);
+  private:
+  float _internal_attackspeed() const;
+  void _internal_set_attackspeed(float value);
+  public:
+
+  // float movespeed = 14;
+  void clear_movespeed();
+  float movespeed() const;
+  void set_movespeed(float value);
+  private:
+  float _internal_movespeed() const;
+  void _internal_set_movespeed(float value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.ObjectInfo)
  private:
   class _Internal;
@@ -516,6 +536,8 @@ class ObjectInfo final :
     int32_t posx_;
     int32_t posy_;
     int weapontype_;
+    float attackspeed_;
+    float movespeed_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -1094,6 +1116,46 @@ inline void ObjectInfo::_internal_set_weapontype(::Protocol::WEAPON_TYPE value) 
 inline void ObjectInfo::set_weapontype(::Protocol::WEAPON_TYPE value) {
   _internal_set_weapontype(value);
   // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.weaponType)
+}
+
+// float attackspeed = 13;
+inline void ObjectInfo::clear_attackspeed() {
+  _impl_.attackspeed_ = 0;
+}
+inline float ObjectInfo::_internal_attackspeed() const {
+  return _impl_.attackspeed_;
+}
+inline float ObjectInfo::attackspeed() const {
+  // @@protoc_insertion_point(field_get:Protocol.ObjectInfo.attackspeed)
+  return _internal_attackspeed();
+}
+inline void ObjectInfo::_internal_set_attackspeed(float value) {
+  
+  _impl_.attackspeed_ = value;
+}
+inline void ObjectInfo::set_attackspeed(float value) {
+  _internal_set_attackspeed(value);
+  // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.attackspeed)
+}
+
+// float movespeed = 14;
+inline void ObjectInfo::clear_movespeed() {
+  _impl_.movespeed_ = 0;
+}
+inline float ObjectInfo::_internal_movespeed() const {
+  return _impl_.movespeed_;
+}
+inline float ObjectInfo::movespeed() const {
+  // @@protoc_insertion_point(field_get:Protocol.ObjectInfo.movespeed)
+  return _internal_movespeed();
+}
+inline void ObjectInfo::_internal_set_movespeed(float value) {
+  
+  _impl_.movespeed_ = value;
+}
+inline void ObjectInfo::set_movespeed(float value) {
+  _internal_set_movespeed(value);
+  // @@protoc_insertion_point(field_set:Protocol.ObjectInfo.movespeed)
 }
 
 // -------------------------------------------------------------------

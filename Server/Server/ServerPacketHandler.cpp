@@ -94,9 +94,10 @@ bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move& pkt)
     shared_ptr<GameRoom> gameRoom = session->gameRoom.lock();
     if (gameRoom) {
         gameRoom->PushJob([gameRoom, pkt]() {
-            
             shared_ptr<GameObject> object = gameRoom->FindObject(pkt.info().objectid());
             if (object == nullptr)return;
+            object->info.set_attackspeed(pkt.info().attackspeed());
+            object->info.set_movespeed(pkt.info().movespeed());
            
             Vec2Int nextPos{ pkt.info().posx(), pkt.info().posy() };
             object->info.set_state(pkt.info().state());
@@ -111,10 +112,20 @@ bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move& pkt)
                     if (pkt.info().objectid() == item.itemInfo.playerid()) {
                         gameRoom->DeleteItem(item.itemInfo.itemid());
                         item.itemInfo.set_isalive(false);
-                        Protocol::S_ITEM pkt;
-                        Protocol::ItemInfo* iteminfo = pkt.mutable_iteminfo(); //message구성하는 struct pointer반환
+                        Protocol::S_ITEM itempkt;
+                        Protocol::ItemInfo* iteminfo = itempkt.mutable_iteminfo(); //message구성하는 struct pointer반환
                         *iteminfo = item.itemInfo;
-                        SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Item(pkt);
+                        switch (iteminfo->itemtype()) {
+                        case Protocol::ITEM_TYPE::ITEM_TYPE_ATTACK:                        
+                            object->info.set_attackspeed(pkt.info().attackspeed() + 1);                    
+                            break;
+                        case Protocol::ITEM_TYPE::ITEM_TYPE_MOVE:
+                            object->info.set_movespeed(pkt.info().movespeed()+100);
+                           break;
+                        default:
+                            break;
+                        }
+                        SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Item(itempkt);
                         gameRoom->Broadcast(sendBuffer);
                     }
                 }
@@ -122,14 +133,14 @@ bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move& pkt)
                 object->info.set_posy(pkt.info().posy());             
             }
             object->info.set_weapontype(pkt.info().weapontype());
-
+           
           /*  if (pkt.info().state() == Protocol::OBJECT_STATE_TYPE_SKILL) {
                 object->info.set_weapontype(pkt.info().weapontype());
                 object->_attackRequested = true;     //데미지 2중 들어감                          
             }*/
            
 
-            SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Move(pkt.info());
+            SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Move(object->info);
             gameRoom->Broadcast(sendBuffer);
            
             });
@@ -137,12 +148,7 @@ bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move& pkt)
     }
     return false;
 
-    //shared_ptr<GameRoom> gameRoom = session->gameRoom.lock();
-    //if (gameRoom) {
-    //    gameRoom->Handle_C_Move(pkt);
-    //    return true;
-    //}
-    //return false;
+
 }
 
 bool Handle_C_CHAT(GameSessionRef& session, Protocol::C_CHAT& pkt)

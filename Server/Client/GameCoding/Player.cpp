@@ -143,28 +143,28 @@ void Player::TickMove()
 		switch (info.dir())
 		{
 		case DIR_UP:
-			_pos.y -= _moveSpeed * deltaTime;
+			_pos.y -= info.movespeed() * deltaTime;
 			if (_pos.y <= _destPos.y) {
 				_pos = _destPos;
 				SetState(IDLE);
 			}
 			break;
 		case DIR_DOWN:
-			_pos.y += _moveSpeed * deltaTime;
+			_pos.y += info.movespeed() * deltaTime;
 			if (_pos.y >= _destPos.y) {
 				_pos = _destPos;
 				SetState(IDLE);
 			}
 			break;
 		case DIR_LEFT:
-			_pos.x -= _moveSpeed * deltaTime;
+			_pos.x -= info.movespeed() * deltaTime;
 			if (_pos.x <= _destPos.x) {
 				_pos = _destPos;
 				SetState(IDLE);
 			}
 			break;
 		case DIR_RIGHT:
-			_pos.x += _moveSpeed * deltaTime;
+			_pos.x += info.movespeed() * deltaTime;
 			if (_pos.x >= _destPos.x) {
 				_pos = _destPos;
 				SetState(IDLE);
@@ -224,12 +224,15 @@ void Player::UpdateAnimation()
 		/*if (_keyPressed)
 			SetFlipbook(_flipbookMove[info.dir()]);
 		else*/
+		_speed = info.movespeed()/100-1;
 			SetFlipbook(_flipbookIdle[info.dir()]);
 		break;
 	case MOVE:
+		_speed = info.movespeed() / 100 - 1;
 		SetFlipbook(_flipbookMove[info.dir()]);
 		break;
 	case SKILL:
+		_speed = info.attackspeed();
 		if (info.weapontype() == SWORD)
 			SetFlipbook(_flipbookAttack[info.dir()]);
 		else if (info.weapontype() == BOW)
@@ -249,8 +252,3 @@ void Player::SetWeaponType(Protocol::WEAPON_TYPE weaponType)
 	_dirtyFlag = true;
 }
 
-void Player::SetMoveSpeed(float _speed)
-{
-	_moveSpeed = _speed;
-	_dirtyFlag = true;
-}

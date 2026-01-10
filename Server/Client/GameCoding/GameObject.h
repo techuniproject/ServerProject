@@ -40,6 +40,12 @@ public:
 	void SetDefence(int32 defence) { info.set_defence(defence); }
 	void SetName(string name) { info.set_name(name); }
 
+
+	void SetMoveSpeed(float speed) { info.set_movespeed(speed); _dirtyFlag = true; }
+	float GetMoveSpeed() { return info.movespeed(); }
+	void SetAttackSpeed(float speed) { info.set_attackspeed(speed); _dirtyFlag = true;}
+	float GetAttackSpeed() { return info.attackspeed(); }
+
 protected:
 	//int64 _objectID = 0;
 	//Vec2Int GetCellPos() = {};

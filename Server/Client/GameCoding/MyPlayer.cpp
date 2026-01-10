@@ -81,24 +81,24 @@ void MyPlayer::TickInput()
 		SetWeaponType(STAFF);
 	}
 
-	if (GET_SINGLE(GameInstance)->GetButtonDown(KeyType::Q)) {
+	/*if (GET_SINGLE(GameInstance)->GetButtonDown(KeyType::Q)) {
 		SetMoveSpeed(GetMoveSpeed() + 100);
-	}
-
-	/*if (GET_SINGLE(GameInstance)->GetButton(KeyType::SpaceBar))
-	{
-		SetState(SKILL);
 	}*/
 
-	uint64 now = GetTickCount64();
-	bool pressed = GET_SINGLE(GameInstance)->GetButton(KeyType::SpaceBar);
-	bool justPressed = pressed && !prevPressed;
-	prevPressed = pressed;
-
-	if (pressed&& now >= _nextSkillAt) {
-		SetState(SKILL);    
-		_nextSkillAt = now + SKILL_CD;    //공격 애니메이션 다 0.5초   
+	if (GET_SINGLE(GameInstance)->GetButton(KeyType::SpaceBar))
+	{
+		SetState(SKILL);
 	}
+
+	//uint64 now = GetTickCount64();
+	//bool pressed = GET_SINGLE(GameInstance)->GetButton(KeyType::SpaceBar);
+	//bool justPressed = pressed && !prevPressed;
+	//prevPressed = pressed;
+
+	//if (pressed&& now >= _nextSkillAt) {
+	//	SetState(SKILL);    
+	//	_nextSkillAt = now + SKILL_CD;    //공격 애니메이션 다 0.5초   
+	//}
  }
 //Myplayer은 지금 클라에서 미리 움직이고, 서버에 통보하고 나머지 클라에 broadcast
 void MyPlayer::TryMove()
@@ -119,8 +119,8 @@ void MyPlayer::SyncToServer()
 {
 	if (_dirtyFlag == false)
 		return;
-	SendBufferRef sendBuffer2 = ClientPacketHandler::Make_C_Speed(0, GetMoveSpeed());
-	GET_SINGLE(GameInstance)->SendPacket(sendBuffer2);
+	//SendBufferRef sendBuffer2 = ClientPacketHandler::Make_C_Speed(GetAttackSpeed(), GetMoveSpeed());
+	//GET_SINGLE(GameInstance)->SendPacket(sendBuffer2);
 	SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Move();
 	GET_SINGLE(GameInstance)->SendPacket(sendBuffer);
 	a = info.state();
