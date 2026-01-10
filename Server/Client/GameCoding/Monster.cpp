@@ -42,7 +42,16 @@ void Monster::BeginPlay()
 void Monster::Tick()
 {
 	Super::Tick();
+	float deltaTime = GET_SINGLE(GameInstance)->GetDeltaTime();
+	
+	
+		float alpha = 1.0f - std::exp(-5 * deltaTime);
+		_pos.x = std::lerp(_pos.x, _destPos.x, alpha);
+		_pos.y = std::lerp(_pos.y, _destPos.y, alpha);
 
+		// ½º³À
+		if (std::hypot(_destPos.x - _pos.x, _destPos.y - _pos.y) < 0.001f) _pos = _destPos;
+	
 }
 
 void Monster::Render(HDC hdc)
@@ -62,13 +71,13 @@ void Monster::TickIdle()
 {
 	float deltaTime = GET_SINGLE(GameInstance)->GetDeltaTime();
 	
-	float alpha = 1.0f - std::exp(-5 * deltaTime);
-	_pos.x = std::lerp(_pos.x, _destPos.x, alpha);
-	_pos.y = std::lerp(_pos.y, _destPos.y, alpha);
+	//float alpha = 1.0f - std::exp(-5 * deltaTime);
+	//_pos.x = std::lerp(_pos.x, _destPos.x, alpha);
+	//_pos.y = std::lerp(_pos.y, _destPos.y, alpha);
 
-	// ½º³À
-	if (std::hypot(_destPos.x - _pos.x, _destPos.y - _pos.y) < 0.001f) _pos = _destPos;
-	
+	//// ½º³À
+	//if (std::hypot(_destPos.x - _pos.x, _destPos.y - _pos.y) < 0.001f) _pos = _destPos;
+	//
 	
 	
 	
@@ -78,12 +87,12 @@ void Monster::TickMove()
 {
 	float deltaTime = GET_SINGLE(GameInstance)->GetDeltaTime();
 
-	float alpha = 1.0f - std::exp(-5 * deltaTime);
-	_pos.x = std::lerp(_pos.x, _destPos.x, alpha);
-	_pos.y = std::lerp(_pos.y, _destPos.y, alpha);
+	//float alpha = 1.0f - std::exp(-5 * deltaTime);
+	//_pos.x = std::lerp(_pos.x, _destPos.x, alpha);
+	//_pos.y = std::lerp(_pos.y, _destPos.y, alpha);
 
-	// ½º³À
-	if (std::hypot(_destPos.x - _pos.x, _destPos.y - _pos.y) < 0.001f) _pos = _destPos;
+	//// ½º³À
+	//if (std::hypot(_destPos.x - _pos.x, _destPos.y - _pos.y) < 0.001f) _pos = _destPos;
 
 	
 	
@@ -163,9 +172,9 @@ void Monster::TickSkill()
 
 void Monster::TickHit()
 {
-	float deltaTime = GET_SINGLE(GameInstance)->GetDeltaTime();
+	//float deltaTime = GET_SINGLE(GameInstance)->GetDeltaTime();
 
-	//while (_pos.x != _destPos.x&&_pos.y!=_destPos.y) {
+	//while (_pos.x != _destPos.x && _pos.y != _destPos.y) {
 	//	float alpha = 1.0f - std::exp(-5 * deltaTime);
 	//	_pos.x = std::lerp(_pos.x, _destPos.x, alpha);
 	//	_pos.y = std::lerp(_pos.y, _destPos.y, alpha);
