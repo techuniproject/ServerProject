@@ -35,9 +35,13 @@ public:
 	void SetObjectDefence(int32 defence) { info.set_defence(defence); }
 	Vec2Int GetPos() { return Vec2Int(info.posx(), info.posy()); }
 
+	uint64 GetLastMoveTime() { return _lastMoveTime; }
+	void SetLastMoveTime(uint64 time) { _lastMoveTime = time; }
+
 public:
 	Protocol::ObjectInfo info;
 	shared_ptr<class GameRoom> room; //순환참조 생길수도 순서 잘 안지키면
+	uint64 _lastMoveTime = 0;
 	//weak_ptr<class GameRoom>room;
 private:
 	static atomic<uint64> s_idGenerator;

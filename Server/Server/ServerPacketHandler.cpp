@@ -7,6 +7,7 @@
 #include "GameObject.h"
 #include "AIQueue.h"
 #include "Monster.h"
+#include "Player.h"
 
 extern AIQueue GAIQueue;
 
@@ -90,60 +91,92 @@ bool Handle_INVALID(GameSessionRef& session, BYTE* buffer, int32 length)
 
 bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move& pkt)
 {
-    
+    weak_ptr<GameSession>wsession = session;
     shared_ptr<GameRoom> gameRoom = session->gameRoom.lock();
     if (gameRoom) {
-        gameRoom->PushJob([gameRoom, pkt]() {
-            shared_ptr<GameObject> object = gameRoom->FindObject(pkt.info().objectid());
-            if (object == nullptr)return;
-            object->info.set_attackspeed(pkt.info().attackspeed());
-            object->info.set_movespeed(pkt.info().movespeed());
+        gameRoom->PushJob([gameRoom, pkt, wsession]() {
+           
+            shared_ptr<GameSession>curSession = wsession.lock();
+            if (!curSession)return;
+  
+            shared_ptr<Player>curSessionPlayer = curSession->player.lock();
+            if (!curSessionPlayer)return;
+
+            if (curSessionPlayer->GetObjectID() != pkt.info().objectid())return;
            
             Vec2Int nextPos{ pkt.info().posx(), pkt.info().posy() };
-            object->info.set_state(pkt.info().state());
-            object->info.set_dir(pkt.info().dir());
-           
-            int a = pkt.info().state();
-            if (object->CanGo(nextPos)) {
-                //TODO Validation 해킹 체킹   
-                auto optitem = gameRoom->GetItemAt(nextPos);
-                if (optitem.has_value()) {//플레이어 이동할때 다음칸 아이템 있으면
-                    Item& item = optitem.value();
-                    if (pkt.info().objectid() == item.itemInfo.playerid()) {
-                        gameRoom->DeleteItem(item.itemInfo.itemid());
-                        item.itemInfo.set_isalive(false);
-                        Protocol::S_ITEM itempkt;
-                        Protocol::ItemInfo* iteminfo = itempkt.mutable_iteminfo(); //message구성하는 struct pointer반환
-                        *iteminfo = item.itemInfo;
-                        switch (iteminfo->itemtype()) {
-                        case Protocol::ITEM_TYPE::ITEM_TYPE_ATTACK:                        
-                            object->info.set_attackspeed(pkt.info().attackspeed() + 1);                    
-                            break;
-                        case Protocol::ITEM_TYPE::ITEM_TYPE_MOVE:
-                            object->info.set_movespeed(pkt.info().movespeed()+100);
-                           break;
-                        case Protocol::ITEM_TYPE::ITEM_TYPE_HEAL:
-                            object->info.set_hp(pkt.info().hp() + 20);
-                            break;
-                        default:
-                            break;
-                        }
-                        SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Item(itempkt);
-                        gameRoom->Broadcast(sendBuffer);
-                    }
-                }
-                object->info.set_posx(pkt.info().posx());
-                object->info.set_posy(pkt.info().posy());             
-            }
-            object->info.set_weapontype(pkt.info().weapontype());
-           
-          /*  if (pkt.info().state() == Protocol::OBJECT_STATE_TYPE_SKILL) {
-                object->info.set_weapontype(pkt.info().weapontype());
-                object->_attackRequested = true;     //데미지 2중 들어감                          
-            }*/
-           
+            curSessionPlayer->info.set_state(pkt.info().state());
+            curSessionPlayer->info.set_dir(pkt.info().dir());
 
-            SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Move(object->info);
+            if (nextPos == curSessionPlayer->GetCellPos()) {
+               //제자리면 체크할 필요가 있나?
+            }
+            Vec2Int curPos{ curSessionPlayer->GetCellPos() };
+            bool isMove = (nextPos != curPos);
+
+            if (isMove) {
+                float speed = curSessionPlayer->info.movespeed();
+                if (speed <= 0) speed = 1.0f;
+                // 3. 약간의 오차 허용 (네트워크 렉 등을 고려하여 10~20% 정도 봐줌)
+                // 너무 빡빡하면 정상 유저도 렉 걸릴 때 롤백됨
+                uint64 minIntervalMs = (uint64)((48.0f / speed) * 1000);
+                minIntervalMs = (uint64)(minIntervalMs * 0.9f); // 오차 범위
+                uint64 now = ::GetTickCount64();
+                if (now - curSessionPlayer->GetLastMoveTime() < minIntervalMs)
+                {
+                    // [검증 실패] 너무 빠름! 이동 허용 x 스피드핵
+                    curSession->Send(ServerPacketHandler::Make_S_Move(curSessionPlayer->info));
+                    return;
+                }
+                
+                int dist = abs(nextPos.y - curPos.y) + abs(nextPos.x - curPos.x);
+                if (dist > 1) {
+                    //일단 이동관련 좌표는 서버에서 수정 x ->이건 클라보다 핵이나 치트방지용
+                    //현재 로직에서 이게 가능한건 텔포 등이므로 패킷수가 많을 수 있어 방향 및 state도 수정 x
+                    //이동을 크게 한번에 텔포시키면 클라로직꼬인거 푸는건 보내줘야할수도?
+                    curSession->Send(ServerPacketHandler::Make_S_Move(curSessionPlayer->info));
+                    return;
+                }
+               
+                if (curSessionPlayer->CanGo(nextPos)) {
+                    //TODO Validation 해킹 체킹   
+                    curSessionPlayer->SetLastMoveTime(now);
+                    auto optitem = gameRoom->GetItemAt(nextPos);
+                    if (optitem.has_value()) {//플레이어 이동할때 다음칸 아이템 있으면
+                        Item& item = optitem.value();
+                        if (pkt.info().objectid() == item.itemInfo.playerid()) {
+                            gameRoom->DeleteItem(item.itemInfo.itemid());
+                            item.itemInfo.set_isalive(false);
+                            Protocol::S_ITEM itempkt;
+                            Protocol::ItemInfo* iteminfo = itempkt.mutable_iteminfo(); //message구성하는 struct pointer반환
+                            *iteminfo = item.itemInfo;
+                            switch (iteminfo->itemtype()) {
+                            case Protocol::ITEM_TYPE::ITEM_TYPE_ATTACK:
+                                curSessionPlayer->info.set_attackspeed(curSessionPlayer->info.attackspeed() + 1);
+                                break;
+                            case Protocol::ITEM_TYPE::ITEM_TYPE_MOVE:
+                                curSessionPlayer->info.set_movespeed(curSessionPlayer->info.movespeed() + 100);
+                                break;
+                            case Protocol::ITEM_TYPE::ITEM_TYPE_HEAL:
+                                curSessionPlayer->info.set_hp(curSessionPlayer->info.hp() + 20);
+                                break;
+                            default:
+                                break;
+                            }
+                            SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Item(itempkt);
+                            gameRoom->Broadcast(sendBuffer);
+                        }
+                    }
+                    curSessionPlayer->info.set_posx(pkt.info().posx());
+                    curSessionPlayer->info.set_posy(pkt.info().posy());
+                }
+            }
+
+                           
+            curSessionPlayer->info.set_weapontype(pkt.info().weapontype());
+        
+
+            SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Move(curSessionPlayer->info);
             gameRoom->Broadcast(sendBuffer);
            
             });

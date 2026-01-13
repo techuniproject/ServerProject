@@ -102,7 +102,7 @@ struct VectorInt
 
 	bool operator!=(const VectorInt& other)const
 	{
-		return x != other.x && y != other.y;
+		return x != other.x || y != other.y;
 	}
 
 	void operator+=(const VectorInt& other)

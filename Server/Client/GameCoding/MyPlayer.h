@@ -17,7 +17,7 @@ private:
 	void TickInput();
 	void TryMove();
 
-	void SyncToServer();
+	void SyncToServer(int& frame);
 
 	virtual void TickIdle() override;
 	virtual void TickMove() override;
@@ -26,11 +26,9 @@ private:
 
 private:	
 	bool _keyPressed = false;
-	int d = 0;
-	int a = 0;
 	uint64 _nextSkillAt = 0;          
-	uint64 SKILL_CD = 0; 
+	uint64 SKILL_CD = 500; 
 	bool prevPressed = false;
-
+	bool _isMoving = false;
 };
 

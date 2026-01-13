@@ -117,7 +117,7 @@ Dir GameObject::GetLookAtDir(Vec2Int cellPos)
 		return DIR_UP;
 }
 
-void GameObject::SetCellPos(Vec2Int cellPos, bool teleport /*= false*/)
+void GameObject::SetCellPos(Vec2Int cellPos, bool dirtyFlag, bool teleport /*= false*/)
 {
 	info.set_posx(cellPos.x);
 	info.set_posy(cellPos.y);
@@ -136,7 +136,7 @@ void GameObject::SetCellPos(Vec2Int cellPos, bool teleport /*= false*/)
 		_pos = _destPos;
 
 	//»óÅÂ ¹Ù²ñ
-	_dirtyFlag = true;
+	_dirtyFlag = dirtyFlag;
 }
 
 Vec2Int GameObject::GetCellPos()

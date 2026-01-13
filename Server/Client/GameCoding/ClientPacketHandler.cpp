@@ -183,9 +183,10 @@ bool Handle_S_Move(ServerSessionRef& session, Protocol::S_Move& pkt)
         {
             GET_SINGLE(GameInstance)->GetMyPlayer()->SetMaxHp(info.maxhp());
             GET_SINGLE(GameInstance)->GetMyPlayer()->SetHp(info.hp());
+            GET_SINGLE(GameInstance)->GetMyPlayer()->SetCellPos(Vec2Int(info.posx(), info.posy()),false);
             GET_SINGLE(GameInstance)->GetMyPlayer()->SetDefence(info.defence());
-            GET_SINGLE(GameInstance)->GetMyPlayer()->SetAttackSpeed(info.attackspeed());
-            GET_SINGLE(GameInstance)->GetMyPlayer()->SetMoveSpeed(info.movespeed());
+            GET_SINGLE(GameInstance)->GetMyPlayer()->SetAttackSpeed(info.attackspeed(),false);
+            GET_SINGLE(GameInstance)->GetMyPlayer()->SetMoveSpeed(info.movespeed(),false);
             return false;
         }
  			
@@ -194,13 +195,13 @@ bool Handle_S_Move(ServerSessionRef& session, Protocol::S_Move& pkt)
  		if (gameObject) {
             gameObject->SetState(info.state());
  			gameObject->SetDir(info.dir());
- 			gameObject->SetCellPos(Vec2Int(info.posx(), info.posy()));
+ 			gameObject->SetCellPos(Vec2Int(info.posx(), info.posy()),false);
             gameObject->SetMaxHp(info.maxhp());
             gameObject->SetHp(info.hp());
             gameObject->SetDefence(info.defence());
             gameObject->SetName(info.name());
-            gameObject->SetAttackSpeed(info.attackspeed());
-            gameObject->SetMoveSpeed(info.movespeed());
+            gameObject->SetAttackSpeed(info.attackspeed(), false);
+            gameObject->SetMoveSpeed(info.movespeed(), false);
             auto ifplayer = dynamic_pointer_cast<Player>(gameObject);
             if (ifplayer) {
 
@@ -247,7 +248,7 @@ bool Handle_S_SPEED(ServerSessionRef& session, Protocol::S_SPEED& pkt)
         auto ifplayer = dynamic_pointer_cast<Player>(gameObject);
         if (ifplayer) {
             ifplayer->SetMoveSpeed(pkt.movespeed());
-           // ifplayer->SetFlipbookSpeed(pkt.movespeed() / 100 - 1);
+            ifplayer->SetFlipbookSpeed(pkt.movespeed() / 100 - 1);
         }
     }
     return false;

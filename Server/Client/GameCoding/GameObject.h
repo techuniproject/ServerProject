@@ -28,7 +28,7 @@ public:
 	bool CanGo(Vec2Int cellPos);
 	Dir GetLookAtDir(Vec2Int cellPos);
 
-	void SetCellPos(Vec2Int cellPos, bool teleport = false);
+	void SetCellPos(Vec2Int cellPos,bool dirtyFlag=true, bool teleport = false);
 	Vec2Int GetCellPos();
 	Vec2Int GetFrontCellPos();
 
@@ -41,9 +41,9 @@ public:
 	void SetName(string name) { info.set_name(name); }
 
 
-	void SetMoveSpeed(float speed) { info.set_movespeed(speed); _dirtyFlag = true; }
+	void SetMoveSpeed(float speed, bool dirtyFlag = true) { info.set_movespeed(speed); _dirtyFlag = dirtyFlag; }
 	float GetMoveSpeed() { return info.movespeed(); }
-	void SetAttackSpeed(float speed) { info.set_attackspeed(speed); _dirtyFlag = true;}
+	void SetAttackSpeed(float speed,bool dirtyFlag=true) { info.set_attackspeed(speed); _dirtyFlag = dirtyFlag;}
 	float GetAttackSpeed() { return info.attackspeed(); }
 
 protected:
@@ -54,7 +54,7 @@ protected:
 	//ObjectState _state = IDLE;
 protected://상태 바뀜 추적용 
 	bool _dirtyFlag = false;
-
+	
 public://나중엔 private관리
 	Protocol::ObjectInfo info;
 };

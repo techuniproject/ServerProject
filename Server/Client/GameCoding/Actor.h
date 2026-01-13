@@ -26,6 +26,7 @@ public:
 	virtual void OnComponentBeginOverlap(shared_ptr<Collider> collider, shared_ptr<Collider> other);
 	virtual void OnComponentEndOverlap(shared_ptr<Collider> collider, shared_ptr<Collider> other);
 
+
 protected:
 	Vec2 _pos = {0, 0};
 	Vec2 _destPos = {0, 0};

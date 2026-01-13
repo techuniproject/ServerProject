@@ -382,7 +382,7 @@ void DevScene::LoadTilemap()
 		GET_SINGLE(GameInstance)->LoadTilemap(L"Tilemap_01", L"Tilemap\\Tilemap_01.txt");
 
 		_tilemapActor->SetTilemap(tm);
-		_tilemapActor->SetShowDebug(true);
+		_tilemapActor->SetShowDebug(false);
 	}
 }
 

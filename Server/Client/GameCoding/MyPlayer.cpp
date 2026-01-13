@@ -81,24 +81,21 @@ void MyPlayer::TickInput()
 		SetWeaponType(STAFF);
 	}
 
-	/*if (GET_SINGLE(GameInstance)->GetButtonDown(KeyType::Q)) {
-		SetMoveSpeed(GetMoveSpeed() + 100);
-	}*/
-
-	if (GET_SINGLE(GameInstance)->GetButton(KeyType::SpaceBar))
-	{
-		SetState(SKILL);
+	if (GET_SINGLE(GameInstance)->GetButtonDown(KeyType::Q)) {
+		//SetCellPos(Vec2Int(GetCellPos().x + 15, GetCellPos().y + 15));
+		//_keyPressed = true;
+		//서버에서 큰 폭의 이동은 거르고 원래 서버에서 관리하는 좌표로 다시 이동시킴
 	}
 
-	//uint64 now = GetTickCount64();
-	//bool pressed = GET_SINGLE(GameInstance)->GetButton(KeyType::SpaceBar);
-	//bool justPressed = pressed && !prevPressed;
-	//prevPressed = pressed;
+	uint64 now = GetTickCount64();
+	bool pressed = GET_SINGLE(GameInstance)->GetButton(KeyType::SpaceBar);
+	bool justPressed = pressed && !prevPressed;
+	prevPressed = pressed;
 
-	//if (pressed&& now >= _nextSkillAt) {
-	//	SetState(SKILL);    
-	//	_nextSkillAt = now + SKILL_CD;    //공격 애니메이션 다 0.5초   
-	//}
+	if (pressed&& now >= _nextSkillAt) {
+		SetState(SKILL);    
+		_nextSkillAt = now + SKILL_CD/GetAttackSpeed();    //공격 애니메이션 다 0.5초   
+	}
  }
 //Myplayer은 지금 클라에서 미리 움직이고, 서버에 통보하고 나머지 클라에 broadcast
 void MyPlayer::TryMove()
@@ -112,22 +109,24 @@ void MyPlayer::TryMove()
 		SetCellPos(nextPos);
 		SetState(MOVE);
 	}
-	
+
 }
 
-void MyPlayer::SyncToServer()
+void MyPlayer::SyncToServer(int& frame)
 {
 	if (_dirtyFlag == false)
 		return;
-	//SendBufferRef sendBuffer2 = ClientPacketHandler::Make_C_Speed(GetAttackSpeed(), GetMoveSpeed());
-	//GET_SINGLE(GameInstance)->SendPacket(sendBuffer2);
-	SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Move();
-	GET_SINGLE(GameInstance)->SendPacket(sendBuffer);
-	a = info.state();
-	d++;//디버그용
-	//벽에 충돌하면 이 함수 호출이 엄청 많아짐 ->원인 찾기
-	// 이동 및 스킬 사용시 2번씩 호출됨.
-	
+
+		SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Move();
+		GET_SINGLE(GameInstance)->SendPacket(sendBuffer);
+		frame++;
+	//for (int i = 0; i < 100; ++i) {
+	//	SendBufferRef sendBuffer = ClientPacketHandler::Make_C_Move();
+	//	GET_SINGLE(GameInstance)->SendPacket(sendBuffer);
+	//	frame++;
+	//}
+	//	_speed+=1000000;
+	//	SetMoveSpeed(_speed); //스피드핵 용도
 }
 
 
@@ -138,11 +137,18 @@ void MyPlayer::BeginPlay()
 
 void MyPlayer::Tick()
 {
+	static int packetSendCountPerFrame = 0;
+	packetSendCountPerFrame = 0;
 	Super::Tick();
 	
 	//프레임마다 상태 바뀜을 감지하여 서버에 통보 (서버라 매 프레임 보내는게 정석은 아님)
-	SyncToServer();
-	
+	SyncToServer(packetSendCountPerFrame);
+	if (packetSendCountPerFrame > 0)
+	{
+		char buff[100];
+		sprintf_s(buff, "[PACKET CHECK] Frame Sent: %d\n", packetSendCountPerFrame);
+		::OutputDebugStringA(buff);
+	}
 }
 
 void MyPlayer::Render(HDC hdc)
