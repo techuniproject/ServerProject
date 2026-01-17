@@ -27,7 +27,7 @@ protected:
 
 	virtual void UpdateAnimation() override;
 public:
-	void SetWeaponType(Protocol::WEAPON_TYPE weaponType);
+	void SetWeaponType(Protocol::WEAPON_TYPE weaponType, bool dirtyflag=true);
 	Protocol::WEAPON_TYPE GetWeaponType() { return info.weapontype(); }
 	
 private:

@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "Monster.h"
 #include "Player.h"
+#include "Arrow.h"
 #include "GameRoom.h"
 
 atomic<uint64> GameObject::s_idGenerator = 0;
@@ -36,6 +37,15 @@ shared_ptr<Monster> GameObject::CreateMonster()
 	monster->info.set_objectid(s_idGenerator++);
 	monster->info.set_objecttype(Protocol::OBJECT_TYPE_MONSTER);
 	return monster;
+}
+
+shared_ptr<Arrow> GameObject::CreateArrow()
+{
+	shared_ptr<Arrow> arrow = make_shared<Arrow>();
+	arrow->info.set_objectid(s_idGenerator++);
+	arrow->info.set_objecttype(Protocol::OBJECT_TYPE_PROJECTILE);
+
+	return arrow;
 }
 
 void GameObject::SetState(ObjectState state, bool broadcast) {

@@ -19,7 +19,7 @@ public:
 	virtual void TickSkill() {}
 	virtual void TickHit(){}
 
-	void SetState(ObjectState state);
+	void SetState(ObjectState state,bool dirtyFlag=true);
 	void SetDir(Dir dir);
 
 	virtual void UpdateAnimation() {}
@@ -41,9 +41,9 @@ public:
 	void SetName(string name) { info.set_name(name); }
 
 
-	void SetMoveSpeed(float speed, bool dirtyFlag = true) { info.set_movespeed(speed); _dirtyFlag = dirtyFlag; }
+	void SetMoveSpeed(float speed) { info.set_movespeed(speed);  }
 	float GetMoveSpeed() { return info.movespeed(); }
-	void SetAttackSpeed(float speed,bool dirtyFlag=true) { info.set_attackspeed(speed); _dirtyFlag = dirtyFlag;}
+	void SetAttackSpeed(float speed) { info.set_attackspeed(speed);}
 	float GetAttackSpeed() { return info.attackspeed(); }
 
 protected:

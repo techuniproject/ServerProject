@@ -146,28 +146,28 @@ void Player::TickMove()
 			_pos.y -= info.movespeed() * deltaTime;
 			if (_pos.y <= _destPos.y) {
 				_pos = _destPos;
-				SetState(IDLE);
+				SetState(IDLE, false);//패킷 보낼 필요없음 최초 move패킷전달하면 모든 클라 동일로직이기때문
 			}
 			break;
 		case DIR_DOWN:
 			_pos.y += info.movespeed() * deltaTime;
 			if (_pos.y >= _destPos.y) {
 				_pos = _destPos;
-				SetState(IDLE);
+				SetState(IDLE, false);
 			}
 			break;
 		case DIR_LEFT:
 			_pos.x -= info.movespeed() * deltaTime;
 			if (_pos.x <= _destPos.x) {
 				_pos = _destPos;
-				SetState(IDLE);
+				SetState(IDLE, false);
 			}
 			break;
 		case DIR_RIGHT:
 			_pos.x += info.movespeed() * deltaTime;
 			if (_pos.x >= _destPos.x) {
 				_pos = _destPos;
-				SetState(IDLE);
+				SetState(IDLE,false);
 			}
 			break;
 		}
@@ -198,16 +198,16 @@ void Player::TickSkill()
 		}
 		else if (info.weapontype() == BOW)
 		{
-			shared_ptr<Arrow> arrow = scene->SpawnObject<Arrow>(GetCellPos());
-			arrow->SetDir(info.dir());	
-			arrow->SetBelongingPlayer(info.objectid());
+			//shared_ptr<Arrow> arrow = scene->SpawnObject<Arrow>(GetCellPos());
+			//arrow->SetDir(info.dir());	
+			//arrow->SetBelongingPlayer(info.objectid());
 		}
 		else if (info.weapontype() == STAFF)
 		{
 
 		}
 
-		SetState(IDLE);
+		SetState(IDLE,false);
 	}
 }
 
@@ -249,12 +249,12 @@ void Player::UpdateAnimation()
 	}
 }
 
-void Player::SetWeaponType(Protocol::WEAPON_TYPE weaponType)
+void Player::SetWeaponType(Protocol::WEAPON_TYPE weaponType,bool dirtyflag)
 {
 	if (info.weapontype() == weaponType)return;
 
 	info.set_weapontype(weaponType);
 
-	_dirtyFlag = true;
+	_dirtyFlag = dirtyflag;
 }
 

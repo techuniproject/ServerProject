@@ -59,7 +59,7 @@ void GameObject::Render(HDC hdc)
 	Super::Render(hdc);
 }
 
-void GameObject::SetState(ObjectState state)
+void GameObject::SetState(ObjectState state, bool dirtyFlag)
 {
 	if (info.state() == state)
 		return;
@@ -69,7 +69,7 @@ void GameObject::SetState(ObjectState state)
 	UpdateAnimation();
 
 	//»óÅÂ ¹Ù²ñ
-	_dirtyFlag = true;
+	_dirtyFlag = dirtyFlag;
 }
 
 void GameObject::SetDir(Dir dir)

@@ -117,7 +117,7 @@ bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move& pkt)
             if (isMove) {
                 float speed = curSessionPlayer->info.movespeed();
                 if (speed <= 0) speed = 1.0f;
-                // 3. 약간의 오차 허용 (네트워크 렉 등을 고려하여 10~20% 정도 봐줌)
+                // 약간의 오차 허용 (네트워크 렉 등을 고려하여 10~20% 정도 봐줌)
                 // 너무 빡빡하면 정상 유저도 렉 걸릴 때 롤백됨
                 uint64 minIntervalMs = (uint64)((48.0f / speed) * 1000);
                 minIntervalMs = (uint64)(minIntervalMs * 0.9f); // 오차 범위
@@ -142,7 +142,8 @@ bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move& pkt)
                     //TODO Validation 해킹 체킹   
                     curSessionPlayer->SetLastMoveTime(now);
                     auto optitem = gameRoom->GetItemAt(nextPos);
-                    if (optitem.has_value()) {//플레이어 이동할때 다음칸 아이템 있으면
+                    if (optitem.has_value()) {
+                        //플레이어 이동할때 다음칸 아이템 있으면
                         Item& item = optitem.value();
                         if (pkt.info().objectid() == item.itemInfo.playerid()) {
                             gameRoom->DeleteItem(item.itemInfo.itemid());

@@ -10,7 +10,7 @@ public:
 
 	static shared_ptr<class Player> CreatePlayer();
 	static shared_ptr<class Monster> CreateMonster();
-
+	static shared_ptr<class Arrow> CreateArrow();
 public:
 	void SetState(ObjectState state, bool broadcast = false);
 	void SetDir(Dir dir, bool broadcast=false);
@@ -46,7 +46,7 @@ public:
 private:
 	static atomic<uint64> s_idGenerator;
 public:
-	bool _attackRequested = false;
+	
 	uint64 _attackReadyAt = 0;
 	uint64 _stateExitAt = 0;
 };

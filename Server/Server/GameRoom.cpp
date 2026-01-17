@@ -5,12 +5,13 @@
 #include "Creature.h"
 #include "Monster.h"
 #include "GameSession.h"
+#include "Arrow.h"
 
 shared_ptr<GameRoom> GRoom = make_shared<GameRoom>();
 
 GameRoom::GameRoom()
 {
-
+	_deletearrowlist.reserve(100);
 }
 
 GameRoom::~GameRoom()
@@ -21,19 +22,30 @@ void GameRoom::Init()
 {
 	shared_ptr<GameRoom>gameRoom = shared_from_this();
 
-	PushJob([gameRoom]() {
-		shared_ptr<Monster> monster = GameObject::CreateMonster();
-		monster->info.set_posx(8);
-		monster->info.set_posy(8);
-		gameRoom->Enter(monster);
-	
-		Protocol::S_AddObject AddedMonster;
-		*AddedMonster.add_objects() = monster->info;
-	
-		SendBufferRef sendBuf= ServerPacketHandler::Make_S_AddObject(AddedMonster);
-		gameRoom->Broadcast(sendBuf);
-		//gameRoom->PushBroadcastJob(sendBuf);
-		});
+	shared_ptr<Monster> monster = GameObject::CreateMonster();
+	monster->info.set_posx(8);
+	monster->info.set_posy(8);
+	gameRoom->Enter(monster);
+
+	Protocol::S_AddObject AddedMonster;
+	*AddedMonster.add_objects() = monster->info;
+
+	SendBufferRef sendBuf = ServerPacketHandler::Make_S_AddObject(AddedMonster);
+	gameRoom->Broadcast(sendBuf);
+
+	//PushJob([gameRoom]() {
+	//	shared_ptr<Monster> monster = GameObject::CreateMonster();
+	//	monster->info.set_posx(8);
+	//	monster->info.set_posy(8);
+	//	gameRoom->Enter(monster);
+	//
+	//	Protocol::S_AddObject AddedMonster;
+	//	*AddedMonster.add_objects() = monster->info;
+	//
+	//	SendBufferRef sendBuf= ServerPacketHandler::Make_S_AddObject(AddedMonster);
+	//	gameRoom->Broadcast(sendBuf);
+	//	//gameRoom->PushBroadcastJob(sendBuf);
+	//	});
 
 
 	_tilemap.LoadFile(L"C:\\Users\\서정원\\Desktop\\ServerClient\\ServerProject\\Server\\Client\\Resources\\Tilemap\\Tilemap_01.txt");
@@ -47,20 +59,40 @@ void GameRoom::TickMonsterSpawn() {
 	shared_ptr<GameRoom>gameRoom = shared_from_this();
 	if (_monsters.size() < DESIRED_COUNT)
 	{
-		PushJob([gameRoom]() {
-			shared_ptr<Monster> monster = GameObject::CreateMonster();
-			Vec2Int randPos = gameRoom->GetRandomEmptyCellPos();
-			monster->info.set_posx(randPos.x);
-			monster->info.set_posy(randPos.y);
-			gameRoom->Enter(monster);
 
-			Protocol::S_AddObject AddedMonster;
-			*AddedMonster.add_objects() = monster->info;
+		shared_ptr<Monster> monster = GameObject::CreateMonster();
+		Vec2Int randPos = gameRoom->GetRandomEmptyCellPos();
+		monster->info.set_posx(randPos.x);
+		monster->info.set_posy(randPos.y);
+		gameRoom->Enter(monster);
 
-			SendBufferRef sendBuf = ServerPacketHandler::Make_S_AddObject(AddedMonster);
-			gameRoom->Broadcast(sendBuf);
-			//gameRoom->PushBroadcastJob(sendBuf);
-			});
+		Protocol::S_AddObject AddedMonster;
+		*AddedMonster.add_objects() = monster->info;
+
+		SendBufferRef sendBuf = ServerPacketHandler::Make_S_AddObject(AddedMonster);
+		gameRoom->Broadcast(sendBuf);
+
+		//PushJob([gameRoom]() {
+		//	shared_ptr<Monster> monster = GameObject::CreateMonster();
+		//	Vec2Int randPos = gameRoom->GetRandomEmptyCellPos();
+		//	monster->info.set_posx(randPos.x);
+		//	monster->info.set_posy(randPos.y);
+		//	gameRoom->Enter(monster);
+
+		//	Protocol::S_AddObject AddedMonster;
+		//	*AddedMonster.add_objects() = monster->info;
+
+		//	SendBufferRef sendBuf = ServerPacketHandler::Make_S_AddObject(AddedMonster);
+		//	gameRoom->Broadcast(sendBuf);
+		//	//gameRoom->PushBroadcastJob(sendBuf);
+		//	});
+	}
+}
+
+void GameRoom::DeleteProjectiles()
+{
+	for (uint64 idx : _deletearrowlist) {
+		Leave(idx);
 	}
 }
 
@@ -75,8 +107,12 @@ void GameRoom::Update()
 	{
 		item.second->Update();
 	}
-
+	for (auto& item : _arrows)
+	{
+		item.second->Update();
+	}
 	TickMonsterSpawn();
+	DeleteProjectiles();
 	
 
 	//uint64 end = GetTickCount64();
@@ -109,6 +145,11 @@ shared_ptr<GameObject> GameRoom::FindObject(uint64 id)
 		if (findIt != _monsters.end())
 			return findIt->second;
 	}
+	{
+		auto findIt = _arrows.find(id);
+		if (findIt != _arrows.end())
+			return findIt->second;
+	}
 	return nullptr;
 }
 
@@ -124,6 +165,9 @@ void GameRoom::Enter(shared_ptr<GameObject> gameObject)
 		break;
 	case Protocol::OBJECT_TYPE_MONSTER:
 		_monsters[id] = static_pointer_cast<Monster>(gameObject);
+		break;
+	case Protocol::OBJECT_TYPE_PROJECTILE:
+		_arrows[id] = static_pointer_cast<Arrow>(gameObject);
 		break;
 	default:
 		return;
@@ -147,6 +191,9 @@ void GameRoom::Leave(uint64 id)
 		break;
 	case Protocol::OBJECT_TYPE_MONSTER:
 		_monsters.erase(id);
+		break;
+	case Protocol::OBJECT_TYPE_PROJECTILE:
+		_arrows.erase(id);
 		break;
 	default:
 		return;
@@ -187,6 +234,16 @@ vector<Protocol::ObjectInfo> GameRoom::GetRoomMonsterInfo()
 	vector<Protocol::ObjectInfo> infos;
 
 	for (auto m : _monsters)
+		infos.push_back(m.second->info);
+
+	return infos;
+}
+
+vector<Protocol::ObjectInfo> GameRoom::GetRoomArrowInfo()
+{
+	vector<Protocol::ObjectInfo> infos;
+
+	for (auto m : _arrows)
 		infos.push_back(m.second->info);
 
 	return infos;
@@ -567,6 +624,7 @@ Vec2Int  GameRoom::GetRandomEmptyCellPos() {
 }
 
 shared_ptr<GameObject>  GameRoom::GetGameObjectAt(Vec2Int cellPos) {
+	//Projectile은 충돌 여부에 당락을 주지않게 포함 x
 	for (auto& item : _players)
 	{
 		if (item.second->GetCellPos() == cellPos)
@@ -583,6 +641,7 @@ shared_ptr<GameObject>  GameRoom::GetGameObjectAt(Vec2Int cellPos) {
 
 
 shared_ptr<Creature>  GameRoom::GetCreatureAt(Vec2Int cellPos) {
+	//Projectile은 충돌 여부에 당락을 주지않게 포함 x
 	for (const auto& item : _players)
 	{
 		if (item.second->GetCellPos() == cellPos)
@@ -605,6 +664,11 @@ optional<Item> GameRoom::GetItemAt(Vec2Int cellPos)
 			return item.second;
 	}
 	return nullopt;
+}
+
+void GameRoom::AddDeleteProjectiletoList(uint64 idx)
+{
+	_deletearrowlist.emplace_back(idx);
 }
 
 

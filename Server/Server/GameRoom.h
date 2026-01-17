@@ -61,6 +61,7 @@ public:
 	// 현재 게임룸에서 관리하는 게임오브젝트 정보 전파용도
 	vector<Protocol::ObjectInfo> GetRoomPlayerInfo();
 	vector<Protocol::ObjectInfo> GetRoomMonsterInfo();
+	vector<Protocol::ObjectInfo> GetRoomArrowInfo();
 	vector<Protocol::ItemInfo> GetRoomItemInfo();
 	// 위 두 함수가 메인 스레드가 작업 큐에서 꺼내서 사용할땐 문제없음
 	//하지만, 워커스레드가(GameSession, SeverPacketHandler)에서 입출력이와서 
@@ -70,6 +71,7 @@ public:
 
 	map<uint64, shared_ptr<class Player>>& GetPlayersForJob() { return _players; }
 	map<uint64, shared_ptr<class Monster>>& GetMonstersForJob() { return _monsters; }
+	map<uint64, shared_ptr<class Arrow>>& GetArrowsForJob() { return _arrows; }
 	map<uint32, Item>& GetItemsForJob() { return _items; }
 public:
 	shared_ptr<Player> FindClosestPlayer(Vec2Int pos);
@@ -80,15 +82,18 @@ public:
 	shared_ptr<GameObject> GetGameObjectAt(Vec2Int cellPos);
 	shared_ptr<class Creature> GetCreatureAt(Vec2Int cellPos);
 	optional<Item> GetItemAt(Vec2Int cellPos);
-
+	void AddDeleteProjectiletoList(uint64 idx);
 	void TickMonsterSpawn();
+	void DeleteProjectiles();
 private:
 	// 워커스레드가 메인스레드가 호출하도록 넣는 Job
 	JobQueue _jobs;
 private:
 	map<uint64, shared_ptr<class Player>> _players;
 	map<uint64, shared_ptr<class Monster>> _monsters;
+	map<uint64, shared_ptr<class Arrow>> _arrows;
 	map<uint32, Item> _items;
+	vector<uint64>_deletearrowlist;
 private:
 	Tilemap _tilemap;
 	const int32 DESIRED_COUNT = 1;

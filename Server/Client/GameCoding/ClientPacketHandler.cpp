@@ -183,28 +183,28 @@ bool Handle_S_Move(ServerSessionRef& session, Protocol::S_Move& pkt)
         {
             GET_SINGLE(GameInstance)->GetMyPlayer()->SetMaxHp(info.maxhp());
             GET_SINGLE(GameInstance)->GetMyPlayer()->SetHp(info.hp());
-            GET_SINGLE(GameInstance)->GetMyPlayer()->SetCellPos(Vec2Int(info.posx(), info.posy()),false);
+            GET_SINGLE(GameInstance)->GetMyPlayer()->SetCellPos(Vec2Int(info.posx(), info.posy()),false);//보정용도
             GET_SINGLE(GameInstance)->GetMyPlayer()->SetDefence(info.defence());
-            GET_SINGLE(GameInstance)->GetMyPlayer()->SetAttackSpeed(info.attackspeed(),false);
-            GET_SINGLE(GameInstance)->GetMyPlayer()->SetMoveSpeed(info.movespeed(),false);
+            GET_SINGLE(GameInstance)->GetMyPlayer()->SetAttackSpeed(info.attackspeed());
+            GET_SINGLE(GameInstance)->GetMyPlayer()->SetMoveSpeed(info.movespeed());
             return false;
         }
  			
  
  		shared_ptr<GameObject> gameObject=scene->GetGameObject(info.objectid());
  		if (gameObject) {
+            //얘네는 dirtyflag켜진다고 서버 통보안함 서버 통보로직은 myplayer에 있지 player엔 없음
             gameObject->SetState(info.state());
  			gameObject->SetDir(info.dir());
- 			gameObject->SetCellPos(Vec2Int(info.posx(), info.posy()),false);
+ 			gameObject->SetCellPos(Vec2Int(info.posx(), info.posy()));
             gameObject->SetMaxHp(info.maxhp());
             gameObject->SetHp(info.hp());
             gameObject->SetDefence(info.defence());
             gameObject->SetName(info.name());
-            gameObject->SetAttackSpeed(info.attackspeed(), false);
-            gameObject->SetMoveSpeed(info.movespeed(), false);
+            gameObject->SetAttackSpeed(info.attackspeed());
+            gameObject->SetMoveSpeed(info.movespeed());
             auto ifplayer = dynamic_pointer_cast<Player>(gameObject);
             if (ifplayer) {
-
                 ifplayer->SetWeaponType(info.weapontype());
             }
             return true;

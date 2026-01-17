@@ -145,29 +145,29 @@ void Monster::TickSkill()
 	if (_flipbook == nullptr)
 		return;
 
-	if (_waitSeconds > 0)
-	{
-		float deltaTime = GET_SINGLE(GameInstance)->GetDeltaTime();
-		_waitSeconds = max(0, _waitSeconds - deltaTime);	
-		return;
-	}
+	//if (_waitSeconds > 0)
+	//{
+	//	float deltaTime = GET_SINGLE(GameInstance)->GetDeltaTime();
+	//	_waitSeconds = max(0, _waitSeconds - deltaTime);	
+	//	return;
+	//}
 
-	{
-	//	DevScene* scene = dynamic_cast<DevScene*>(&GET_SINGLE(GameInstance)->GetCurrentScene());
-		DevScene* scene = GET_SINGLE(GameInstance)->GetCurrentScene<DevScene>();
-		if (scene == nullptr)
-			return;
+	//{
+	////	DevScene* scene = dynamic_cast<DevScene*>(&GET_SINGLE(GameInstance)->GetCurrentScene());
+	//	DevScene* scene = GET_SINGLE(GameInstance)->GetCurrentScene<DevScene>();
+	//	if (scene == nullptr)
+	//		return;
 
-		//shared_ptr<Creature> creature = scene->GetCreatureAt(GetFrontCellPos());
-		//if (creature)
-		//{
-		//	scene->SpawnObject<HitEffect>(GetFrontCellPos());
-		//	
-		//	//creature->OnDamaged(dynamic_pointer_cast<Creature>(shared_from_this()));
-		//}
+	//	//shared_ptr<Creature> creature = scene->GetCreatureAt(GetFrontCellPos());
+	//	//if (creature)
+	//	//{
+	//	//	scene->SpawnObject<HitEffect>(GetFrontCellPos());
+	//	//	
+	//	//	//creature->OnDamaged(dynamic_pointer_cast<Creature>(shared_from_this()));
+	//	//}
 
-		SetState(IDLE);
-	}
+	//	SetState(IDLE);
+	//}
 }
 
 void Monster::TickHit()

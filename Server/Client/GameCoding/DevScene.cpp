@@ -24,6 +24,7 @@
 #include "Monster.h"
 #include "DieEffect.h"
 #include "ItemActor.h"
+#include "Arrow.h"
 
 DevScene::DevScene()
 {
@@ -410,6 +411,13 @@ void DevScene::Handle_S_AddObject(Protocol::S_AddObject& pkt)
 			monster->SetState(info.state());
 			monster->info = info;
 		}
+		else if (info.objecttype() == Protocol::OBJECT_TYPE_PROJECTILE)
+		{
+			shared_ptr<Arrow> arrow = SpawnObject<Arrow>(Vec2Int(info.posx(), info.posy()));
+			arrow->SetDir(info.dir());
+			arrow->SetState(info.state());
+			arrow->info = info;
+		}
 	}
 }
 
@@ -422,6 +430,7 @@ void DevScene::Handle_S_RemoveObject(Protocol::S_RemoveObject& pkt)
 
 		shared_ptr<GameObject> object = GetGameObject(id);
 
+		if(object->info.objecttype()!=Protocol::OBJECT_TYPE_PROJECTILE)
 		SpawnObject<DieEffect>(object->GetCellPos());
 
 		if (object)

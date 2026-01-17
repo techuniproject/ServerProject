@@ -2,6 +2,7 @@
 #include "Monster.h"
 #include "GameRoom.h"
 #include "Player.h"
+#include "Arrow.h"
 
 
 
@@ -193,7 +194,13 @@ void Monster::OnDamaged(shared_ptr<Creature> attacker)
 	if (GetObjectHp() == 0) {
 		if (GRoom) {
 			item.SetAliveState(true);
-			item.SetBelongingId(attacker->GetObjectID());
+			auto ifarrow = dynamic_pointer_cast<Arrow>(attacker);
+			if (ifarrow) {
+				item.SetBelongingId(ifarrow->GetBelongingId());
+			}
+			else {
+				item.SetBelongingId(attacker->GetObjectID());
+			}
 			item.SetItemType(Item::GetRandomItemType());
 			item.SetPos(GetPos());
 		//패킷 전달
