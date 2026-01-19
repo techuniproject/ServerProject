@@ -11,15 +11,17 @@ Monster::Monster()
 	info.set_name("MonsterName");
 	info.set_hp(100);
 	info.set_maxhp(100);
-	info.set_attack(10);
+	info.set_attack(1);
 	info.set_defence(0); //나중엔 data sheet으로 읽어오는 방식
 
 	item.SetAliveState(false);
+
+	_findMaxDist = 10;
 }
 
 Monster::~Monster()
 {
-
+	
 }
 
 void Monster::Init()
@@ -97,30 +99,34 @@ void Monster::UpdateIdle()
 
 	
 	// Find Player
-	if (_target.lock() == nullptr)
-		_target = room->FindClosestPlayer(GetCellPos());
+	if (_target == nullptr)
+		_target = room->FindClosestPlayerBySector(GetCellPos());
 
-	shared_ptr<Player> player = _target.lock();
+	//shared_ptr<Player> player = _target.lock();
 
-	if (player)
+	if (_target)
 	{
-		Vec2Int dir = player->GetCellPos() - GetCellPos();
+		Vec2Int dir = _target->GetCellPos() - GetCellPos();
 		int32 dist = abs(dir.x) + abs(dir.y);
 		if (dist == 1)
 		{
-			SetDir(GetLookAtDir(player->GetCellPos()));
+			SetDir(GetLookAtDir(_target->GetCellPos()));
 			SetState(SKILL,true);
 			//_waitUntil = GetTickCount64() + 500; //+1초
 		}
 		else
 		{
+			if (dist >= _findMaxDist) {
+				_target = nullptr;
+				return;
+			}
 			vector<Vec2Int> path;
-			if (room->FindPath(GetCellPos(), player->GetCellPos(), OUT path))
+			if (room->FindPath(GetCellPos(), _target->GetCellPos(), OUT path,_findMaxDist))
 			{
 				if (path.size() > 1)
 				{
 					Vec2Int nextPos = path[1];
-					if (room->CanGo(nextPos))
+					if (room->CanGoBySector(nextPos))
 					{
 						SetDir(GetLookAtDir(nextPos));
 						SetCellPos(nextPos);
@@ -153,14 +159,20 @@ void Monster::UpdateSkill()
 	if (_waitUntil > now)
 		return;
 
-	shared_ptr<Creature> creature=GRoom->GetCreatureAt(GetFrontCellPos());
-
-	if (creature) {
-		creature->OnDamaged(dynamic_pointer_cast<Creature>(shared_from_this()));
+	Player* pl = GRoom->GetPlayerAtSector(GetFrontCellPos());
+	if (pl) {
+		pl->OnDamaged(dynamic_pointer_cast<Creature>(shared_from_this()));
 		_waitUntil = GetTickCount64() + 1000;
-		creature->SetState(HIT, true);
-		//플레이어 맞았을 때 보류
+		pl->SetState(HIT, true);
 	}
+	//shared_ptr<Creature> creature=GRoom->GetCreatureAt(GetFrontCellPos());
+	//
+	//if (creature) {
+	//	creature->OnDamaged(dynamic_pointer_cast<Creature>(shared_from_this()));
+	//	_waitUntil = GetTickCount64() + 1000;
+	//	creature->SetState(HIT, true);
+	//	//플레이어 맞았을 때 보류
+	//}
 
 	//SetState(IDLE,true);//차이?
 	SetState(IDLE, true);

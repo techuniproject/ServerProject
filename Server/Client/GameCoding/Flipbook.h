@@ -24,6 +24,8 @@ public:
 	void SetInfo(const FlipbookInfo& info) { _info = info; }
 	const FlipbookInfo& GetInfo() { return _info; }
 
+	void SetDuration(float duration) { _info.duration = duration; }
+
 private:
 	FlipbookInfo _info;
 };

@@ -402,6 +402,8 @@ void DevScene::Handle_S_AddObject(Protocol::S_AddObject& pkt)
 			shared_ptr<Player> player = SpawnObject<Player>(Vec2Int(info.posx(), info.posy()));
 			player->SetDir(info.dir());
 			player->SetState(info.state());
+			player->SetMoveSpeed(info.movespeed());
+			player->SetAttackSpeed(info.attackspeed());
 			player->info = info;
 		}
 		else if (info.objecttype() == Protocol::OBJECT_TYPE_MONSTER)

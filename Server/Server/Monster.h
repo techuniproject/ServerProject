@@ -15,7 +15,8 @@ public:
 	virtual void Update()override;
 
 	void ApplyHitStun(uint32 ms);
-
+	void SetFindMaxDist(uint64 dist) { _findMaxDist = dist; }
+	uint64 GetFindMaxDist() { return _findMaxDist; }
 	virtual void OnDamaged(shared_ptr<Creature> attacker)override;
 private:
 	virtual void UpdateIdle()override;
@@ -32,7 +33,7 @@ private:
 	//uint64 _pathUpdateInterval;           // 몇 ms마다 경로 갱신할지
 
 	Item item;
-
-	weak_ptr<Player> _target; // TEMP
+	uint64 _findMaxDist = 10;
+	Player* _target=nullptr; // TEMP
 };
 

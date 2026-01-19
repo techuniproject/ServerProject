@@ -194,15 +194,15 @@ bool Handle_S_Move(ServerSessionRef& session, Protocol::S_Move& pkt)
  		shared_ptr<GameObject> gameObject=scene->GetGameObject(info.objectid());
  		if (gameObject) {
             //얘네는 dirtyflag켜진다고 서버 통보안함 서버 통보로직은 myplayer에 있지 player엔 없음
+            gameObject->SetAttackSpeed(info.attackspeed());
+            gameObject->SetMoveSpeed(info.movespeed());
             gameObject->SetState(info.state());
  			gameObject->SetDir(info.dir());
  			gameObject->SetCellPos(Vec2Int(info.posx(), info.posy()));
             gameObject->SetMaxHp(info.maxhp());
             gameObject->SetHp(info.hp());
             gameObject->SetDefence(info.defence());
-            gameObject->SetName(info.name());
-            gameObject->SetAttackSpeed(info.attackspeed());
-            gameObject->SetMoveSpeed(info.movespeed());
+            gameObject->SetName(info.name());          
             auto ifplayer = dynamic_pointer_cast<Player>(gameObject);
             if (ifplayer) {
                 ifplayer->SetWeaponType(info.weapontype());
@@ -241,7 +241,7 @@ bool Handle_S_ATTACK(ServerSessionRef& session, Protocol::S_ATTACK& pkt)
 }
 
 bool Handle_S_SPEED(ServerSessionRef& session, Protocol::S_SPEED& pkt)
-{
+{/*
     DevScene* scene = GET_SINGLE(GameInstance)->GetCurrentScene<DevScene>();
     if (scene) {
         shared_ptr<GameObject> gameObject = scene->GetGameObject(pkt.playerid());
@@ -251,6 +251,7 @@ bool Handle_S_SPEED(ServerSessionRef& session, Protocol::S_SPEED& pkt)
             ifplayer->SetFlipbookSpeed(pkt.movespeed() / 100 - 1);
         }
     }
+    return false;*/
     return false;
 }
 

@@ -2,6 +2,7 @@
 #include "Job.h"
 #include "Item.h"
 #include "Tilemap.h"
+#include "Sector.h"
 
 struct PQNode
 {
@@ -85,18 +86,40 @@ public:
 	void AddDeleteProjectiletoList(uint64 idx);
 	void TickMonsterSpawn();
 	void DeleteProjectiles();
+public:
+	//Sector관련 모든 서버에서관리하는 Creature들은 생성 시에 SectorPos갱신 및 컨테이너에 추가
+	Sector* GetSectorAt(Vec2Int sectorPos);
+	Vec2Int GetSectorPos(int32 x, int32 y);
+	void InsertAtSector(Vec2Int sectorPos, GameObject* creature);
+	void DeleteFromSector(GameObject* creature);
+	bool CheckValidSectorPos(Vec2Int sectorPos);
+
+	bool CanGoBySector(Vec2Int cellPos);
+	//목적 : 정확히 그 위치에 있는지 
+	Player* GetPlayerAtSector(Vec2Int cellPos);
+	Monster* GetMonsterAtSector(Vec2Int cellPos);
+	Arrow* GetArrowAtSector(Vec2Int cellPos);
+	Creature* GetCreatureAtSector(Vec2Int cellPos);
+	Player* FindClosestPlayerBySector(Vec2Int cellPos);
+
 private:
 	// 워커스레드가 메인스레드가 호출하도록 넣는 Job
 	JobQueue _jobs;
 private:
-	map<uint64, shared_ptr<class Player>> _players;
-	map<uint64, shared_ptr<class Monster>> _monsters;
-	map<uint64, shared_ptr<class Arrow>> _arrows;
+	map<uint64, shared_ptr<Player>> _players;
+	map<uint64, shared_ptr<Monster>> _monsters;
+	map<uint64, shared_ptr<Arrow>> _arrows;
 	map<uint32, Item> _items;
 	vector<uint64>_deletearrowlist;
 private:
 	Tilemap _tilemap;
 	const int32 DESIRED_COUNT = 1;
+	vector<Sector>_gameRoomSector;//1차원배열로 y*height +x 형태로 쓸거임 캐시 효율을 위해  
+	//Sector=>vector<Creature*>
+	const int32 SECTOR_HEIGHT = 5;
+	const int32 SECTOR_WIDTH = 7;
+	const int32 dirX[9] = {0, 1,0,0,1,-1,-1,0,0};
+	const int32 dirY[9] = { 0,1,1,-1,-1,1,0,1,-1};
 };
 
 extern shared_ptr<GameRoom> GRoom;

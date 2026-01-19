@@ -109,7 +109,11 @@ bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move& pkt)
             curSessionPlayer->info.set_dir(pkt.info().dir());
 
             if (nextPos == curSessionPlayer->GetCellPos()) {
-               //제자리면 체크할 필요가 있나?
+                //제자리면 체크할 필요가 있나?
+                //이동일때만 체크해야되는데, 이게 스킬을 사용하면 체크해버림.
+                //클라의 이동속도가 빠를때 순간적으로 서버는 통과안시켰는데 또는 백업했는데,
+                // 동기화과정에서 일치하지 않는 문제 생김 클라는 뚫어서 가면안되는 영역 갔는데 서버는 통과안시킴
+
             }
             Vec2Int curPos{ curSessionPlayer->GetCellPos() };
             bool isMove = (nextPos != curPos);
@@ -170,8 +174,13 @@ bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move& pkt)
                     }
                     curSessionPlayer->info.set_posx(pkt.info().posx());
                     curSessionPlayer->info.set_posy(pkt.info().posy());
+                    gameRoom->InsertAtSector(gameRoom->GetSectorPos(pkt.info().posx(), pkt.info().posy()), static_cast<GameObject*>(curSessionPlayer.get()));
+                    curSessionPlayer->SetCurSectorPos(gameRoom->GetSectorPos(pkt.info().posx(), pkt.info().posy()));
+
                 }
             }
+            
+           
 
                            
             curSessionPlayer->info.set_weapontype(pkt.info().weapontype());
@@ -240,33 +249,33 @@ bool Handle_C_CHAT(GameSessionRef& session, Protocol::C_CHAT& pkt)
 
 bool Handle_C_ARROW(GameSessionRef& session, Protocol::C_ARROW& pkt)
 {
-    shared_ptr<GameRoom> gameRoom = session->gameRoom.lock();
-    if (gameRoom) {
-        gameRoom->PushJob([gameRoom, pkt]() {
+    //shared_ptr<GameRoom> gameRoom = session->gameRoom.lock();
+    //if (gameRoom) {
+    //    gameRoom->PushJob([gameRoom, pkt]() {
 
-            Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
-            Vec2Int nextPos{ pkt.posx() + deltaXY[pkt.dir()].x,pkt.posy() + deltaXY[pkt.dir()].y };
+    //        Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
+    //        Vec2Int nextPos{ pkt.posx() + deltaXY[pkt.dir()].x,pkt.posy() + deltaXY[pkt.dir()].y };
 
-           
+    //       
 
-            if (auto monster = gameRoom->GetCreatureAt(nextPos))
-            {
-                monster->OnDamaged(dynamic_pointer_cast<Creature>(gameRoom->FindObject(pkt.playerid())));
-                if (auto m = std::dynamic_pointer_cast<Monster>(monster)) {
-                    m->ApplyHitStun(505); //플레이어 공격 쿨타임 500이라 같이 500이면 둘다 동시에 때림
-                }
-            }
+    //        if (auto monster = gameRoom->GetCreatureAt(nextPos))
+    //        {
+    //            monster->OnDamaged(dynamic_pointer_cast<Creature>(gameRoom->FindObject(pkt.playerid())));
+    //            if (auto m = std::dynamic_pointer_cast<Monster>(monster)) {
+    //                m->ApplyHitStun(505); //플레이어 공격 쿨타임 500이라 같이 500이면 둘다 동시에 때림
+    //            }
+    //        }
 
-            });
-        return true;
-    }
+    //        });
+    //    return true;
+    //}
+    //return false;
     return false;
-
 }
 
 bool Handle_C_SPEED(GameSessionRef& session, Protocol::C_SPEED& pkt)
 {
-    shared_ptr<GameRoom> gameRoom = session->gameRoom.lock();
+   /* shared_ptr<GameRoom> gameRoom = session->gameRoom.lock();
     if (gameRoom) {
         gameRoom->PushJob([gameRoom, pkt]() {
 
@@ -281,8 +290,8 @@ bool Handle_C_SPEED(GameSessionRef& session, Protocol::C_SPEED& pkt)
             });
         return true;
     }
+    return false;*/
     return false;
-
 }
 
 /*

@@ -10,6 +10,8 @@ public:
 
 
 	virtual void OnDamaged(shared_ptr<Creature> attacker);
+
+
 protected:
 	virtual void Update();
 private:
@@ -18,5 +20,6 @@ private:
 	virtual void UpdateMove() {};
 	virtual void UpdateSkill() {};
 	virtual void UpdateHit() {};
+
 };
 

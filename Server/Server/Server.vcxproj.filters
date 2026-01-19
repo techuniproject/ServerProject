@@ -92,6 +92,9 @@
     <ClCompile Include="Item.cpp">
       <Filter>소스 파일\Object</Filter>
     </ClCompile>
+    <ClCompile Include="Sector.cpp">
+      <Filter>소스 파일\Room</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -147,6 +150,9 @@
     </ClInclude>
     <ClInclude Include="Item.h">
       <Filter>소스 파일\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Sector.h">
+      <Filter>소스 파일\Room</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

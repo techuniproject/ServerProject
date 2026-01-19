@@ -38,6 +38,8 @@ public:
 	uint64 GetLastMoveTime() { return _lastMoveTime; }
 	void SetLastMoveTime(uint64 time) { _lastMoveTime = time; }
 
+	void SetCurSectorPos(Vec2Int sectorpos) { curSectorPos = sectorpos; }
+	Vec2Int GetCurSectorPos() { return curSectorPos; }
 public:
 	Protocol::ObjectInfo info;
 	shared_ptr<class GameRoom> room; //순환참조 생길수도 순서 잘 안지키면
@@ -45,10 +47,13 @@ public:
 	//weak_ptr<class GameRoom>room;
 private:
 	static atomic<uint64> s_idGenerator;
+
+	Vec2Int curSectorPos{ -1,-1 };
 public:
 	
 	uint64 _attackReadyAt = 0;
 	uint64 _stateExitAt = 0;
+
 };
 
 

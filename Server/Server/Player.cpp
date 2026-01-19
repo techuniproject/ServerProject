@@ -48,12 +48,11 @@ void Player::UpdateSkill()
 	//if (now < _stateExitAt) return;
 	int a = info.state();
 	if (info.weapontype() == Protocol::WEAPON_TYPE_SWORD) {
-		if (auto monster = GRoom->GetCreatureAt(GetFrontCellPos())) // 전방 셀 타격
+		if (auto monster = GRoom->GetMonsterAtSector(GetFrontCellPos())) // 전방 셀 타격
 		{
 			monster->OnDamaged(dynamic_pointer_cast<Creature>(shared_from_this()));
-			if (auto m = std::dynamic_pointer_cast<Monster>(monster)) {
-				m->ApplyHitStun(505); //플레이어 공격 쿨타임 500이라 같이 500이면 둘다 동시에 때림
-			}
+			monster->ApplyHitStun(505); //플레이어 공격 쿨타임 500이라 같이 500이면 둘다 동시에 때림
+			
 		}
 	}
 	else if (info.weapontype() == Protocol::WEAPON_TYPE_BOW)

@@ -12,6 +12,7 @@ shared_ptr<GameRoom> GRoom = make_shared<GameRoom>();
 GameRoom::GameRoom()
 {
 	_deletearrowlist.reserve(100);
+	_gameRoomSector.resize(SECTOR_HEIGHT * SECTOR_WIDTH);
 }
 
 GameRoom::~GameRoom()
@@ -22,7 +23,7 @@ void GameRoom::Init()
 {
 	shared_ptr<GameRoom>gameRoom = shared_from_this();
 
-	shared_ptr<Monster> monster = GameObject::CreateMonster();
+	/*shared_ptr<Monster> monster = GameObject::CreateMonster();
 	monster->info.set_posx(8);
 	monster->info.set_posy(8);
 	gameRoom->Enter(monster);
@@ -31,7 +32,7 @@ void GameRoom::Init()
 	*AddedMonster.add_objects() = monster->info;
 
 	SendBufferRef sendBuf = ServerPacketHandler::Make_S_AddObject(AddedMonster);
-	gameRoom->Broadcast(sendBuf);
+	gameRoom->Broadcast(sendBuf);*/
 
 	//PushJob([gameRoom]() {
 	//	shared_ptr<Monster> monster = GameObject::CreateMonster();
@@ -64,6 +65,7 @@ void GameRoom::TickMonsterSpawn() {
 		Vec2Int randPos = gameRoom->GetRandomEmptyCellPos();
 		monster->info.set_posx(randPos.x);
 		monster->info.set_posy(randPos.y);
+	
 		gameRoom->Enter(monster);
 
 		Protocol::S_AddObject AddedMonster;
@@ -94,6 +96,250 @@ void GameRoom::DeleteProjectiles()
 	for (uint64 idx : _deletearrowlist) {
 		Leave(idx);
 	}
+}
+
+Sector* GameRoom::GetSectorAt(Vec2Int sectorPos)
+{
+	if (!CheckValidSectorPos(sectorPos))return nullptr;
+
+
+	return &_gameRoomSector[sectorPos.y *SECTOR_WIDTH+ sectorPos.x];
+}
+
+Vec2Int GameRoom::GetSectorPos(int32 x, int32 y)
+{
+	/*		0                          63
+		0	[	][	][	][	][	][	][	] 480
+			[	][	][	][	][	][	][	] 960
+			[	][	][	][	][	][	][	] 1440
+			[	][	][	][	][	][	][	] 1920
+		43	[	][	][	][	][	][	][	] 2400 
+			480 960 1440 1920 2400 2880 3360
+	*/
+	int32 sectorX = x / 10;
+	int32 sectorY = y / 10;
+
+	if(CheckValidSectorPos(Vec2Int(sectorX,sectorY)))
+		return Vec2Int(sectorX, sectorY);
+
+	return Vec2Int(-1, -1);
+}
+
+void GameRoom::InsertAtSector(Vec2Int sectorPos, GameObject* gameObject)
+{
+	//일단 만드려는건
+	//섹터좌표를 입력하면 이게 현재 저장된 객체의 섹터좌표와 같으면 굳이 섹터 갱신 필요없음
+	//그리고 다르다면 이전 섹터의 컨테이너에서 삭제하고 새로운 섹터 컨테이너에 추가하는 것 뿐
+
+	if (gameObject == nullptr)return;
+
+	if (gameObject->GetCurSectorPos() == sectorPos||!CheckValidSectorPos(sectorPos))return;
+
+	int32 idx = sectorPos.y * SECTOR_WIDTH + sectorPos.x;
+	
+	DeleteFromSector(gameObject);
+
+	gameObject->SetCurSectorPos(sectorPos);
+	auto objectType = gameObject->info.objecttype();
+	switch (objectType)
+	{
+	case Protocol::OBJECT_TYPE_PLAYER:
+		_gameRoomSector[idx]._sectorPlayers.push_back(static_cast<Player*>(gameObject));
+		break;
+	case Protocol::OBJECT_TYPE_MONSTER:
+		_gameRoomSector[idx]._sectorMonsters.push_back(static_cast<Monster*>(gameObject));
+		break;
+	case Protocol::OBJECT_TYPE_PROJECTILE:
+		_gameRoomSector[idx]._sectorArrows.push_back(static_cast<Arrow*>(gameObject));
+		break;
+	default:
+		return;
+	}
+	
+
+}
+
+void GameRoom::DeleteFromSector(GameObject* gameObject)
+{
+	//이건 단순히 해당 객체가 현재 섹터좌표기준으로 빼내는것
+	int32 idx = gameObject->GetCurSectorPos().y * SECTOR_WIDTH + gameObject->GetCurSectorPos().x;
+
+	if (!CheckValidSectorPos(gameObject->GetCurSectorPos()))return;
+
+	auto objectType = gameObject->info.objecttype();
+	switch (objectType)
+	{
+	case Protocol::OBJECT_TYPE_PLAYER:
+		if (!_gameRoomSector[idx]._sectorPlayers.empty()) {
+			auto iter = find(_gameRoomSector[idx]._sectorPlayers.begin(), _gameRoomSector[idx]._sectorPlayers.end(), static_cast<Player*>(gameObject));
+
+			if (iter != _gameRoomSector[idx]._sectorPlayers.end()) {
+				*iter = _gameRoomSector[idx]._sectorPlayers.back();
+				_gameRoomSector[idx]._sectorPlayers.pop_back();
+			}
+		}
+		break;
+	case Protocol::OBJECT_TYPE_MONSTER:
+		if (!_gameRoomSector[idx]._sectorMonsters.empty()) {
+			auto iter = find(_gameRoomSector[idx]._sectorMonsters.begin(), _gameRoomSector[idx]._sectorMonsters.end(), static_cast<Monster*>(gameObject));
+
+			if (iter != _gameRoomSector[idx]._sectorMonsters.end()) {
+				*iter = _gameRoomSector[idx]._sectorMonsters.back();
+				_gameRoomSector[idx]._sectorMonsters.pop_back();
+			}
+		}	
+		break;
+	case Protocol::OBJECT_TYPE_PROJECTILE:
+		if (!_gameRoomSector[idx]._sectorArrows.empty()) {
+			auto iter = find(_gameRoomSector[idx]._sectorArrows.begin(), _gameRoomSector[idx]._sectorArrows.end(), static_cast<Arrow*>(gameObject));
+
+			if (iter != _gameRoomSector[idx]._sectorArrows.end()) {
+				*iter = _gameRoomSector[idx]._sectorArrows.back();
+				_gameRoomSector[idx]._sectorArrows.pop_back();
+			}
+		}
+		break;
+	default:
+		return;
+	}
+
+
+	
+
+}
+
+bool GameRoom::CheckValidSectorPos(Vec2Int sectorPos)
+{
+	if (sectorPos.x < 0 || sectorPos.x >= SECTOR_WIDTH || sectorPos.y < 0 || sectorPos.y >= SECTOR_HEIGHT)
+		return false;
+
+	return true;
+}
+
+bool GameRoom::CanGoBySector(Vec2Int cellPos)
+{
+	Tile* tile = _tilemap.GetTileAt(cellPos);
+	if (tile == nullptr)
+		return false;
+
+	if (GetCreatureAtSector(cellPos) != nullptr)
+		return false;
+
+
+	return tile->value != 1;
+	return false;
+}
+
+Player* GameRoom::GetPlayerAtSector(Vec2Int cellPos)
+{
+	Vec2Int SectorPos = GetSectorPos(cellPos.x, cellPos.y);
+	
+	if (!CheckValidSectorPos(SectorPos)) return nullptr;
+
+	Sector* sector = GetSectorAt(SectorPos);
+	
+	if (sector) {
+		for (auto pl : sector->_sectorPlayers) {
+			if (pl->GetCellPos() == cellPos) {
+				return pl;
+			}
+		}
+	}
+
+	return nullptr;
+}
+
+Monster* GameRoom::GetMonsterAtSector(Vec2Int cellPos)
+{
+	Vec2Int SectorPos = GetSectorPos(cellPos.x, cellPos.y);
+
+	if (!CheckValidSectorPos(SectorPos))return nullptr;
+
+		Sector* sector = GetSectorAt(SectorPos);
+
+	if (sector) {
+		for (auto mon : sector->_sectorMonsters) {
+			if (mon->GetCellPos() == cellPos) {
+				return mon;
+			}
+		}
+	}
+
+	return nullptr;
+}
+
+Arrow* GameRoom::GetArrowAtSector(Vec2Int cellPos )
+{
+	Vec2Int SectorPos = GetSectorPos(cellPos.x, cellPos.y);
+
+	if (!CheckValidSectorPos(SectorPos))return nullptr;
+
+		Sector* sector = GetSectorAt(SectorPos);
+
+	if (sector) {
+		for (auto arr : sector->_sectorArrows) {
+			if (arr->GetCellPos() == cellPos) {
+				return arr;
+			}
+		}
+	}
+
+	return nullptr;
+}
+
+Creature* GameRoom::GetCreatureAtSector(Vec2Int cellPos)
+{
+
+	Vec2Int SectorPos = GetSectorPos(cellPos.x, cellPos.y);
+
+	if (!CheckValidSectorPos(SectorPos))return nullptr;
+
+	Sector* sector = GetSectorAt(SectorPos);
+
+	if (sector) {
+		for (auto mon : sector->_sectorMonsters) {
+			if (mon->GetCellPos() == cellPos) {
+				return mon;
+			}
+		}
+	}
+
+	if (sector) {
+		for (auto pl : sector->_sectorPlayers) {
+			if (pl->GetCellPos() == cellPos) {
+				return pl;
+			}
+		}
+	}
+
+	return nullptr;
+}
+
+Player* GameRoom::FindClosestPlayerBySector(Vec2Int cellPos)
+{
+	Vec2Int curSector = GetSectorPos(cellPos.x, cellPos.y);
+
+	if (curSector == Vec2Int(-1, -1))return nullptr;
+
+	Player* ret = nullptr;
+	float best = FLT_MAX;
+
+
+	for (int i = 0; i < 9; ++i) {
+		Vec2Int nextFindSectorPos{ curSector.x + dirX[i],curSector.y + dirY[i] };
+		if (CheckValidSectorPos(nextFindSectorPos)) {
+			Sector* nextFindSector = GetSectorAt(nextFindSectorPos);
+			for (Player* pl : nextFindSector->_sectorPlayers) {
+				float dist = Vec2Int(pl->GetCellPos() - cellPos).LengthSquared();
+				if (dist < best) {
+					best = dist;
+					ret = pl;
+				}
+			}
+		}
+	}
+
+	return ret;
 }
 
 void GameRoom::Update()
@@ -158,6 +404,9 @@ void GameRoom::Enter(shared_ptr<GameObject> gameObject)
     uint64 id = gameObject->info.objectid();
 	auto objectType = gameObject->info.objecttype();
 	
+	InsertAtSector(GetSectorPos(gameObject->info.posx(), gameObject->info.posy()), static_cast<Creature*>(gameObject.get()));
+	gameObject->SetCurSectorPos(GetSectorPos(gameObject->info.posx(), gameObject->info.posy()));
+
 	switch (objectType)
 	{
 	case Protocol::OBJECT_TYPE_PLAYER:
@@ -183,6 +432,7 @@ void GameRoom::Leave(uint64 id)
 		return;
 
 	auto objectType = gameObject->info.objecttype();
+	DeleteFromSector(gameObject.get());
 
 	switch (objectType)
 	{
@@ -278,7 +528,7 @@ shared_ptr<Player>  GameRoom::FindClosestPlayer(Vec2Int pos) {
 			float dist = dir.LengthSquared();
 			if (dist < best)
 			{
-				dist = best;
+				best = dist;
 				ret = player;
 			}
 		}
@@ -290,9 +540,9 @@ shared_ptr<Player>  GameRoom::FindClosestPlayer(Vec2Int pos) {
 bool  GameRoom::FindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int32 maxDepth) {
 	
 	
-	int32 depth = abs(src.y - dest.y) + abs(src.x - dest.x);
-	if (depth >= maxDepth)
-		return false;
+	//int32 depth = abs(src.y - dest.y) + abs(src.x - dest.x);
+	//if (depth >= maxDepth)
+	//	return false;
 
 	priority_queue<PQNode, vector<PQNode>, greater<PQNode>> pq;
 	map<Vec2Int, int32> best;

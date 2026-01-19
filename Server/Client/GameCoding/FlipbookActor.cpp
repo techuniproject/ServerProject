@@ -42,6 +42,10 @@ void FlipbookActor::Tick()
 
 	if (_sumTime >= delta)
 	{
+		//delta는 원하는 애니메이션 지속시간을 스프라이트 개수만큼 나눈값을 경계지점
+		//그 경계 판단 기준은 sumtime인데 이건 speed를 dt에 곱하니까 speed를 늘리면 빠르게 가능
+		//speed로 제어가능한 영역이 어느순간 의미없어짐 무조건 delta보다 커지니까
+
 		_sumTime = 0.f;
 		_idx = (_idx + 1) % frameCount;
 	}
