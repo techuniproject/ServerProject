@@ -113,7 +113,7 @@ private:
 	vector<uint64>_deletearrowlist;
 private:
 	Tilemap _tilemap;
-	const int32 DESIRED_COUNT = 1;
+	const int32 DESIRED_COUNT = 10;
 	vector<Sector>_gameRoomSector;//1차원배열로 y*height +x 형태로 쓸거임 캐시 효율을 위해  
 	//Sector=>vector<Creature*>
 	const int32 SECTOR_HEIGHT = 5;

@@ -40,15 +40,17 @@ void Creature::Update()//어차피 메인스레드 로직이라 lock신경X, send도 메인이 해�
 }
 
 
-void Creature::OnDamaged(shared_ptr<Creature>  attacker)
+bool Creature::OnDamaged(shared_ptr<Creature>  attacker)
 {
-
+	//false면 데미지 applyhitstun도 적용 x ->몬스터의 경우
+	// bool로 바꾼건 판정시 Leave를 호출하며 이후에 applyhitstun과 같이 해당 creature정보사용시 null crash 방지
+	// 원래 rtti로 동적판정했지만 비용감소
 	if (attacker == nullptr)
-		return;
+		return false;
 
 	int32 damage = attacker->GetObjectAttack() - GetObjectDefence();
 	if (damage <= 0)
-		return;
+		return false;
 
 	SetObjectHp(max(0, GetObjectHp() - damage));
 	if (GetObjectHp() == 0)
@@ -65,13 +67,17 @@ void Creature::OnDamaged(shared_ptr<Creature>  attacker)
 
 			
 		}
+		return false;
 	}
 	else {
-		Protocol::S_ATTACK pkt;
-		pkt.set_attackedid(GetObjectID());
-		pkt.set_hp(info.hp());
-		SendBufferRef sendBuf = ServerPacketHandler::Make_S_Attack(pkt);
-		GRoom->Broadcast(sendBuf);
+		if (GRoom) {
+			Protocol::S_ATTACK pkt;
+			pkt.set_attackedid(GetObjectID());
+			pkt.set_hp(info.hp());
+			SendBufferRef sendBuf = ServerPacketHandler::Make_S_Attack(pkt);
+			GRoom->Broadcast(sendBuf);
+		}
+		return true;
 	}
 	
 }

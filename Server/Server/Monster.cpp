@@ -130,12 +130,18 @@ void Monster::UpdateIdle()
 					{
 						SetDir(GetLookAtDir(nextPos));
 						SetCellPos(nextPos);
+						room->InsertAtSector(room->GetSectorPos(nextPos.x, nextPos.y), static_cast<GameObject*>(shared_from_this().get()));
+						SetCurSectorPos(room->GetSectorPos(nextPos.x, nextPos.y));
 						_waitUntil = GetTickCount64() + 500; //+1ÃÊ
 						SetState(MOVE,true);
+						
 					}
 				}
-				else
+				else {
 					SetCellPos(path[0]);
+					room->InsertAtSector(room->GetSectorPos(path[0].x, path[0].y), static_cast<GameObject*>(shared_from_this().get()));
+					SetCurSectorPos(room->GetSectorPos(path[0].x, path[0].y));
+				}
 			}
 		}
 	}
@@ -196,14 +202,15 @@ void Monster::ApplyHitStun(uint32 ms) {
 	SetState(HIT, true);
 }
 
-void Monster::OnDamaged(shared_ptr<Creature> attacker)
+bool Monster::OnDamaged(shared_ptr<Creature> attacker)
 {
-	Super::OnDamaged(attacker);
+	bool isalive= Super::OnDamaged(attacker);
+	
 
 	if (attacker == nullptr)
-		return;
+		return false;
 
-	if (GetObjectHp() == 0) {
+      	if (GetObjectHp() == 0) {
 		if (GRoom) {
 			item.SetAliveState(true);
 			auto ifarrow = dynamic_pointer_cast<Arrow>(attacker);
@@ -227,5 +234,5 @@ void Monster::OnDamaged(shared_ptr<Creature> attacker)
 			GRoom->Broadcast(sendBuf);
 		}
 	}
-	
+		return isalive;
 }

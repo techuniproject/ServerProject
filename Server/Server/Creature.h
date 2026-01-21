@@ -9,7 +9,7 @@ public:
 	virtual ~Creature() override;
 
 
-	virtual void OnDamaged(shared_ptr<Creature> attacker);
+	virtual bool OnDamaged(shared_ptr<Creature> attacker);
 
 
 protected:

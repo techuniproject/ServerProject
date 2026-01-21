@@ -17,7 +17,7 @@ public:
 	void ApplyHitStun(uint32 ms);
 	void SetFindMaxDist(uint64 dist) { _findMaxDist = dist; }
 	uint64 GetFindMaxDist() { return _findMaxDist; }
-	virtual void OnDamaged(shared_ptr<Creature> attacker)override;
+	virtual bool OnDamaged(shared_ptr<Creature> attacker)override;
 private:
 	virtual void UpdateIdle()override;
 	virtual void UpdateMove()override;
