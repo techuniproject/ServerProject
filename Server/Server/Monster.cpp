@@ -167,7 +167,7 @@ void Monster::UpdateSkill()
 
 	Player* pl = GRoom->GetPlayerAtSector(GetFrontCellPos());
 	if (pl) {
-		pl->OnDamaged(dynamic_pointer_cast<Creature>(shared_from_this()));
+		pl->OnDamaged(static_pointer_cast<Creature>(shared_from_this()));
 		_waitUntil = GetTickCount64() + 1000;
 		pl->SetState(HIT, true);
 	}
@@ -204,7 +204,11 @@ void Monster::ApplyHitStun(uint32 ms) {
 
 bool Monster::OnDamaged(shared_ptr<Creature> attacker)
 {
-	bool isalive= Super::OnDamaged(attacker);
+	shared_ptr<Monster>life_guard = static_pointer_cast<Monster>(shared_from_this());
+	//생명늘리고 이후 OnDamaged의 수명주기 컨테이너에서 삭제하고 ->나머지 아이템 로직 수행후 이 함수끝나면 수명 0
+	//Super::OnDamaged에서 피를깎아야 여기 로직에서 Hp==0이 수행되어 아이템 생성되니까 이게 최선
+	bool isalive = Super::OnDamaged(attacker);
+	//여기서 제거하면 미리 삭제된 상태로 다음 GetObjectHp에서 null crash
 	
 
 	if (attacker == nullptr)
@@ -213,9 +217,11 @@ bool Monster::OnDamaged(shared_ptr<Creature> attacker)
       	if (GetObjectHp() == 0) {
 		if (GRoom) {
 			item.SetAliveState(true);
-			auto ifarrow = dynamic_pointer_cast<Arrow>(attacker);
-			if (ifarrow) {
-				item.SetBelongingId(ifarrow->GetBelongingId());
+			//auto ifarrow = dynamic_pointer_cast<Arrow>(attacker);
+			
+			if (attacker->info.objecttype()==Protocol::OBJECT_TYPE_PROJECTILE) {
+				//item.SetBelongingId(ifarrow->GetBelongingId());
+				item.SetBelongingId(static_pointer_cast<Arrow>(attacker)->GetBelongingId());
 			}
 			else {
 				item.SetBelongingId(attacker->GetObjectID());

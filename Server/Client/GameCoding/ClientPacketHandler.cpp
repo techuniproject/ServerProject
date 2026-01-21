@@ -202,11 +202,15 @@ bool Handle_S_Move(ServerSessionRef& session, Protocol::S_Move& pkt)
             gameObject->SetMaxHp(info.maxhp());
             gameObject->SetHp(info.hp());
             gameObject->SetDefence(info.defence());
-            gameObject->SetName(info.name());          
-            auto ifplayer = dynamic_pointer_cast<Player>(gameObject);
+            gameObject->SetName(info.name());       
+           
+          /*  auto ifplayer = dynamic_pointer_cast<Player>(gameObject);
             if (ifplayer) {
                 ifplayer->SetWeaponType(info.weapontype());
-            }
+            }*/
+            if (info.objecttype() == Protocol::OBJECT_TYPE_PLAYER) {
+                static_pointer_cast<Player>(gameObject)->SetWeaponType(info.weapontype());
+           }//RTTI 비용 줄이기
             return true;
  		}
  	    

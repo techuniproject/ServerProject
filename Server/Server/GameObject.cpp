@@ -69,6 +69,13 @@ void GameObject::SetDir(Dir dir, bool broadcast) {
 
 }
 
+bool GameObject::CanGoBySector(Vec2Int cellPos)
+{
+	if (room == nullptr)
+		return false;
+
+	return room->CanGoBySector(cellPos);
+}
 
 bool GameObject::CanGo(Vec2Int cellPos) 
 {

@@ -16,6 +16,7 @@ public:
 	void SetDir(Dir dir, bool broadcast=false);
 	//bool HasReachedDest();
 	bool CanGo(Vec2Int cellPos);
+	bool CanGoBySector(Vec2Int cellPos);
 	Dir GetLookAtDir(Vec2Int cellPos);
 	void SetCellPos(Vec2Int cellPos, bool broadcast = false);
 	Vec2Int GetCellPos();

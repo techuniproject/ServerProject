@@ -50,7 +50,7 @@ void Player::UpdateSkill()
 	if (info.weapontype() == Protocol::WEAPON_TYPE_SWORD) {
 		if (auto monster = GRoom->GetMonsterAtSector(GetFrontCellPos())) // 전방 셀 타격
 		{
-			if (monster->OnDamaged(dynamic_pointer_cast<Creature>(shared_from_this()))) {
+			if (monster->OnDamaged(static_pointer_cast<Creature>(shared_from_this()))) {
 				//OnDamaged에서 피가 0이면 Leave를 통해 수명 파기하기때문에 검사해야함
 				monster->ApplyHitStun(505); //플레이어 공격 쿨타임 500이라 같이 500이면 둘다 동시에 때림
 			}
@@ -67,6 +67,7 @@ void Player::UpdateSkill()
 		arrow->info.set_posy(info.posy());
 		arrow->info.set_dir(info.dir());
 		arrow->info.set_attack(info.attack());
+		
 		float speed = info.attackspeed();
 		speed *= 600;
 		arrow->SetBelongingId(info.objectid());

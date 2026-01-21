@@ -404,23 +404,27 @@ void GameRoom::Enter(shared_ptr<GameObject> gameObject)
     uint64 id = gameObject->info.objectid();
 	auto objectType = gameObject->info.objecttype();
 	
-	InsertAtSector(GetSectorPos(gameObject->info.posx(), gameObject->info.posy()), static_cast<Creature*>(gameObject.get()));
-	gameObject->SetCurSectorPos(GetSectorPos(gameObject->info.posx(), gameObject->info.posy()));
-
+	
 	switch (objectType)
 	{
 	case Protocol::OBJECT_TYPE_PLAYER:
+		InsertAtSector(GetSectorPos(gameObject->info.posx(), gameObject->info.posy()), static_cast<Creature*>(gameObject.get()));
+		gameObject->SetCurSectorPos(GetSectorPos(gameObject->info.posx(), gameObject->info.posy()));
 		_players[id] = static_pointer_cast<Player>(gameObject);
 		break;
 	case Protocol::OBJECT_TYPE_MONSTER:
+		InsertAtSector(GetSectorPos(gameObject->info.posx(), gameObject->info.posy()), static_cast<Creature*>(gameObject.get()));
+		gameObject->SetCurSectorPos(GetSectorPos(gameObject->info.posx(), gameObject->info.posy()));
 		_monsters[id] = static_pointer_cast<Monster>(gameObject);
 		break;
 	case Protocol::OBJECT_TYPE_PROJECTILE:
+		//화살을 섹터로 현재 관리할 필요없어보임 
 		_arrows[id] = static_pointer_cast<Arrow>(gameObject);
 		break;
 	default:
 		return;
 	}
+
 	gameObject->room = shared_from_this();
 
 }
@@ -432,14 +436,15 @@ void GameRoom::Leave(uint64 id)
 		return;
 
 	auto objectType = gameObject->info.objecttype();
-	DeleteFromSector(gameObject.get());
 
 	switch (objectType)
 	{
 	case Protocol::OBJECT_TYPE_PLAYER:
+		DeleteFromSector(gameObject.get());
 		_players.erase(id);
 		break;
-	case Protocol::OBJECT_TYPE_MONSTER:
+	case Protocol::OBJECT_TYPE_MONSTER:	
+		DeleteFromSector(gameObject.get());
 		_monsters.erase(id);
 		break;
 	case Protocol::OBJECT_TYPE_PROJECTILE:
@@ -589,7 +594,7 @@ bool  GameRoom::FindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int32
 		{
 			Vec2Int nextPos = node.pos + front[dir];
 
-			if (CanGo(nextPos) == false)
+			if (CanGoBySector(nextPos) == false)
 				continue;
 
 			int32 depth = abs(src.y - nextPos.y) + abs(src.x - nextPos.x);
@@ -697,7 +702,7 @@ bool GameRoom::MyFindPath(Vec2Int start, Vec2Int dest, vector<Vec2Int>& path, in
 		for (int i = 0; i < 4; i++)
 		{
 			Vec2Int next = cur.pos + dirs[i];
-			if (!CanGo(next)) continue;
+			if (!CanGoBySector(next)) continue;
 
 			int nextG = cur.g + 1;
 			if (nextG > maxDepth) continue;
@@ -868,7 +873,7 @@ Vec2Int  GameRoom::GetRandomEmptyCellPos() {
 		int32 y = rand() % size.y;
 		Vec2Int cellPos{ x, y };
 
-		if (CanGo(cellPos))
+		if (CanGoBySector(cellPos))
 			return cellPos;
 	}
 }
@@ -919,6 +924,7 @@ optional<Item> GameRoom::GetItemAt(Vec2Int cellPos)
 void GameRoom::AddDeleteProjectiletoList(uint64 idx)
 {
 	_deletearrowlist.emplace_back(idx);
+	//제거를 update에서하면 이터레이터 무효화때문에 update이후 제거 위한 컨테이너에 추가
 }
 
 

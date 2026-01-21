@@ -142,7 +142,7 @@ bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move& pkt)
                     return;
                 }
                
-                if (curSessionPlayer->CanGo(nextPos)) {
+                if (curSessionPlayer->CanGoBySector(nextPos)) {
                     //TODO Validation 해킹 체킹   
                     curSessionPlayer->SetLastMoveTime(now);
                     auto optitem = gameRoom->GetItemAt(nextPos);
@@ -180,9 +180,7 @@ bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move& pkt)
                 }
             }
             
-           
-
-                           
+                                  
             curSessionPlayer->info.set_weapontype(pkt.info().weapontype());
         
 
