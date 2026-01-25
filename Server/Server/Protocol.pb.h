@@ -65,6 +65,9 @@ extern S_ATTACKDefaultTypeInternal _S_ATTACK_default_instance_;
 class S_AddObject;
 struct S_AddObjectDefaultTypeInternal;
 extern S_AddObjectDefaultTypeInternal _S_AddObject_default_instance_;
+class S_BROADCAST;
+struct S_BROADCASTDefaultTypeInternal;
+extern S_BROADCASTDefaultTypeInternal _S_BROADCAST_default_instance_;
 class S_CHAT;
 struct S_CHATDefaultTypeInternal;
 extern S_CHATDefaultTypeInternal _S_CHAT_default_instance_;
@@ -94,6 +97,7 @@ template<> ::Protocol::C_Move* Arena::CreateMaybeMessage<::Protocol::C_Move>(Are
 template<> ::Protocol::C_SPEED* Arena::CreateMaybeMessage<::Protocol::C_SPEED>(Arena*);
 template<> ::Protocol::S_ATTACK* Arena::CreateMaybeMessage<::Protocol::S_ATTACK>(Arena*);
 template<> ::Protocol::S_AddObject* Arena::CreateMaybeMessage<::Protocol::S_AddObject>(Arena*);
+template<> ::Protocol::S_BROADCAST* Arena::CreateMaybeMessage<::Protocol::S_BROADCAST>(Arena*);
 template<> ::Protocol::S_CHAT* Arena::CreateMaybeMessage<::Protocol::S_CHAT>(Arena*);
 template<> ::Protocol::S_EnterGame* Arena::CreateMaybeMessage<::Protocol::S_EnterGame>(Arena*);
 template<> ::Protocol::S_ITEM* Arena::CreateMaybeMessage<::Protocol::S_ITEM>(Arena*);
@@ -2229,6 +2233,163 @@ class S_ITEM final :
   union { Impl_ _impl_; };
   friend struct ::TableStruct_Protocol_2eproto;
 };
+// -------------------------------------------------------------------
+
+class S_BROADCAST final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.S_BROADCAST) */ {
+ public:
+  inline S_BROADCAST() : S_BROADCAST(nullptr) {}
+  ~S_BROADCAST() override;
+  explicit PROTOBUF_CONSTEXPR S_BROADCAST(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  S_BROADCAST(const S_BROADCAST& from);
+  S_BROADCAST(S_BROADCAST&& from) noexcept
+    : S_BROADCAST() {
+    *this = ::std::move(from);
+  }
+
+  inline S_BROADCAST& operator=(const S_BROADCAST& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline S_BROADCAST& operator=(S_BROADCAST&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const S_BROADCAST& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const S_BROADCAST* internal_default_instance() {
+    return reinterpret_cast<const S_BROADCAST*>(
+               &_S_BROADCAST_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    13;
+
+  friend void swap(S_BROADCAST& a, S_BROADCAST& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(S_BROADCAST* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(S_BROADCAST* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  S_BROADCAST* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<S_BROADCAST>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const S_BROADCAST& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const S_BROADCAST& from) {
+    S_BROADCAST::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(S_BROADCAST* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "Protocol.S_BROADCAST";
+  }
+  protected:
+  explicit S_BROADCAST(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kObjectsFieldNumber = 1,
+  };
+  // repeated .Protocol.ObjectInfo objects = 1;
+  int objects_size() const;
+  private:
+  int _internal_objects_size() const;
+  public:
+  void clear_objects();
+  ::Protocol::ObjectInfo* mutable_objects(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo >*
+      mutable_objects();
+  private:
+  const ::Protocol::ObjectInfo& _internal_objects(int index) const;
+  ::Protocol::ObjectInfo* _internal_add_objects();
+  public:
+  const ::Protocol::ObjectInfo& objects(int index) const;
+  ::Protocol::ObjectInfo* add_objects();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo >&
+      objects() const;
+
+  // @@protoc_insertion_point(class_scope:Protocol.S_BROADCAST)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo > objects_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Protocol_2eproto;
+};
 // ===================================================================
 
 
@@ -3152,9 +3313,52 @@ inline void S_ITEM::set_allocated_iteminfo(::Protocol::ItemInfo* iteminfo) {
   // @@protoc_insertion_point(field_set_allocated:Protocol.S_ITEM.iteminfo)
 }
 
+// -------------------------------------------------------------------
+
+// S_BROADCAST
+
+// repeated .Protocol.ObjectInfo objects = 1;
+inline int S_BROADCAST::_internal_objects_size() const {
+  return _impl_.objects_.size();
+}
+inline int S_BROADCAST::objects_size() const {
+  return _internal_objects_size();
+}
+inline ::Protocol::ObjectInfo* S_BROADCAST::mutable_objects(int index) {
+  // @@protoc_insertion_point(field_mutable:Protocol.S_BROADCAST.objects)
+  return _impl_.objects_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo >*
+S_BROADCAST::mutable_objects() {
+  // @@protoc_insertion_point(field_mutable_list:Protocol.S_BROADCAST.objects)
+  return &_impl_.objects_;
+}
+inline const ::Protocol::ObjectInfo& S_BROADCAST::_internal_objects(int index) const {
+  return _impl_.objects_.Get(index);
+}
+inline const ::Protocol::ObjectInfo& S_BROADCAST::objects(int index) const {
+  // @@protoc_insertion_point(field_get:Protocol.S_BROADCAST.objects)
+  return _internal_objects(index);
+}
+inline ::Protocol::ObjectInfo* S_BROADCAST::_internal_add_objects() {
+  return _impl_.objects_.Add();
+}
+inline ::Protocol::ObjectInfo* S_BROADCAST::add_objects() {
+  ::Protocol::ObjectInfo* _add = _internal_add_objects();
+  // @@protoc_insertion_point(field_add:Protocol.S_BROADCAST.objects)
+  return _add;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo >&
+S_BROADCAST::objects() const {
+  // @@protoc_insertion_point(field_list:Protocol.S_BROADCAST.objects)
+  return _impl_.objects_;
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

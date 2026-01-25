@@ -38,7 +38,10 @@ void Arrow::UpdateIdle()
 		float moveTimeInSec = 48.0f / info.movespeed();
 		long long moveTick = (long long)(moveTimeInSec * 1000);
 		_waitUntil = GetTickCount64() + moveTick;
-		SetState(MOVE, true);
+		//SetState(MOVE, true);
+		SetState(MOVE);
+		BroadcastMoveBySector();
+		//BroadcastMove();
 	}
 	else
 	{

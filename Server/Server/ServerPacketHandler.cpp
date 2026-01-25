@@ -8,6 +8,7 @@
 #include "AIQueue.h"
 #include "Monster.h"
 #include "Player.h"
+#include "Sector.h"
 
 extern AIQueue GAIQueue;
 
@@ -82,6 +83,11 @@ SendBufferRef ServerPacketHandler::Make_S_Item(const Protocol::S_ITEM& pkt)
     return MakeSendBuffer(pkt);
 }
 
+SendBufferRef ServerPacketHandler::Make_S_Broadcast(const Protocol::S_BROADCAST& pkt)
+{
+    return  MakeSendBuffer(pkt);
+}
+
 
 bool Handle_INVALID(GameSessionRef& session, BYTE* buffer, int32 length)
 {
@@ -107,7 +113,7 @@ bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move& pkt)
             Vec2Int nextPos{ pkt.info().posx(), pkt.info().posy() };
             curSessionPlayer->info.set_state(pkt.info().state());
             curSessionPlayer->info.set_dir(pkt.info().dir());
-
+            curSessionPlayer->info.set_weapontype(pkt.info().weapontype());
             if (nextPos == curSessionPlayer->GetCellPos()) {
                 //제자리면 체크할 필요가 있나?
                 //이동일때만 체크해야되는데, 이게 스킬을 사용하면 체크해버림.
@@ -174,18 +180,46 @@ bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move& pkt)
                     }
                     curSessionPlayer->info.set_posx(pkt.info().posx());
                     curSessionPlayer->info.set_posy(pkt.info().posy());
-                    gameRoom->InsertAtSector(gameRoom->GetSectorPos(pkt.info().posx(), pkt.info().posy()), static_cast<GameObject*>(curSessionPlayer.get()));
-                    curSessionPlayer->SetCurSectorPos(gameRoom->GetSectorPos(pkt.info().posx(), pkt.info().posy()));
+                    // sector변경되면 갱신후 해당 정보들을 기반으로 동기화
+                    if (!curSessionPlayer->isSameSector(gameRoom->GetSectorPos(pkt.info().posx(), pkt.info().posy()))) {
+                        gameRoom->InsertAtSector(gameRoom->GetSectorPos(pkt.info().posx(), pkt.info().posy()), static_cast<GameObject*>(curSessionPlayer.get()));
+                        curSessionPlayer->SetCurSectorPos(gameRoom->GetSectorPos(pkt.info().posx(), pkt.info().posy()));
+                        
+                        const int32 dirX[9] = { 0, 1,0,0,1,-1,-1,1,-1 };
+                        const int32 dirY[9] = { 0,1,1,-1,-1,1,0,0,-1 };
+                        Protocol::S_BROADCAST broadcastRoomPlayers;
+                        int cnt{};
+                        vector<Sector>_gameRoomSector = gameRoom->_gameRoomSector;
+                        for (int i = 0; i < 9; ++i) {
+                            Vec2Int sectorPos = gameRoom->GetSectorPos(pkt.info().posx(), pkt.info().posy());
+                            if (sectorPos == Vec2Int(-1, -1))continue;
+                            sectorPos.x += dirX[i];
+                            sectorPos.y += dirY[i];
+                            Sector* sector = gameRoom->GetSectorAt(sectorPos);
+                            if (sector) {
+                                for (Player* pl : sector->_sectorPlayers) {
+                                    if (pl&&pl->GetObjectID()!=curSessionPlayer->GetObjectID()) {
+                                        cnt++;
+                                        *broadcastRoomPlayers.add_objects() = pl->info;
+                                    }
+                                }
+                            }
+                        }
+                        cnt++;
 
+                        SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Broadcast(broadcastRoomPlayers);
+                        curSession->Send(sendBuffer);
+                    }
+                   
                 }
             }
             
                                   
-            curSessionPlayer->info.set_weapontype(pkt.info().weapontype());
+           
         
 
             SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Move(curSessionPlayer->info);
-            gameRoom->Broadcast(sendBuffer);
+            gameRoom->BroadcastBySector(sendBuffer,curSessionPlayer->GetCurSectorPos());
            
             });
         return true;

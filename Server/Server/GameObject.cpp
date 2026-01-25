@@ -48,25 +48,20 @@ shared_ptr<Arrow> GameObject::CreateArrow()
 	return arrow;
 }
 
-void GameObject::SetState(ObjectState state, bool broadcast) {
+void GameObject::SetState(ObjectState state) {
 
 	if (info.state() == state)
 		return;
 
 	info.set_state(state);
-	
-	if (broadcast)
-		BroadcastMove();
+
 }
 
-void GameObject::SetDir(Dir dir, bool broadcast) {
+void GameObject::SetDir(Dir dir) {
 
 
 	info.set_dir(dir);
 	
-	if (broadcast)
-		BroadcastMove();
-
 }
 
 bool GameObject::CanGoBySector(Vec2Int cellPos)
@@ -98,13 +93,11 @@ Dir GameObject::GetLookAtDir(Vec2Int cellPos)
 		return DIR_UP;
 }
 
-void GameObject::SetCellPos(Vec2Int cellPos, bool broadcast) 
+void GameObject::SetCellPos(Vec2Int cellPos) 
 {
 	info.set_posx(cellPos.x);
 	info.set_posy(cellPos.y);
-	
-	if (broadcast)
-		BroadcastMove();
+
 }
 
 Vec2Int GameObject::GetCellPos() {
@@ -135,4 +128,17 @@ void GameObject::BroadcastMove()
 		room->Broadcast(sendBuffer);
 		
 	}
+}
+
+void GameObject::BroadcastMoveBySector()
+{
+	if (room) {
+		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Move(info);
+		room->BroadcastBySector(sendBuffer,room->GetSectorPos(info.posx(),info.posy()));
+	}
+}
+
+bool GameObject::isSameSector(Vec2Int sectorpos)
+{
+	return (sectorpos == curSectorPos);
 }

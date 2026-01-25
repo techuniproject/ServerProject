@@ -49,7 +49,7 @@ public:
 		assert(isGameObject);
 
 		shared_ptr<T> ret = make_shared<T>();
-		ret->SetCellPos(pos, true,true);
+		ret->SetCellPos(pos, false,true);
 		AddActor(ret);
 		ret->AttatchDefaultComponent();
 		ret->BeginPlay();

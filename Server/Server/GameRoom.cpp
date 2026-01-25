@@ -145,12 +145,15 @@ void GameRoom::InsertAtSector(Vec2Int sectorPos, GameObject* gameObject)
 	{
 	case Protocol::OBJECT_TYPE_PLAYER:
 		_gameRoomSector[idx]._sectorPlayers.push_back(static_cast<Player*>(gameObject));
+		gameObject->SetCurSectorIndex(_gameRoomSector[idx]._sectorPlayers.size() - 1);
 		break;
 	case Protocol::OBJECT_TYPE_MONSTER:
 		_gameRoomSector[idx]._sectorMonsters.push_back(static_cast<Monster*>(gameObject));
+		gameObject->SetCurSectorIndex(_gameRoomSector[idx]._sectorMonsters.size() - 1);
 		break;
 	case Protocol::OBJECT_TYPE_PROJECTILE:
 		_gameRoomSector[idx]._sectorArrows.push_back(static_cast<Arrow*>(gameObject));
+		gameObject->SetCurSectorIndex(_gameRoomSector[idx]._sectorArrows.size() - 1);
 		break;
 	default:
 		return;
@@ -162,45 +165,60 @@ void GameRoom::InsertAtSector(Vec2Int sectorPos, GameObject* gameObject)
 void GameRoom::DeleteFromSector(GameObject* gameObject)
 {
 	//이건 단순히 해당 객체가 현재 섹터좌표기준으로 빼내는것
-	int32 idx = gameObject->GetCurSectorPos().y * SECTOR_WIDTH + gameObject->GetCurSectorPos().x;
+	int32 sectoridx = gameObject->GetCurSectorPos().y * SECTOR_WIDTH + gameObject->GetCurSectorPos().x;
 
 	if (!CheckValidSectorPos(gameObject->GetCurSectorPos()))return;
 
 	auto objectType = gameObject->info.objecttype();
+	uint64 idx = gameObject->GetCurSectorIndex();
 	switch (objectType)
 	{
 	case Protocol::OBJECT_TYPE_PLAYER:
-		if (!_gameRoomSector[idx]._sectorPlayers.empty()) {
-			auto iter = find(_gameRoomSector[idx]._sectorPlayers.begin(), _gameRoomSector[idx]._sectorPlayers.end(), static_cast<Player*>(gameObject));
-
-			if (iter != _gameRoomSector[idx]._sectorPlayers.end()) {
-				*iter = _gameRoomSector[idx]._sectorPlayers.back();
-				_gameRoomSector[idx]._sectorPlayers.pop_back();
+	{
+		auto& players = _gameRoomSector[sectoridx]._sectorPlayers;//해당 배열 위치접근시 주소연산 줄이기위함(반복하면 레지스터가 알아서 )
+		if (!players.empty()) {
+			if (idx >= 0 && idx < players.size()) {
+				Player* erasePlayer = players[idx];
+				players[idx] = players.back();
+				players[idx]->SetCurSectorIndex(idx);
+				erasePlayer->SetCurSectorIndex(-1); //만약 .back()을 가리키는 원소와 idx랑 같을때 해당 섹터에서 제거하기 전 idx가 유효한 값으로 덮어씌워져서 이런 구조로
+				players.pop_back();
 			}
 		}
+	}
 		break;
 	case Protocol::OBJECT_TYPE_MONSTER:
-		if (!_gameRoomSector[idx]._sectorMonsters.empty()) {
-			auto iter = find(_gameRoomSector[idx]._sectorMonsters.begin(), _gameRoomSector[idx]._sectorMonsters.end(), static_cast<Monster*>(gameObject));
-
-			if (iter != _gameRoomSector[idx]._sectorMonsters.end()) {
-				*iter = _gameRoomSector[idx]._sectorMonsters.back();
-				_gameRoomSector[idx]._sectorMonsters.pop_back();
+	{
+		auto& monsters = _gameRoomSector[sectoridx]._sectorMonsters;//해당 배열 위치접근시 주소연산 줄이기위함(반복하면 레지스터가 알아서 )
+		if (!monsters.empty()) {
+			if (idx >= 0 && idx < monsters.size()) {
+				Monster* eraseMonster = monsters[idx];
+				monsters[idx] = monsters.back();
+				monsters[idx]->SetCurSectorIndex(idx);
+				eraseMonster->SetCurSectorIndex(-1); //만약 .back()을 가리키는 원소와 idx랑 같을때 해당 섹터에서 제거하기 전 idx가 유효한 값으로 덮어씌워져서 이런 구조로
+				monsters.pop_back();
 			}
-		}	
+
+		}
+	}
 		break;
 	case Protocol::OBJECT_TYPE_PROJECTILE:
-		if (!_gameRoomSector[idx]._sectorArrows.empty()) {
-			auto iter = find(_gameRoomSector[idx]._sectorArrows.begin(), _gameRoomSector[idx]._sectorArrows.end(), static_cast<Arrow*>(gameObject));
-
-			if (iter != _gameRoomSector[idx]._sectorArrows.end()) {
-				*iter = _gameRoomSector[idx]._sectorArrows.back();
-				_gameRoomSector[idx]._sectorArrows.pop_back();
+	{
+		auto& arrows = _gameRoomSector[sectoridx]._sectorArrows;//해당 배열 위치접근시 주소연산 줄이기위함(반복하면 레지스터가 알아서 )
+		if (!arrows.empty()) {
+			if (idx >= 0 && idx < arrows.size()) {
+				Arrow* eraseArrow = arrows[idx];
+				arrows[idx] = arrows.back();
+				arrows[idx]->SetCurSectorIndex(idx);
+				eraseArrow->SetCurSectorIndex(-1); //만약 .back()을 가리키는 원소와 idx랑 같을때 해당 섹터에서 제거하기 전 idx가 유효한 값으로 덮어씌워져서 이런 구조로
+				arrows.pop_back();
 			}
+
 		}
+	}
 		break;
 	default:
-		return;
+		break;
 	}
 
 
@@ -215,6 +233,7 @@ bool GameRoom::CheckValidSectorPos(Vec2Int sectorPos)
 
 	return true;
 }
+
 
 bool GameRoom::CanGoBySector(Vec2Int cellPos)
 {
@@ -461,6 +480,22 @@ void GameRoom::Broadcast(SendBufferRef sendBuffer)
 {
     for (auto& p : _players)
         p.second->session->Send(sendBuffer);
+
+}
+
+void GameRoom::BroadcastBySector(SendBufferRef sendBuffer, Vec2Int SectorPos)
+{
+	if (SectorPos == Vec2Int(-1, -1))return;
+
+	for (int i = 0; i < 9; ++i) {
+		Vec2Int nextFindSectorPos{ SectorPos.x + dirX[i],SectorPos.y + dirY[i] };
+		if (CheckValidSectorPos(nextFindSectorPos)) {
+			Sector* nextFindSector = GetSectorAt(nextFindSectorPos);
+			for (Player* pl : nextFindSector->_sectorPlayers) {
+				pl->session->Send(sendBuffer);			
+			}
+		}
+	}
 
 }
 

@@ -301,6 +301,38 @@ bool Handle_S_ITEM(ServerSessionRef& session, Protocol::S_ITEM& pkt)
     return false;
 }
 
+bool Handle_S_BROADCAST(ServerSessionRef& session, Protocol::S_BROADCAST& pkt)
+{
+   
+    const int32 size = pkt.objects_size();
+    DevScene* scene = GET_SINGLE(GameInstance)->GetCurrentScene<DevScene>();
+    if (scene)
+    {
+        for (int32 i = 0; i < size; ++i) {
+            const Protocol::ObjectInfo& info = pkt.objects(i);
+            if (GET_SINGLE(GameInstance)->GetMyPlayerId() == info.objectid())continue;
+            //일단 내 플레이어 정보는 동기화 x어차피 다음 move패킷으로 받아옴
+
+            if (info.objecttype() == Protocol::OBJECT_TYPE_PLAYER)
+            {
+                shared_ptr<GameObject> gameObject = scene->GetGameObject(info.objectid());
+                gameObject->SetDir(info.dir());
+                gameObject->SetState(info.state());
+                gameObject->SetCellPos(Vec2Int(info.posx(), info.posy()),false,true);
+                gameObject->SetMaxHp(info.maxhp());
+                gameObject->SetHp(info.hp());
+                gameObject->SetDefence(info.defence());
+                gameObject->SetMoveSpeed(info.movespeed());
+                gameObject->SetAttackSpeed(info.attackspeed());
+                static_pointer_cast<Player>(gameObject)->SetWeaponType(info.weapontype());
+               // gameObject->info = info;
+            }        
+        }
+        
+    }
+    return false;
+}
+
 
 
 //void ClientPacketHandler::Handle_S_TEST(ServerSessionRef session,BYTE* buffer, int32 len)

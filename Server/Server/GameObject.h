@@ -12,17 +12,18 @@ public:
 	static shared_ptr<class Monster> CreateMonster();
 	static shared_ptr<class Arrow> CreateArrow();
 public:
-	void SetState(ObjectState state, bool broadcast = false);
-	void SetDir(Dir dir, bool broadcast=false);
+	void SetState(ObjectState state);
+	void SetDir(Dir dir);
 	//bool HasReachedDest();
 	bool CanGo(Vec2Int cellPos);
 	bool CanGoBySector(Vec2Int cellPos);
 	Dir GetLookAtDir(Vec2Int cellPos);
-	void SetCellPos(Vec2Int cellPos, bool broadcast = false);
+	void SetCellPos(Vec2Int cellPos);
 	Vec2Int GetCellPos();
 	Vec2Int GetFrontCellPos();
 
 	void BroadcastMove();
+	void BroadcastMoveBySector();
 
 	int64 GetObjectID() { return info.objectid(); }
 	void SetObjectID(int64 id) { info.set_objectid(id); }
@@ -41,6 +42,11 @@ public:
 
 	void SetCurSectorPos(Vec2Int sectorpos) { curSectorPos = sectorpos; }
 	Vec2Int GetCurSectorPos() { return curSectorPos; }
+
+	void SetCurSectorIndex(uint64 idx) { curSectorIndex = idx; }
+	uint64 GetCurSectorIndex() { return curSectorIndex; }
+
+	bool isSameSector(Vec2Int sectorpos);
 public:
 	Protocol::ObjectInfo info;
 	shared_ptr<class GameRoom> room; //순환참조 생길수도 순서 잘 안지키면
@@ -48,7 +54,7 @@ public:
 	//weak_ptr<class GameRoom>room;
 private:
 	static atomic<uint64> s_idGenerator;
-
+	uint64 curSectorIndex = -1;
 	Vec2Int curSectorPos{ -1,-1 };
 public:
 	

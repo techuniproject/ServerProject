@@ -81,3 +81,8 @@ message S_ITEM
 {
 	ItemInfo iteminfo=1;
 }
+
+message S_BROADCAST
+{
+	repeated ObjectInfo objects =1;
+}

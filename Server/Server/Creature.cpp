@@ -75,7 +75,7 @@ bool Creature::OnDamaged(shared_ptr<Creature>  attacker)
 			pkt.set_attackedid(GetObjectID());
 			pkt.set_hp(info.hp());
 			SendBufferRef sendBuf = ServerPacketHandler::Make_S_Attack(pkt);
-			GRoom->Broadcast(sendBuf);
+			GRoom->Broadcast(sendBuf);//sector다른곳에 있어도 데미지는 적용해야하니까 모든 클라대상 전송
 		}
 		return true;
 	}

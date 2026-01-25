@@ -56,6 +56,7 @@ public:
 	void Enter(shared_ptr<GameObject> gameObject);
 	void Leave(uint64 id);
 	void Broadcast(SendBufferRef sendBuffer);
+	void BroadcastBySector(SendBufferRef sendBuffer, Vec2Int SectorPos);
 	void AddItem(Item item);
 	void DeleteItem(uint32 id);
 	
@@ -94,6 +95,7 @@ public:
 	void DeleteFromSector(GameObject* creature);
 	bool CheckValidSectorPos(Vec2Int sectorPos);
 
+
 	bool CanGoBySector(Vec2Int cellPos);
 	//목적 : 정확히 그 위치에 있는지 
 	Player* GetPlayerAtSector(Vec2Int cellPos);
@@ -111,15 +113,15 @@ private:
 	map<uint64, shared_ptr<Arrow>> _arrows;
 	map<uint32, Item> _items;
 	vector<uint64>_deletearrowlist;
-private:
+public:
 	Tilemap _tilemap;
-	const int32 DESIRED_COUNT = 10;
+	const int32 DESIRED_COUNT = 3;
 	vector<Sector>_gameRoomSector;//1차원배열로 y*height +x 형태로 쓸거임 캐시 효율을 위해  
 	//Sector=>vector<Creature*>
 	const int32 SECTOR_HEIGHT = 5;
 	const int32 SECTOR_WIDTH = 7;
-	const int32 dirX[9] = {0, 1,0,0,1,-1,-1,0,0};
-	const int32 dirY[9] = { 0,1,1,-1,-1,1,0,1,-1};
+	const int32 dirX[9] = { 0, 1,0,0,1,-1,-1,1,-1 };
+	const int32 dirY[9] = { 0,1,1,-1,-1,1,0,0,-1 };
 };
 
 extern shared_ptr<GameRoom> GRoom;

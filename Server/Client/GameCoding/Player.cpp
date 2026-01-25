@@ -213,7 +213,7 @@ void Player::TickSkill()
 
 void Player::TickHit()
 {
-
+	SetState(IDLE,false);
 }
 
 void Player::UpdateAnimation()

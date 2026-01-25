@@ -21,6 +21,7 @@ PKT_C_ARROW=9,
 PKT_C_SPEED=10,
 PKT_S_SPEED=11,
 PKT_S_ITEM=12,
+PKT_S_BROADCAST=13,
 };
 
 bool Handle_INVALID(GameSessionRef& session, BYTE* buffer, int32 length);
@@ -64,6 +65,7 @@ public:
     static SendBufferRef MakeSendBuffer(const Protocol::S_ATTACK&pkt) { return MakeSendBuffer(pkt, PKT_S_ATTACK); }
     static SendBufferRef MakeSendBuffer(const Protocol::S_SPEED&pkt) { return MakeSendBuffer(pkt, PKT_S_SPEED); }
     static SendBufferRef MakeSendBuffer(const Protocol::S_ITEM&pkt) { return MakeSendBuffer(pkt, PKT_S_ITEM); }
+    static SendBufferRef MakeSendBuffer(const Protocol::S_BROADCAST&pkt) { return MakeSendBuffer(pkt, PKT_S_BROADCAST); }
 
     static SendBufferRef Make_S_EnterGame();
     static SendBufferRef Make_S_MyPlayer(const Protocol::ObjectInfo& info);
@@ -73,6 +75,7 @@ public:
     static SendBufferRef Make_S_Attack(const Protocol::S_ATTACK& pkt);
     static SendBufferRef Make_S_Speed(const Protocol::S_SPEED& pkt);
     static SendBufferRef Make_S_Item(const Protocol::S_ITEM& pkt);
+    static SendBufferRef Make_S_Broadcast(const Protocol::S_BROADCAST& pkt);
 private:
     template<typename PacketType, typename ProcessFunc>
     static bool ParsePacket(ProcessFunc func, GameSessionRef& session, BYTE * buffer, int32 length)

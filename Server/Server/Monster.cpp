@@ -111,7 +111,8 @@ void Monster::UpdateIdle()
 		if (dist == 1)
 		{
 			SetDir(GetLookAtDir(_target->GetCellPos()));
-			SetState(SKILL,true);
+			SetState(SKILL);
+			BroadcastMoveBySector();
 			//_waitUntil = GetTickCount64() + 500; //+1초
 		}
 		else
@@ -133,14 +134,17 @@ void Monster::UpdateIdle()
 						room->InsertAtSector(room->GetSectorPos(nextPos.x, nextPos.y), static_cast<GameObject*>(shared_from_this().get()));
 						SetCurSectorPos(room->GetSectorPos(nextPos.x, nextPos.y));
 						_waitUntil = GetTickCount64() + 500; //+1초
-						SetState(MOVE,true);
-						
+						SetState(MOVE);
+						BroadcastMoveBySector();
 					}
 				}
-				else {
-					SetCellPos(path[0]);
-					room->InsertAtSector(room->GetSectorPos(path[0].x, path[0].y), static_cast<GameObject*>(shared_from_this().get()));
-					SetCurSectorPos(room->GetSectorPos(path[0].x, path[0].y));
+				else {//제자리일때 -> 이거 나중에 astar분석하고 수정
+					// 제미나이는 이 코드 오히려 오류유발 -> 불필요하므로 target이나 없애라
+					//SetCellPos(path[0]);
+					//room->InsertAtSector(room->GetSectorPos(path[0].x, path[0].y), static_cast<GameObject*>(shared_from_this().get()));
+					//SetCurSectorPos(room->GetSectorPos(path[0].x, path[0].y));
+					_target = nullptr;
+					SetState(IDLE);
 				}
 			}
 		}
@@ -155,7 +159,8 @@ void Monster::UpdateMove()
 		return;
 	
 	//SetState(IDLE,true);
-	SetState(IDLE, true);
+	SetState(IDLE);
+	BroadcastMoveBySector();
 }
 
 void Monster::UpdateSkill()
@@ -169,7 +174,9 @@ void Monster::UpdateSkill()
 	if (pl) {
 		pl->OnDamaged(static_pointer_cast<Creature>(shared_from_this()));
 		_waitUntil = GetTickCount64() + 1000;
-		pl->SetState(HIT, true);
+		//pl->SetState(HIT, true);
+		pl->SetState(HIT);
+		BroadcastMoveBySector();
 	}
 	//shared_ptr<Creature> creature=GRoom->GetCreatureAt(GetFrontCellPos());
 	//
@@ -181,7 +188,8 @@ void Monster::UpdateSkill()
 	//}
 
 	//SetState(IDLE,true);//차이?
-	SetState(IDLE, true);
+	SetState(IDLE);
+	BroadcastMoveBySector();
 }
 
 void Monster::UpdateHit()
@@ -191,7 +199,9 @@ void Monster::UpdateHit()
 	if (_waitUntil > now)
 		return;
 
-	SetState(IDLE,true);
+	//SetState(IDLE,true);
+	SetState(IDLE);
+	BroadcastMoveBySector();
 }
 
 void Monster::ApplyHitStun(uint32 ms) {
@@ -199,7 +209,9 @@ void Monster::ApplyHitStun(uint32 ms) {
 	// 재피격 시 HIT 연장: max 사용 (리셋 원하면 그냥 대입)
 	_waitUntil = std::max<uint64>(_waitUntil, now + static_cast<uint64>(ms));
 
-	SetState(HIT, true);
+	//SetState(HIT, true);
+	SetState(HIT);
+	BroadcastMoveBySector();
 }
 
 bool Monster::OnDamaged(shared_ptr<Creature> attacker)
