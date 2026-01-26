@@ -8,6 +8,7 @@
 #include "Sprite.h"
 #include "ItemActor.h"
 #include "HitEffect.h"
+#include "Monster.h"
 
 extern HWND g_hWnd;
 PacketHandlerFunc g_packet_handler[HANDLER_MAX];
@@ -304,29 +305,40 @@ bool Handle_S_ITEM(ServerSessionRef& session, Protocol::S_ITEM& pkt)
 bool Handle_S_BROADCAST(ServerSessionRef& session, Protocol::S_BROADCAST& pkt)
 {
    
-    const int32 size = pkt.objects_size();
+    const int32 addsize = pkt.addobjects_size();
+    const int32 removesize = pkt.removeobjects_size();
     DevScene* scene = GET_SINGLE(GameInstance)->GetCurrentScene<DevScene>();
     if (scene)
     {
-        for (int32 i = 0; i < size; ++i) {
-            const Protocol::ObjectInfo& info = pkt.objects(i);
+        for (int32 i = 0; i < removesize; ++i) {
+            const Protocol::ObjectInfo& info = pkt.removeobjects(i);
+            if (GET_SINGLE(GameInstance)->GetMyPlayerId() == info.objectid())continue;
+            //서버에서도 검증해서 안보내긴함
+          
+             shared_ptr<GameObject> obj = scene->GetGameObject(info.objectid());
+             if(obj)
+             scene->RemoveActor(obj);
+            
+        }
+
+        for (int32 i = 0; i < addsize; ++i) {
+            const Protocol::ObjectInfo& info = pkt.addobjects(i);
             if (GET_SINGLE(GameInstance)->GetMyPlayerId() == info.objectid())continue;
             //일단 내 플레이어 정보는 동기화 x어차피 다음 move패킷으로 받아옴
 
             if (info.objecttype() == Protocol::OBJECT_TYPE_PLAYER)
             {
-                shared_ptr<GameObject> gameObject = scene->GetGameObject(info.objectid());
-                gameObject->SetDir(info.dir());
-                gameObject->SetState(info.state());
-                gameObject->SetCellPos(Vec2Int(info.posx(), info.posy()),false,true);
-                gameObject->SetMaxHp(info.maxhp());
-                gameObject->SetHp(info.hp());
-                gameObject->SetDefence(info.defence());
-                gameObject->SetMoveSpeed(info.movespeed());
-                gameObject->SetAttackSpeed(info.attackspeed());
-                static_pointer_cast<Player>(gameObject)->SetWeaponType(info.weapontype());
-               // gameObject->info = info;
-            }        
+                shared_ptr<Player> player = scene->SpawnObject<Player>(Vec2Int(info.posx(), info.posy()));
+                player->SetDir(info.dir());
+                player->SetState(info.state());          
+                player->info = info;            
+            }
+            else if (info.objecttype() == Protocol::OBJECT_TYPE_MONSTER) {
+                shared_ptr<Monster> monster = scene->SpawnObject<Monster>(Vec2Int(info.posx(), info.posy()));
+                monster->SetDir(info.dir());
+                monster->SetState(info.state());
+                monster->info = info;
+            }
         }
         
     }

@@ -57,20 +57,47 @@ void GameSession::OnConnected()
 		session->Send(sendBuf);//메인스레드가 처리하는 경우
 		}
 		//현재 Gameroom에 있는 게임오브젝트 정보 접속 클라에 전달
-		{
-			Protocol::S_AddObject GameRoomObjects;
-			//메인스레드가 Job처리하므로, 직접 Room의 map참고(thread_safe 워커만 안건들이게하면)
-			for (auto& info : room->GetPlayersForJob()) {
-				if (info.second == session->player.lock())
-					continue;//전에 보낸거 중복 방지
-				*GameRoomObjects.add_objects() = info.second->info;
-			}
-			for (auto& info : room->GetMonstersForJob())
-				*GameRoomObjects.add_objects() = info.second->info;
+		//{
+		//	Protocol::S_AddObject GameRoomObjects;
+		//	//메인스레드가 Job처리하므로, 직접 Room의 map참고(thread_safe 워커만 안건들이게하면)
+		//	for (auto& info : room->GetPlayersForJob()) {
+		//		if (info.second == session->player.lock())
+		//			continue;//전에 보낸거 중복 방지
+		//		*GameRoomObjects.add_objects() = info.second->info;
+		//	}
+		//	for (auto& info : room->GetMonstersForJob())
+		//		*GameRoomObjects.add_objects() = info.second->info;
 
-			SendBufferRef sendBuf = ServerPacketHandler::Make_S_AddObject(GameRoomObjects);
+		//	SendBufferRef sendBuf = ServerPacketHandler::Make_S_AddObject(GameRoomObjects);
+		//	session->Send(sendBuf); 
+		//	//room->PushSendJob(session, sendBuf); // 워커가 io처리하도록
+		//}
+		{
+			Protocol::S_AddObject GameRoomCurSectorObjects;
+			const int32 dirX[9] = { 0, 1,0,0,1,-1,-1,1,-1 };
+			const int32 dirY[9] = { 0,1,1,-1,-1,1,0,0,-1 };
+			for (int i = 0; i < 9; ++i) {
+				Vec2Int sectorPos = curPlayer->GetCurSectorPos();
+				if (sectorPos == Vec2Int(-1, -1))continue;
+				sectorPos.x += dirX[i];
+				sectorPos.y += dirY[i];
+				Sector* sector = room->GetSectorAt(sectorPos);
+				if (sector) {
+					for (Player* pl : sector->_sectorPlayers) {
+						if (pl && pl->GetObjectID() != curPlayer->GetObjectID()) {
+
+							*GameRoomCurSectorObjects.add_objects() = pl->info;
+						}
+					}
+					for (Monster* mon : sector->_sectorMonsters) {
+						if (mon ) {
+							*GameRoomCurSectorObjects.add_objects() = mon->info;
+						}
+					}
+				}
+			}
+			SendBufferRef sendBuf = ServerPacketHandler::Make_S_AddObject(GameRoomCurSectorObjects);
 			session->Send(sendBuf); 
-			//room->PushSendJob(session, sendBuf); // 워커가 io처리하도록
 		}
 		{
 			//다른 모든 클라에게 추가된 플레이어 정보 전달
@@ -79,10 +106,10 @@ void GameSession::OnConnected()
 
 			SendBufferRef sendBuf = ServerPacketHandler::Make_S_AddObject(AddedPlayer);
 			//room->PushBroadcastJob(sendBuf); //워커가 처리하도록
-			room->Broadcast(sendBuf);
+			room->BroadcastBySector(sendBuf,curPlayer->GetCurSectorPos());
 		}		
 		
-		});
+	});
 	
 	
 }

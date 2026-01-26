@@ -84,5 +84,6 @@ message S_ITEM
 
 message S_BROADCAST
 {
-	repeated ObjectInfo objects =1;
+	repeated ObjectInfo Addobjects =1;
+	repeated ObjectInfo Removeobjects =2;
 }

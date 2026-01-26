@@ -2356,25 +2356,44 @@ class S_BROADCAST final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kObjectsFieldNumber = 1,
+    kAddobjectsFieldNumber = 1,
+    kRemoveobjectsFieldNumber = 2,
   };
-  // repeated .Protocol.ObjectInfo objects = 1;
-  int objects_size() const;
+  // repeated .Protocol.ObjectInfo Addobjects = 1;
+  int addobjects_size() const;
   private:
-  int _internal_objects_size() const;
+  int _internal_addobjects_size() const;
   public:
-  void clear_objects();
-  ::Protocol::ObjectInfo* mutable_objects(int index);
+  void clear_addobjects();
+  ::Protocol::ObjectInfo* mutable_addobjects(int index);
   ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo >*
-      mutable_objects();
+      mutable_addobjects();
   private:
-  const ::Protocol::ObjectInfo& _internal_objects(int index) const;
-  ::Protocol::ObjectInfo* _internal_add_objects();
+  const ::Protocol::ObjectInfo& _internal_addobjects(int index) const;
+  ::Protocol::ObjectInfo* _internal_add_addobjects();
   public:
-  const ::Protocol::ObjectInfo& objects(int index) const;
-  ::Protocol::ObjectInfo* add_objects();
+  const ::Protocol::ObjectInfo& addobjects(int index) const;
+  ::Protocol::ObjectInfo* add_addobjects();
   const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo >&
-      objects() const;
+      addobjects() const;
+
+  // repeated .Protocol.ObjectInfo Removeobjects = 2;
+  int removeobjects_size() const;
+  private:
+  int _internal_removeobjects_size() const;
+  public:
+  void clear_removeobjects();
+  ::Protocol::ObjectInfo* mutable_removeobjects(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo >*
+      mutable_removeobjects();
+  private:
+  const ::Protocol::ObjectInfo& _internal_removeobjects(int index) const;
+  ::Protocol::ObjectInfo* _internal_add_removeobjects();
+  public:
+  const ::Protocol::ObjectInfo& removeobjects(int index) const;
+  ::Protocol::ObjectInfo* add_removeobjects();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo >&
+      removeobjects() const;
 
   // @@protoc_insertion_point(class_scope:Protocol.S_BROADCAST)
  private:
@@ -2384,7 +2403,8 @@ class S_BROADCAST final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo > objects_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo > addobjects_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo > removeobjects_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -3317,41 +3337,78 @@ inline void S_ITEM::set_allocated_iteminfo(::Protocol::ItemInfo* iteminfo) {
 
 // S_BROADCAST
 
-// repeated .Protocol.ObjectInfo objects = 1;
-inline int S_BROADCAST::_internal_objects_size() const {
-  return _impl_.objects_.size();
+// repeated .Protocol.ObjectInfo Addobjects = 1;
+inline int S_BROADCAST::_internal_addobjects_size() const {
+  return _impl_.addobjects_.size();
 }
-inline int S_BROADCAST::objects_size() const {
-  return _internal_objects_size();
+inline int S_BROADCAST::addobjects_size() const {
+  return _internal_addobjects_size();
 }
-inline ::Protocol::ObjectInfo* S_BROADCAST::mutable_objects(int index) {
-  // @@protoc_insertion_point(field_mutable:Protocol.S_BROADCAST.objects)
-  return _impl_.objects_.Mutable(index);
+inline ::Protocol::ObjectInfo* S_BROADCAST::mutable_addobjects(int index) {
+  // @@protoc_insertion_point(field_mutable:Protocol.S_BROADCAST.Addobjects)
+  return _impl_.addobjects_.Mutable(index);
 }
 inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo >*
-S_BROADCAST::mutable_objects() {
-  // @@protoc_insertion_point(field_mutable_list:Protocol.S_BROADCAST.objects)
-  return &_impl_.objects_;
+S_BROADCAST::mutable_addobjects() {
+  // @@protoc_insertion_point(field_mutable_list:Protocol.S_BROADCAST.Addobjects)
+  return &_impl_.addobjects_;
 }
-inline const ::Protocol::ObjectInfo& S_BROADCAST::_internal_objects(int index) const {
-  return _impl_.objects_.Get(index);
+inline const ::Protocol::ObjectInfo& S_BROADCAST::_internal_addobjects(int index) const {
+  return _impl_.addobjects_.Get(index);
 }
-inline const ::Protocol::ObjectInfo& S_BROADCAST::objects(int index) const {
-  // @@protoc_insertion_point(field_get:Protocol.S_BROADCAST.objects)
-  return _internal_objects(index);
+inline const ::Protocol::ObjectInfo& S_BROADCAST::addobjects(int index) const {
+  // @@protoc_insertion_point(field_get:Protocol.S_BROADCAST.Addobjects)
+  return _internal_addobjects(index);
 }
-inline ::Protocol::ObjectInfo* S_BROADCAST::_internal_add_objects() {
-  return _impl_.objects_.Add();
+inline ::Protocol::ObjectInfo* S_BROADCAST::_internal_add_addobjects() {
+  return _impl_.addobjects_.Add();
 }
-inline ::Protocol::ObjectInfo* S_BROADCAST::add_objects() {
-  ::Protocol::ObjectInfo* _add = _internal_add_objects();
-  // @@protoc_insertion_point(field_add:Protocol.S_BROADCAST.objects)
+inline ::Protocol::ObjectInfo* S_BROADCAST::add_addobjects() {
+  ::Protocol::ObjectInfo* _add = _internal_add_addobjects();
+  // @@protoc_insertion_point(field_add:Protocol.S_BROADCAST.Addobjects)
   return _add;
 }
 inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo >&
-S_BROADCAST::objects() const {
-  // @@protoc_insertion_point(field_list:Protocol.S_BROADCAST.objects)
-  return _impl_.objects_;
+S_BROADCAST::addobjects() const {
+  // @@protoc_insertion_point(field_list:Protocol.S_BROADCAST.Addobjects)
+  return _impl_.addobjects_;
+}
+
+// repeated .Protocol.ObjectInfo Removeobjects = 2;
+inline int S_BROADCAST::_internal_removeobjects_size() const {
+  return _impl_.removeobjects_.size();
+}
+inline int S_BROADCAST::removeobjects_size() const {
+  return _internal_removeobjects_size();
+}
+inline ::Protocol::ObjectInfo* S_BROADCAST::mutable_removeobjects(int index) {
+  // @@protoc_insertion_point(field_mutable:Protocol.S_BROADCAST.Removeobjects)
+  return _impl_.removeobjects_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo >*
+S_BROADCAST::mutable_removeobjects() {
+  // @@protoc_insertion_point(field_mutable_list:Protocol.S_BROADCAST.Removeobjects)
+  return &_impl_.removeobjects_;
+}
+inline const ::Protocol::ObjectInfo& S_BROADCAST::_internal_removeobjects(int index) const {
+  return _impl_.removeobjects_.Get(index);
+}
+inline const ::Protocol::ObjectInfo& S_BROADCAST::removeobjects(int index) const {
+  // @@protoc_insertion_point(field_get:Protocol.S_BROADCAST.Removeobjects)
+  return _internal_removeobjects(index);
+}
+inline ::Protocol::ObjectInfo* S_BROADCAST::_internal_add_removeobjects() {
+  return _impl_.removeobjects_.Add();
+}
+inline ::Protocol::ObjectInfo* S_BROADCAST::add_removeobjects() {
+  ::Protocol::ObjectInfo* _add = _internal_add_removeobjects();
+  // @@protoc_insertion_point(field_add:Protocol.S_BROADCAST.Removeobjects)
+  return _add;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::ObjectInfo >&
+S_BROADCAST::removeobjects() const {
+  // @@protoc_insertion_point(field_list:Protocol.S_BROADCAST.Removeobjects)
+  return _impl_.removeobjects_;
 }
 
 #ifdef __GNUC__

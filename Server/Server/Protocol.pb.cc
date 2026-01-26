@@ -205,7 +205,8 @@ struct S_ITEMDefaultTypeInternal {
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 S_ITEMDefaultTypeInternal _S_ITEM_default_instance_;
 PROTOBUF_CONSTEXPR S_BROADCAST::S_BROADCAST(
     ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_.objects_)*/{}
+    /*decltype(_impl_.addobjects_)*/{}
+  , /*decltype(_impl_.removeobjects_)*/{}
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct S_BROADCASTDefaultTypeInternal {
   PROTOBUF_CONSTEXPR S_BROADCASTDefaultTypeInternal()
@@ -331,7 +332,8 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::Protocol::S_BROADCAST, _impl_.objects_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_BROADCAST, _impl_.addobjects_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_BROADCAST, _impl_.removeobjects_),
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::Protocol::S_EnterGame)},
@@ -387,8 +389,10 @@ const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABL
   "\023\n\013attackSpeed\030\003 \001(\002\"C\n\007S_SPEED\022\020\n\010playe"
   "rId\030\001 \001(\004\022\021\n\tmoveSpeed\030\002 \001(\002\022\023\n\013attackSp"
   "eed\030\003 \001(\002\".\n\006S_ITEM\022$\n\010iteminfo\030\001 \001(\0132\022."
-  "Protocol.ItemInfo\"4\n\013S_BROADCAST\022%\n\007obje"
-  "cts\030\001 \003(\0132\024.Protocol.ObjectInfob\006proto3"
+  "Protocol.ItemInfo\"d\n\013S_BROADCAST\022(\n\nAddo"
+  "bjects\030\001 \003(\0132\024.Protocol.ObjectInfo\022+\n\rRe"
+  "moveobjects\030\002 \003(\0132\024.Protocol.ObjectInfob"
+  "\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_deps[2] = {
   &::descriptor_table_Enum_2eproto,
@@ -396,7 +400,7 @@ static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_de
 };
 static ::_pbi::once_flag descriptor_table_Protocol_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Protocol_2eproto = {
-    false, false, 839, descriptor_table_protodef_Protocol_2eproto,
+    false, false, 887, descriptor_table_protodef_Protocol_2eproto,
     "Protocol.proto",
     &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 14,
     schemas, file_default_instances, TableStruct_Protocol_2eproto::offsets,
@@ -3283,8 +3287,11 @@ class S_BROADCAST::_Internal {
  public:
 };
 
-void S_BROADCAST::clear_objects() {
-  _impl_.objects_.Clear();
+void S_BROADCAST::clear_addobjects() {
+  _impl_.addobjects_.Clear();
+}
+void S_BROADCAST::clear_removeobjects() {
+  _impl_.removeobjects_.Clear();
 }
 S_BROADCAST::S_BROADCAST(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
@@ -3296,7 +3303,8 @@ S_BROADCAST::S_BROADCAST(const S_BROADCAST& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   S_BROADCAST* const _this = this; (void)_this;
   new (&_impl_) Impl_{
-      decltype(_impl_.objects_){from._impl_.objects_}
+      decltype(_impl_.addobjects_){from._impl_.addobjects_}
+    , decltype(_impl_.removeobjects_){from._impl_.removeobjects_}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
@@ -3308,7 +3316,8 @@ inline void S_BROADCAST::SharedCtor(
   (void)arena;
   (void)is_message_owned;
   new (&_impl_) Impl_{
-      decltype(_impl_.objects_){arena}
+      decltype(_impl_.addobjects_){arena}
+    , decltype(_impl_.removeobjects_){arena}
     , /*decltype(_impl_._cached_size_)*/{}
   };
 }
@@ -3324,7 +3333,8 @@ S_BROADCAST::~S_BROADCAST() {
 
 inline void S_BROADCAST::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  _impl_.objects_.~RepeatedPtrField();
+  _impl_.addobjects_.~RepeatedPtrField();
+  _impl_.removeobjects_.~RepeatedPtrField();
 }
 
 void S_BROADCAST::SetCachedSize(int size) const {
@@ -3337,7 +3347,8 @@ void S_BROADCAST::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  _impl_.objects_.Clear();
+  _impl_.addobjects_.Clear();
+  _impl_.removeobjects_.Clear();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -3347,16 +3358,29 @@ const char* S_BROADCAST::_InternalParse(const char* ptr, ::_pbi::ParseContext* c
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // repeated .Protocol.ObjectInfo objects = 1;
+      // repeated .Protocol.ObjectInfo Addobjects = 1;
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
           ptr -= 1;
           do {
             ptr += 1;
-            ptr = ctx->ParseMessage(_internal_add_objects(), ptr);
+            ptr = ctx->ParseMessage(_internal_add_addobjects(), ptr);
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
           } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<10>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      // repeated .Protocol.ObjectInfo Removeobjects = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          ptr -= 1;
+          do {
+            ptr += 1;
+            ptr = ctx->ParseMessage(_internal_add_removeobjects(), ptr);
+            CHK_(ptr);
+            if (!ctx->DataAvailable(ptr)) break;
+          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<18>(ptr));
         } else
           goto handle_unusual;
         continue;
@@ -3389,12 +3413,20 @@ uint8_t* S_BROADCAST::_InternalSerialize(
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // repeated .Protocol.ObjectInfo objects = 1;
+  // repeated .Protocol.ObjectInfo Addobjects = 1;
   for (unsigned i = 0,
-      n = static_cast<unsigned>(this->_internal_objects_size()); i < n; i++) {
-    const auto& repfield = this->_internal_objects(i);
+      n = static_cast<unsigned>(this->_internal_addobjects_size()); i < n; i++) {
+    const auto& repfield = this->_internal_addobjects(i);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
         InternalWriteMessage(1, repfield, repfield.GetCachedSize(), target, stream);
+  }
+
+  // repeated .Protocol.ObjectInfo Removeobjects = 2;
+  for (unsigned i = 0,
+      n = static_cast<unsigned>(this->_internal_removeobjects_size()); i < n; i++) {
+    const auto& repfield = this->_internal_removeobjects(i);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
+        InternalWriteMessage(2, repfield, repfield.GetCachedSize(), target, stream);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -3413,9 +3445,16 @@ size_t S_BROADCAST::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // repeated .Protocol.ObjectInfo objects = 1;
-  total_size += 1UL * this->_internal_objects_size();
-  for (const auto& msg : this->_impl_.objects_) {
+  // repeated .Protocol.ObjectInfo Addobjects = 1;
+  total_size += 1UL * this->_internal_addobjects_size();
+  for (const auto& msg : this->_impl_.addobjects_) {
+    total_size +=
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
+  }
+
+  // repeated .Protocol.ObjectInfo Removeobjects = 2;
+  total_size += 1UL * this->_internal_removeobjects_size();
+  for (const auto& msg : this->_impl_.removeobjects_) {
     total_size +=
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
   }
@@ -3438,7 +3477,8 @@ void S_BROADCAST::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PR
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  _this->_impl_.objects_.MergeFrom(from._impl_.objects_);
+  _this->_impl_.addobjects_.MergeFrom(from._impl_.addobjects_);
+  _this->_impl_.removeobjects_.MergeFrom(from._impl_.removeobjects_);
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
@@ -3456,7 +3496,8 @@ bool S_BROADCAST::IsInitialized() const {
 void S_BROADCAST::InternalSwap(S_BROADCAST* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  _impl_.objects_.InternalSwap(&other->_impl_.objects_);
+  _impl_.addobjects_.InternalSwap(&other->_impl_.addobjects_);
+  _impl_.removeobjects_.InternalSwap(&other->_impl_.removeobjects_);
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata S_BROADCAST::GetMetadata() const {
