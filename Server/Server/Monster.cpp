@@ -128,79 +128,51 @@ void Monster::UpdateIdle()
 				if (path.size() > 1)
 				{
 					Vec2Int nextPos = path[1];
-					Vec2Int LastSectorPos = room->GetSectorPos(info.posx(), info.posy());
-					Vec2Int CurSectorPos = room->GetSectorPos(nextPos.x, nextPos.y);
+					Vec2Int curPos = Vec2Int(info.posx(), info.posy());
 					if (room->CanGoBySector(nextPos))
 					{
 						SetDir(GetLookAtDir(nextPos));
 						SetCellPos(nextPos);
 						
-						auto UpdateSectorPacket = [&](Vec2Int sectorPos, bool isSpawn) {
+						
+						auto AddMeForNewSectorPlayers = [&](Vec2Int sectorPos) {
 							Sector* sector = room->GetSectorAt(sectorPos);
 							if (sector) {
 								for (Player* pl : sector->_sectorPlayers) {
-									if (isSpawn) {
-										if (pl && pl != _target) {//타겟이면 이미 마주쳐서 생성됨 플레이어 C_Move처리에서 추가리스트에 추가
+									if (pl && pl != _target) {//타겟이면 이미 마주쳐서 생성됨 플레이어 C_Move처리에서 추가리스트에 추가
 
-											Protocol::S_AddObject pkt;
-											*pkt.add_objects() = info;
-											SendBufferRef AddMeToOtherBuffer = ServerPacketHandler::Make_S_AddObject(pkt);
-											pl->session->Send(AddMeToOtherBuffer);
-										}
-									}
-									else {
-										if (pl && pl != _target) {
-
-											Protocol::S_RemoveObject pkt;
-											pkt.add_ids(GetObjectID());
-											SendBufferRef RemoveMeToOtherBuffer = ServerPacketHandler::Make_S_RemoveObject(pkt);
-											pl->session->Send(RemoveMeToOtherBuffer);
-										}
+										Protocol::S_AddObject pkt;
+										*pkt.add_objects() = info;
+										SendBufferRef AddMeToOtherBuffer = ServerPacketHandler::Make_S_AddObject(pkt);
+										pl->session->Send(AddMeToOtherBuffer);
 									}
 								}
+								
 							}
 							};
+
+						auto RemoveMeFromLastSectorPlayers = [&](Vec2Int sectorPos) {
+							Sector* sector = room->GetSectorAt(sectorPos);
+							if (sector) {
+								for (Player* pl : sector->_sectorPlayers) {
+									if (pl && pl != _target) {
+
+										Protocol::S_RemoveObject pkt;
+										pkt.add_ids(GetObjectID());
+										SendBufferRef RemoveMeToOtherBuffer = ServerPacketHandler::Make_S_RemoveObject(pkt);
+										pl->session->Send(RemoveMeToOtherBuffer);
+									}
+								}
+								
+							}
+						};
 
 						if(!isSameSector(room->GetSectorPos(nextPos.x,nextPos.y))){
 							//몬스터가 다른 플레이어 추적하면서 다른 섹터로 갔을때 다른 플레이어 눈에도 들어가야하니까
 							room->InsertAtSector(room->GetSectorPos(nextPos.x, nextPos.y), static_cast<GameObject*>(shared_from_this().get()));
 							SetCurSectorPos(room->GetSectorPos(nextPos.x, nextPos.y));
-							const int32 dirX = CurSectorPos.x - LastSectorPos.x;
-							const int32 dirY = CurSectorPos.y - LastSectorPos.y; //상하좌우만 이동되므로 둘중 하나는 0
-							LastSectorPos.x -= dirX;
-							LastSectorPos.y -= dirY;//가려고 말한 방향 반대로 해서 영향권없는쪽
-							CurSectorPos.x += dirX;
-							CurSectorPos.y += dirY;
-							switch (dirX) {
-							case 1: //오른쪽 
-								for (int i = -1; i <= 1; ++i) {//영향권 아닌 애들 리스트부터
-									UpdateSectorPacket(Vec2Int(LastSectorPos.x, LastSectorPos.y + i), false);//remove;
-									UpdateSectorPacket(Vec2Int(CurSectorPos.x, CurSectorPos.y + i), true);//add;
-								}
-								break;
-							case -1: //왼쪽
-								for (int i = -1; i <= 1; ++i) {//영향권 아닌 애들 리스트부터                      
-									UpdateSectorPacket(Vec2Int(LastSectorPos.x, LastSectorPos.y + i), false);//remove;
-									UpdateSectorPacket(Vec2Int(CurSectorPos.x, CurSectorPos.y + i), true);//add
-								}
-								break;
-							case 0:
-								if (dirY == 1) {
-									for (int i = -1; i <= 1; ++i) {//영향권 아닌 애들 리스트부터
-										UpdateSectorPacket(Vec2Int(LastSectorPos.x + i, LastSectorPos.y), false);//remove;
-										UpdateSectorPacket(Vec2Int(CurSectorPos.x + i, CurSectorPos.y), true);//add
-									}
-								}
-								else if (dirY == -1) {
-									for (int i = -1; i <= 1; ++i) {//영향권 아닌 애들 리스트부터
-										UpdateSectorPacket(Vec2Int(LastSectorPos.x + i, LastSectorPos.y), false);//remove;
-										UpdateSectorPacket(Vec2Int(CurSectorPos.x + i, CurSectorPos.y), true);//add
-
-									}
-								}
-								break;
-							}
-							
+							room->DoSomethingCrossingSectors(curPos, nextPos, AddMeForNewSectorPlayers, RemoveMeFromLastSectorPlayers);
+			
 						}
 
 						_waitUntil = GetTickCount64() + 500; //+1초

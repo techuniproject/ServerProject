@@ -104,6 +104,8 @@ public:
 	Creature* GetCreatureAtSector(Vec2Int cellPos);
 	Player* FindClosestPlayerBySector(Vec2Int cellPos);
 
+	void DoSomethingCrossingSectors(Vec2Int curCellPos, Vec2Int LastCellPos, function<void(Vec2Int)>add, function<void(Vec2Int)>remove);
+	
 private:
 	// 워커스레드가 메인스레드가 호출하도록 넣는 Job
 	JobQueue _jobs;

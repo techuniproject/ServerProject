@@ -22,6 +22,7 @@
 #include <string_view>
 #include <random>
 #include <numeric>
+#include <functional>
 
 #include <winsock2.h>
 #include <mswsock.h>

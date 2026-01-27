@@ -194,83 +194,47 @@ bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move& pkt)
                        
                         vector<Sector>_gameRoomSector = gameRoom->_gameRoomSector;
 
-                        auto UpdateSectorPacket = [&](Vec2Int sectorPos, bool isSpawn) {
-                            Sector* sector = gameRoom->GetSectorAt(sectorPos);
-                            if (sector) {                                
-                                  for (Player* pl : sector->_sectorPlayers) {
-                                      if (isSpawn) {
-                                          if (pl && pl->GetObjectID() != curSessionPlayer->GetObjectID()) {
-                                              *broadcastRoomPlayers.add_addobjects() = pl->info;
-                                              Protocol::S_AddObject pkt;
-                                              *pkt.add_objects() = curSessionPlayer->info;
-                                              SendBufferRef AddMeToOtherBuffer = ServerPacketHandler::Make_S_AddObject(pkt);
-                                              pl->session->Send(AddMeToOtherBuffer);
-                                          }
-                                      }
-                                      else {
-                                          if (pl && pl->GetObjectID() != curSessionPlayer->GetObjectID()) {
-                                              *broadcastRoomPlayers.add_removeobjects() = pl->info;
-                                              Protocol::S_RemoveObject pkt;
-                                              pkt.add_ids(curSessionPlayer->GetObjectID());
-                                              SendBufferRef RemoveMeToOtherBuffer = ServerPacketHandler::Make_S_RemoveObject(pkt);
-                                              pl->session->Send(RemoveMeToOtherBuffer);
-                                          }
-                                      }
-                                  }
-                                  for (Monster* mon : sector->_sectorMonsters) {
-                                      if (isSpawn) {
-                                          if (mon) {
-                                              *broadcastRoomPlayers.add_addobjects() = mon->info;                                     
-                                          }
-                                      }
-                                      else {
-                                          if (mon) {
-                                              *broadcastRoomPlayers.add_removeobjects() = mon->info;                        
-                                          }
-                                      }
-                                  }
-                                }                                                           
-                           };
                         {
-                            Vec2Int LastSectorPos = gameRoom->GetSectorPos(curPos.x,curPos.y);
-                            Vec2Int CurSectorPos = gameRoom->GetSectorPos(nextPos.x, nextPos.y);
-                            //이미 위에서 이동 가능한 sector인지 검증했음
-                            const int32 dirX = CurSectorPos.x - LastSectorPos.x;
-                            const int32 dirY = CurSectorPos.y - LastSectorPos.y; //상하좌우만 이동되므로 둘중 하나는 0
-
-                            LastSectorPos.x -= dirX;
-                            LastSectorPos.y -= dirY;//가려고 말한 방향 반대로 해서 영향권없는쪽
-                            CurSectorPos.x += dirX;
-                            CurSectorPos.y += dirY;
-                            switch (dirX) {
-                            case 1: //오른쪽 
-                                for (int i = -1; i <= 1; ++i) {//영향권 아닌 애들 리스트부터
-                                    UpdateSectorPacket(Vec2Int(LastSectorPos.x, LastSectorPos.y + i), false);//remove;
-                                    UpdateSectorPacket(Vec2Int(CurSectorPos.x, CurSectorPos.y + i), true);//add;
-                                }
-                                break;
-                            case -1: //왼쪽
-                                for (int i = -1; i <= 1; ++i) {//영향권 아닌 애들 리스트부터                      
-                                    UpdateSectorPacket(Vec2Int(LastSectorPos.x, LastSectorPos.y + i), false);//remove;
-                                    UpdateSectorPacket(Vec2Int(CurSectorPos.x, CurSectorPos.y + i), true);//add
-                                }
-                                break;
-                            case 0:
-                                if (dirY == 1) {
-                                    for (int i = -1; i <= 1; ++i) {//영향권 아닌 애들 리스트부터
-                                        UpdateSectorPacket(Vec2Int(LastSectorPos.x + i, LastSectorPos.y), false);//remove;
-                                        UpdateSectorPacket(Vec2Int(CurSectorPos.x + i, CurSectorPos.y), true);//add
+                            auto AddObjectsForNewSectors = [&](Vec2Int sectorPos) {
+                                Sector* sector = gameRoom->GetSectorAt(sectorPos);
+                                if (sector) {
+                                    for (Player* pl : sector->_sectorPlayers) {
+                                            if (pl && pl->GetObjectID() != curSessionPlayer->GetObjectID()) {
+                                                *broadcastRoomPlayers.add_addobjects() = pl->info;
+                                                Protocol::S_AddObject pkt;
+                                                *pkt.add_objects() = curSessionPlayer->info;
+                                                SendBufferRef AddMeToOtherBuffer = ServerPacketHandler::Make_S_AddObject(pkt);
+                                                pl->session->Send(AddMeToOtherBuffer);
+                                            }
+                                    }
+                                    for (Monster* mon : sector->_sectorMonsters) {
+                                            if (mon) {
+                                                *broadcastRoomPlayers.add_addobjects() = mon->info;
+                                            } 
                                     }
                                 }
-                                else if (dirY == -1) {
-                                    for (int i = -1; i <= 1; ++i) {//영향권 아닌 애들 리스트부터
-                                        UpdateSectorPacket(Vec2Int(LastSectorPos.x + i, LastSectorPos.y), false);//remove;
-                                        UpdateSectorPacket(Vec2Int(CurSectorPos.x + i, CurSectorPos.y), true);//add
+                                };
 
+                            auto RemoveObjectsFromLastSectors = [&](Vec2Int sectorPos) {
+                                Sector* sector = gameRoom->GetSectorAt(sectorPos);
+                                if (sector) {
+                                    for (Player* pl : sector->_sectorPlayers) {
+                                            if (pl && pl->GetObjectID() != curSessionPlayer->GetObjectID()) {
+                                                *broadcastRoomPlayers.add_removeobjects() = pl->info;
+                                                Protocol::S_RemoveObject pkt;
+                                                pkt.add_ids(curSessionPlayer->GetObjectID());
+                                                SendBufferRef RemoveMeToOtherBuffer = ServerPacketHandler::Make_S_RemoveObject(pkt);
+                                                pl->session->Send(RemoveMeToOtherBuffer);
+                                            }
+                                    }
+                                    for (Monster* mon : sector->_sectorMonsters) {                       
+                                            if (mon) {
+                                                *broadcastRoomPlayers.add_removeobjects() = mon->info;
+                                            }                   
                                     }
                                 }
-                                break;
-                            }               
+                              };
+                            gameRoom->DoSomethingCrossingSectors(curPos, nextPos, AddObjectsForNewSectors, RemoveObjectsFromLastSectors);              
                         }                 
                        //Broadcast는 현재 클라가 새로운 섹터 진입 시 다른 오브젝트들 추가/삭제 여부 알기 위함
                         SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Broadcast(broadcastRoomPlayers);

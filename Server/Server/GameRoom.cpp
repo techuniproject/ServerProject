@@ -361,6 +361,35 @@ Player* GameRoom::FindClosestPlayerBySector(Vec2Int cellPos)
 	return ret;
 }
 
+void GameRoom::DoSomethingCrossingSectors(Vec2Int curCellPos, Vec2Int LastCellPos, function<void(Vec2Int)> add, function<void(Vec2Int)>remove)
+{
+	Vec2Int CurSectorPos = GetSectorPos(curCellPos.x, curCellPos.y);
+	Vec2Int LastSectorPos = GetSectorPos(LastCellPos.x, LastCellPos.y);
+
+	const int32 dirX = CurSectorPos.x - LastSectorPos.x;
+	const int32 dirY = CurSectorPos.y - LastSectorPos.y;
+
+	Vec2Int RemoveSectorMidPos = LastSectorPos - Vec2Int(dirX, dirY);
+	Vec2Int AddSectorMidPos = CurSectorPos + Vec2Int(dirX, dirY);
+
+	if (dirX != 0) {//오른쪽 또는 왼쪽 섹터 이동은  -> 위아래 수행
+		for (int i = -1; i <= 1; ++i) {
+			remove(Vec2Int(RemoveSectorMidPos.x, RemoveSectorMidPos.y + i));
+			add(Vec2Int(AddSectorMidPos.x, AddSectorMidPos.y + i));
+		}
+	}
+	else {//위 아래 섹터 이동-> 왼 오 수행
+		for (int i = -1; i <= 1; ++i) {
+			remove(Vec2Int(RemoveSectorMidPos.x+i, RemoveSectorMidPos.y ));
+			add(Vec2Int(AddSectorMidPos.x+i, AddSectorMidPos.y));
+		}
+	}
+
+	
+}
+
+
+
 void GameRoom::Update()
 {
 	//uint64 start = GetTickCount64();
