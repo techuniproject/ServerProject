@@ -51,8 +51,11 @@ public:
 	Vec2 GetCameraPos() { return _cameraPos; }
 	void SetCameraPos(Vec2 pos) { _cameraPos = pos; }
 
+	RECT GetCameraRect() { return _cameraRect; }
+	void SetCameraRect(RECT rect) { _cameraRect = rect; }
 private:
 	Vec2 _cameraPos = {400, 300};
+	RECT _cameraRect = { 200,150,1000,750 };
 };
 
 #include "SceneManager.inl" // ⬅️ 템플릿 '정의'를 헤더 끝에 포함

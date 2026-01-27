@@ -17,5 +17,7 @@ public:
 	static void DrawLineColored(HDC hdc, Pos from, Pos to, COLORREF color);
 
 	static void ReadBmp(const wstring& path);
+
+	static bool IsRectIntersect(RECT r1, RECT r2);
 };
 

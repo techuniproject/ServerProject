@@ -35,6 +35,11 @@ void CameraComponent::TickComponent()
 	pos.y = ::clamp(pos.y, 300.f, 2064.f - 300.f);
 
 	GET_SINGLE(GameInstance)->SetCameraPos(pos);
+
+	//Rect는 800x600크기 인데 어차피 pos가 클램프해주고있으니 pos이용
+	LONG leftX = (LONG)pos.x - 400;
+	LONG topY = (LONG)pos.y - 300;
+	GET_SINGLE(GameInstance)->SetCameraRect(RECT{ leftX,topY,leftX + 800,topY + 600 });
 }
 
 void CameraComponent::Render(HDC hdc)

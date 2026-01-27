@@ -113,8 +113,19 @@ Vec2 GameInstance::GetCameraPos()
 
 void GameInstance::SetCameraPos(Vec2 pos) 
 {
-	return _SceneManager->SetCameraPos(pos);
+	 _SceneManager->SetCameraPos(pos);
 }
+
+RECT GameInstance::GetCameraRect() 
+{
+	return _SceneManager->GetCameraRect();
+}
+
+void GameInstance::SetCameraRect(RECT rect)
+{
+	_SceneManager->SetCameraRect(rect);
+}
+
 
 shared_ptr<MyPlayer> GameInstance::GetMyPlayer()
 {

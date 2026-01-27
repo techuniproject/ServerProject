@@ -53,3 +53,17 @@ void Utils::ReadBmp(const wstring& path)
 
 	//::free(buffer);
 }
+
+bool Utils::IsRectIntersect(RECT r1, RECT r2)
+{
+	//Actor거 들어오면 어차피 길이가 500,600,500,600 0임 
+	// 300 400 800 800
+	// 1. 가로가 안 겹치면 탈락 (Early Exit)
+	if (r1.left >= r2.right || r1.right <= r2.left) return false;
+
+	// 2. 세로가 안 겹치면 탈락
+	if (r1.top >= r2.bottom || r1.bottom <= r2.top) return false;
+
+	// 3. 여기까지 왔으면 무조건 겹침
+	return true;
+}

@@ -19,6 +19,10 @@ public:
 	void SetFlipbookSpeed(float speed) { _speed = speed; }
 	float GetFlipbookSpeed() { return _speed; }
 
+	RECT GetRect() { return _rect; }
+
+	virtual bool IntersectsWithCamRect(RECT CamRect)override;
+
 	bool IsAnimationEnded();
 
 protected:
@@ -26,5 +30,6 @@ protected:
 	float _sumTime = 0.f;
 	int32 _idx = 0;
 	float _speed = 1.f;
+	RECT _rect;
 };
 

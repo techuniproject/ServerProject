@@ -53,6 +53,8 @@ public: //SceneManager
 	const Scene& GetCurrentScene()const;
 	Vec2 GetCameraPos();
 	void SetCameraPos(Vec2 pos);
+	void SetCameraRect(RECT rect);
+	RECT GetCameraRect();
 	void ClearScene();
 	shared_ptr<MyPlayer> GetMyPlayer();
 	uint64 GetMyPlayerId();

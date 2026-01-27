@@ -119,9 +119,6 @@
     <ClInclude Include="Utils.h">
       <Filter>소스 파일\99. Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Scene.h">
-      <Filter>소스 파일\02. Scene</Filter>
-    </ClInclude>
     <ClInclude Include="SceneManager.h">
       <Filter>소스 파일\01. Manager</Filter>
     </ClInclude>
@@ -239,6 +236,9 @@
     <ClInclude Include="ItemActor.h">
       <Filter>소스 파일\03. Objects\Unreal</Filter>
     </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>소스 파일\02. Scene\Game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GameCoding.rc">
@@ -271,9 +271,6 @@
     </ClCompile>
     <ClCompile Include="Utils.cpp">
       <Filter>소스 파일\99. Headers</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene.cpp">
-      <Filter>소스 파일\02. Scene</Filter>
     </ClCompile>
     <ClCompile Include="SceneManager.cpp">
       <Filter>소스 파일\01. Manager</Filter>
@@ -388,6 +385,9 @@
     </ClCompile>
     <ClCompile Include="ItemActor.cpp">
       <Filter>소스 파일\03. Objects\Unreal</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>소스 파일\02. Scene\Game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

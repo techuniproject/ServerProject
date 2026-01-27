@@ -67,10 +67,15 @@ void Scene::Render(HDC hdc)
 				return a->GetPos().x < b->GetPos().x;
 			});
 	}
-
+	
+	RECT cameraRect = GET_SINGLE(GameInstance)->GetCameraRect();
 	for (const vector<shared_ptr<Actor>>& actors : _actors)
 		for (shared_ptr<Actor> actor : actors)
-			actor->Render(hdc);
+		{
+			if(actor->IntersectsWithCamRect(cameraRect))
+				actor->Render(hdc);
+		}
+			
 
 	for (auto& ui : _uis)
 		ui.second->Render(hdc);

@@ -33,6 +33,10 @@ void FlipbookActor::Tick()
 	if (info.loop == false && _idx == info.end)
 		return;
 
+	LONG left = (LONG)_pos.x - (LONG)info.size.x;
+	LONG top = (LONG)_pos.y - (LONG)info.size.y;
+	_rect = RECT{ left,top,left + info.size.x ,top + info.size.y  };
+
 	float deltaTime = GET_SINGLE(GameInstance)->GetDeltaTime();
 
 	_sumTime += deltaTime*_speed;
@@ -81,6 +85,10 @@ void FlipbookActor::SetFlipbook(shared_ptr<Flipbook> flipbook)
 		return;
 
 	_flipbook = flipbook;
+	const FlipbookInfo& info = _flipbook->GetInfo();
+	LONG left = _pos.x - info.size.x;
+	LONG top = _pos.y - info.size.y;
+	_rect = RECT{ left,top,left + info.size.x,top + info.size.y };
 	Reset();
 }
 
@@ -88,6 +96,12 @@ void FlipbookActor::Reset()
 {
 	_sumTime = 0.f;
 	_idx = 0;
+}
+
+bool FlipbookActor::IntersectsWithCamRect(RECT CamRect)
+{
+	
+	return Utils::IsRectIntersect(_rect, CamRect);
 }
 
 bool FlipbookActor::IsAnimationEnded()
