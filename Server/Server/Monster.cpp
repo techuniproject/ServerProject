@@ -171,7 +171,7 @@ void Monster::UpdateIdle()
 							//몬스터가 다른 플레이어 추적하면서 다른 섹터로 갔을때 다른 플레이어 눈에도 들어가야하니까
 							room->InsertAtSector(room->GetSectorPos(nextPos.x, nextPos.y), static_cast<GameObject*>(shared_from_this().get()));
 							SetCurSectorPos(room->GetSectorPos(nextPos.x, nextPos.y));
-							room->DoSomethingCrossingSectors(curPos, nextPos, AddMeForNewSectorPlayers, RemoveMeFromLastSectorPlayers);
+							room->DoSomethingCrossingSectors(nextPos, curPos, AddMeForNewSectorPlayers, RemoveMeFromLastSectorPlayers);
 			
 						}
 

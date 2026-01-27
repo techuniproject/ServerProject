@@ -234,7 +234,7 @@ bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move& pkt)
                                     }
                                 }
                               };
-                            gameRoom->DoSomethingCrossingSectors(curPos, nextPos, AddObjectsForNewSectors, RemoveObjectsFromLastSectors);              
+                            gameRoom->DoSomethingCrossingSectors(nextPos, curPos, AddObjectsForNewSectors, RemoveObjectsFromLastSectors);              
                         }                 
                        //Broadcast는 현재 클라가 새로운 섹터 진입 시 다른 오브젝트들 추가/삭제 여부 알기 위함
                         SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Broadcast(broadcastRoomPlayers);
