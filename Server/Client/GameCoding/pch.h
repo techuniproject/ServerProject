@@ -24,9 +24,9 @@ namespace fs = std::filesystem;
 #include <cstdlib>
 #include <crtdbg.h>
 
-#ifdef _DEBUG
-#define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
-#endif
+//#ifdef _DEBUG
+//#define new new(_NORMAL_BLOCK, __FILE__, __LINE__)
+//#endif
 
 #pragma comment(lib, "msimg32.lib")
 

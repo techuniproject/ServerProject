@@ -239,6 +239,9 @@
     <ClInclude Include="Scene.h">
       <Filter>소스 파일\02. Scene\Game</Filter>
     </ClInclude>
+    <ClInclude Include="ObjectPool.h">
+      <Filter>소스 파일\02. Scene\Game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GameCoding.rc">
@@ -387,6 +390,9 @@
       <Filter>소스 파일\03. Objects\Unreal</Filter>
     </ClCompile>
     <ClCompile Include="Scene.cpp">
+      <Filter>소스 파일\02. Scene\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectPool.cpp">
       <Filter>소스 파일\02. Scene\Game</Filter>
     </ClCompile>
   </ItemGroup>
