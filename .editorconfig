@@ -1,0 +1,18 @@
+# 최상위 설정 파일임을 명시
+root = true
+
+# 모든 파일에 대한 기본 설정
+[*]
+charset = utf-8
+indent_style = tab
+indent_size = 4
+end_of_line = crlf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# C++ 파일 (.h, .cpp) - 여기가 핵심입니다!
+[*.{h,cpp,cs}]
+# 비주얼 스튜디오(MSVC)는 BOM이 있어야 한글을 완벽하게 인식합니다.
+charset = utf-8-bom
+indent_style = tab
+indent_size = 4
