@@ -64,6 +64,8 @@ Server.sln
 - `GameObject → Creature → Player / Monster / Arrow` — entity hierarchy; state machine (`IDLE/MOVE/SKILL/HIT` from `Enum.proto`)
 - `Sector` — spatial grid (5 rows × 7 cols, flat `vector<Sector>`, index = `y * SECTOR_WIDTH + x`); `BroadcastBySector` sends only to sectors adjacent to a position
 
+"모든 파일 수정 및 생성 시 반드시 UTF-8 with BOM (UTF-8 with signature) 인코딩으로 저장할 것. Visual Studio C++ 프로젝트이므로 BOM 없는 UTF-8 사용 금지."
+
 ### Thread Model
 
 | Thread | Count | Role |
