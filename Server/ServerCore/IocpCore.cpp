@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "IocpCore.h"
 #include "IocpEvent.h"
 
@@ -21,34 +21,34 @@ IocpCore::~IocpCore()
 bool IocpCore::Register(IocpObjectRef iocpObject)
 {
 	return ::CreateIoCompletionPort(iocpObject->GetHandle(), _iocpHandle, /*key*/0, 0);
-	// key->°íÀ¯ÁÖ¼Ò ¿ø·¡ ±âÀÔÇß¾úÀ½
-	// ¿©±â¼­ ³Ñ°ÜÁØ key°ªÀº ´Ü¼øÇÑ °ªÀÌ°í ±× °ªÀ» GetQueuedCompletionStatus¿¡¼­ ±×´ë·Î ¹ÝÈ¯
-	// ÇÏÁö¸¸ ¹ÝÈ¯ ÇÒ ¶§ ¼ö¸í Ã¼Å© µîÀ» ¾ÈÇÏ±â ¶§¹®¿¡ ±× key°ªÀÌ À¯È¿ÇÑ °ªÀÌ ¾Æ´Ï¶ó¸é ÀÇ¹Ì°¡ ¾ø¾îÁü
-	// key¸¦ ÀÔ·ÂÇØ³õÀº °íÀ¯ ÁÖ¼Ò °´Ã¼°¡ »ç¶óÁö°í ³ª¼­ ioÀÛ¾÷ÀÌ ³²¾ÆÀÖ¾î ³ªÁß¿¡ ²¨³»¾µ¶§ ÇØ´ç ÁÖ¼Ò¸¦ ¹ÝÈ¯ÇÏ°í ±× ÁÖ¼Ò¸¦ »ç¿ëÇÏ¸é ¹®Á¦»ý±è.
-	// ¿ì¸®´Â ¾ÕÀ¸·Î key ¹æ½ÄÀÌ ¾Æ´Ñ OVERLAPPED°ü¸® ±¸Á¶Ã¼ ³»ºÎ owner ¹æ½ÄÀ¸·Î iocpÅ¥ Ã³¸®
-	// key¹æ½ÄÀº weak_from_this().lock() µîÀ¸·Î Á÷Á¢ refcount°ü¸® ÇØ¾ßÇÏÁö¸¸, ownerÀº µî·ÏÇØÁÖ°í ¼ö¸í°ü¸® º¸Àå¹Þ¾Æ ¾ÈÀüÇÔ 
+	// key->ê³ ìœ ì£¼ì†Œ ì›ëž˜ ê¸°ìž…í–ˆì—ˆìŒ
+	// ì—¬ê¸°ì„œ ë„˜ê²¨ì¤€ keyê°’ì€ ë‹¨ìˆœí•œ ê°’ì´ê³  ê·¸ ê°’ì„ GetQueuedCompletionStatusì—ì„œ ê·¸ëŒ€ë¡œ ë°˜í™˜
+	// í•˜ì§€ë§Œ ë°˜í™˜ í•  ë•Œ ìˆ˜ëª… ì²´í¬ ë“±ì„ ì•ˆí•˜ê¸° ë•Œë¬¸ì— ê·¸ keyê°’ì´ ìœ íš¨í•œ ê°’ì´ ì•„ë‹ˆë¼ë©´ ì˜ë¯¸ê°€ ì—†ì–´ì§
+	// keyë¥¼ ìž…ë ¥í•´ë†“ì€ ê³ ìœ  ì£¼ì†Œ ê°ì²´ê°€ ì‚¬ë¼ì§€ê³  ë‚˜ì„œ ioìž‘ì—…ì´ ë‚¨ì•„ìžˆì–´ ë‚˜ì¤‘ì— êº¼ë‚´ì“¸ë•Œ í•´ë‹¹ ì£¼ì†Œë¥¼ ë°˜í™˜í•˜ê³  ê·¸ ì£¼ì†Œë¥¼ ì‚¬ìš©í•˜ë©´ ë¬¸ì œìƒê¹€.
+	// ìš°ë¦¬ëŠ” ì•žìœ¼ë¡œ key ë°©ì‹ì´ ì•„ë‹Œ OVERLAPPEDê´€ë¦¬ êµ¬ì¡°ì²´ ë‚´ë¶€ owner ë°©ì‹ìœ¼ë¡œ iocpí ì²˜ë¦¬
+	// keyë°©ì‹ì€ weak_from_this().lock() ë“±ìœ¼ë¡œ ì§ì ‘ refcountê´€ë¦¬ í•´ì•¼í•˜ì§€ë§Œ, ownerì€ ë“±ë¡í•´ì£¼ê³  ìˆ˜ëª…ê´€ë¦¬ ë³´ìž¥ë°›ì•„ ì•ˆì „í•¨ 
 }
 
 /*
-EventType	´©°¡ owner·Î ¼³Á¤µÊ	¾î¶² Dispatch°¡ È£ÃâµÊ
-Accept	Listener	Listener::Dispatch() ¡æ ProcessAccept()
-Connect	Session	Session::Dispatch() ¡æ ProcessConnect()
-Recv	Session	Session::Dispatch() ¡æ ProcessRecv()
-Send	Session	Session::Dispatch() ¡æ ProcessSend()
-Disconnect	Session	Session::Dispatch() ¡æ ProcessDisconnect()
+EventType	ëˆ„ê°€ ownerë¡œ ì„¤ì •ë¨	ì–´ë–¤ Dispatchê°€ í˜¸ì¶œë¨
+Accept	Listener	Listener::Dispatch() â†’ ProcessAccept()
+Connect	Session	Session::Dispatch() â†’ ProcessConnect()
+Recv	Session	Session::Dispatch() â†’ ProcessRecv()
+Send	Session	Session::Dispatch() â†’ ProcessSend()
+Disconnect	Session	Session::Dispatch() â†’ ProcessDisconnect()
 
-1) Accept ¼ø°£
-AcceptEx ¿Ï·á ¡æ Listener::Dispatch() ¡æ ProcessAccept()
-¿©±â¼­ SO_UPDATE_ACCEPT_CONTEXT ÇÏ°í session->ProcessConnect()¸¦ È£ÃâÇÔ.
+1) Accept ìˆœê°„
+AcceptEx ì™„ë£Œ â†’ Listener::Dispatch() â†’ ProcessAccept()
+ì—¬ê¸°ì„œ SO_UPDATE_ACCEPT_CONTEXT í•˜ê³  session->ProcessConnect()ë¥¼ í˜¸ì¶œí•¨.
 
-2) Ã¹ ¼ö½Å ¿¹¾à
-session->ProcessConnect() ¾È¿¡¼­ RegisterRecv()¸¦ È£ÃâÇØ¼­ Ã¹ WSARecv¸¦ µî·ÏÇÔ.
-(Áï, WSARecv´Â Listener°¡ Á÷Á¢ °Å´Â °Ô ¾Æ´Ï¶ó, ¼¼¼Ç ÂÊ¿¡¼­ µî·ÏµÅ.)
+2) ì²« ìˆ˜ì‹  ì˜ˆì•½
+session->ProcessConnect() ì•ˆì—ì„œ RegisterRecv()ë¥¼ í˜¸ì¶œí•´ì„œ ì²« WSARecvë¥¼ ë“±ë¡í•¨.
+(ì¦‰, WSARecvëŠ” Listenerê°€ ì§ì ‘ ê±°ëŠ” ê²Œ ì•„ë‹ˆë¼, ì„¸ì…˜ ìª½ì—ì„œ ë“±ë¡ë¼.)
 
-3) ÀÌÈÄ I/O´Â ÀüºÎ ¼¼¼ÇÀÌ Ã³¸®
-Å¬¶ó°¡ µ¥ÀÌÅÍ¸¦ º¸³»¸é Session::Dispatch(Recv) ¡æ ProcessRecv() ¡æ ´Ù½Ã RegisterRecv()
-º¸³»±âµµ ¸¶Âù°¡Áö: Session::Dispatch(Send) ¡æ ProcessSend()
-²÷±âµµ: Session::Dispatch(Disconnect) ¡æ ProcessDisconnect()
+3) ì´í›„ I/OëŠ” ì „ë¶€ ì„¸ì…˜ì´ ì²˜ë¦¬
+í´ë¼ê°€ ë°ì´í„°ë¥¼ ë³´ë‚´ë©´ Session::Dispatch(Recv) â†’ ProcessRecv() â†’ ë‹¤ì‹œ RegisterRecv()
+ë³´ë‚´ê¸°ë„ ë§ˆì°¬ê°€ì§€: Session::Dispatch(Send) â†’ ProcessSend()
+ëŠê¸°ë„: Session::Dispatch(Disconnect) â†’ ProcessDisconnect()
 */
 
 bool IocpCore::Dispatch(uint32 timeoutMs)
@@ -70,7 +70,7 @@ bool IocpCore::Dispatch(uint32 timeoutMs)
 		case WAIT_TIMEOUT:
 			return false;
 		default:
-			// TODO : ·Î±× Âï±â
+			// TODO : ë¡œê·¸ ì°ê¸°
 			IocpObjectRef iocpObject = iocpEvent->owner;
 			iocpObject->Dispatch(iocpEvent, numOfBytes);
 			break;

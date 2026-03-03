@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "GameInstance.h"
 #include "SoundManager.h"
 #include "ResourceManager.h"
@@ -12,17 +12,17 @@ SoundManager::~SoundManager()
 
 void SoundManager::Init(HWND hwnd)
 {
-	// »ç¿îµå µğ¹ÙÀÌ½º »ı¼º
+	// ì‚¬ìš´ë“œ ë””ë°”ì´ìŠ¤ ìƒì„±
 	if (FAILED(::DirectSoundCreate(NULL, &_soundDevice, NULL)))
 	{
-		::MessageBox(NULL, L"»ç¿îµåµğ¹ÙÀÌ½º»ı¼º½ÇÆĞ", L"SYSTEM ERROR", MB_OK);
+		::MessageBox(NULL, L"ì‚¬ìš´ë“œë””ë°”ì´ìŠ¤ìƒì„±ì‹¤íŒ¨", L"SYSTEM ERROR", MB_OK);
 		return;
 	}
 
-	// »ç¿îµå µğ¹ÙÀÌ½º ÇùÁ¶·¹º§ ¼³Á¤
+	// ì‚¬ìš´ë“œ ë””ë°”ì´ìŠ¤ í˜‘ì¡°ë ˆë²¨ ì„¤ì •
 	if (FAILED(_soundDevice->SetCooperativeLevel(hwnd, DSSCL_PRIORITY)))
 	{
-		::MessageBox(NULL, L"»ç¿îµåµğ¹ÙÀÌ½º ÇùÁ¶·¹º§ ¼³Á¤", L"SYSTEM ERROR", MB_OK);
+		::MessageBox(NULL, L"ì‚¬ìš´ë“œë””ë°”ì´ìŠ¤ í˜‘ì¡°ë ˆë²¨ ì„¤ì •", L"SYSTEM ERROR", MB_OK);
 		return;
 	}
 }

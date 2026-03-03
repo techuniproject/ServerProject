@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Listener.h"
 #include "SocketUtils.h"
 #include "IocpEvent.h"
@@ -7,17 +7,17 @@
 
 /*--------------
 	Listener
-ServerService¿¡¼­ Listener »ı¼º ÈÄ StartAccept() È£Ãâ.
+ServerServiceì—ì„œ Listener ìƒì„± í›„ StartAccept() í˜¸ì¶œ.
 
-TCP ¸®½º´× ¼ÒÄÏ »ı¼º ¡æ IOCP¿¡ µî·Ï.
+TCP ë¦¬ìŠ¤ë‹ ì†Œì¼“ ìƒì„± â†’ IOCPì— ë“±ë¡.
 
-¼ÒÄÏ ¿É¼Ç ¼¼ÆÃ (Àç»ç¿ë, Linger).
+ì†Œì¼“ ì˜µì…˜ ì„¸íŒ… (ì¬ì‚¬ìš©, Linger).
 
-IP/Port¿¡ ¹ÙÀÎµå ÈÄ Listen »óÅÂ.
+IP/Portì— ë°”ì¸ë“œ í›„ Listen ìƒíƒœ.
 
-MaxSessionCount¸¸Å­ AcceptEx ¿äÃ» »çÀü µî·Ï.
+MaxSessionCountë§Œí¼ AcceptEx ìš”ì²­ ì‚¬ì „ ë“±ë¡.
 
-Å¬¶óÀÌ¾ğÆ® Á¢¼Ó ½Ã, ÇØ´ç Accept ÀÌº¥Æ®°¡ IOCP¿¡ ¿Ï·á·Î ¿Ã¶ó¿À°í ¼¼¼Ç »ı¼º.
+í´ë¼ì´ì–¸íŠ¸ ì ‘ì† ì‹œ, í•´ë‹¹ Accept ì´ë²¤íŠ¸ê°€ IOCPì— ì™„ë£Œë¡œ ì˜¬ë¼ì˜¤ê³  ì„¸ì…˜ ìƒì„±.
 ---------------*/
 
 Listener::~Listener()
@@ -43,12 +43,12 @@ bool Listener::StartAccept(ServerServiceRef service)
 
 	if (_service->GetIocpCore()->Register(shared_from_this()) == false)
 		return false;
-	//Àü¿¡´Â iocp¿¡ listensocketµî·Ï¾ÈÇßÁö¸¸, ºñµ¿±â acceptex»ç¿ëÇÏ·Á¸é,
-	//acceptµµ ºñµ¿±â·Î ÆĞÅ¶¹Ş¾Æ¿À¹Ç·Î, ¿Ï·á ÆĞÅ¶ ¹Ş¾Æ¿À±â À§ÇØ¼­ ¸®½º³Ê ¼ÒÄÏµµ iocpµî·ÏÇØ¾ßÇÔ
-	// ±×·¡¾ß GetQueuedCompletionStatus·Î »õ·Î¿î ¿¬°á¿Ï·á ÀÌº¥Æ®¸¦ ²¨³¾ ¼ö ÀÖÀ½
-	//±¸Ã¼ÀûÀ¸·Î AcceptExÀÇ ¿Ï·á ÅëÁö´Â ¸®½º³Ê ¼ÒÄÏ°ú ¿¬°áµÈ Æ÷Æ®·Î µé¾î¿È
-	//GQCS°¡ ¸®½º³ÊÀÇ completion key¿Í overlapped¹İÈ¯
-	//±× ÀÌÈÄ¿£ acceptedµÈ ¼ÒÄÏÀ» iocp¿¡ µî·Ï ÈÄ wsarecv¸¦ Ã³À½À¸·Î µî·Ï
+	//ì „ì—ëŠ” iocpì— listensocketë“±ë¡ì•ˆí–ˆì§€ë§Œ, ë¹„ë™ê¸° acceptexì‚¬ìš©í•˜ë ¤ë©´,
+	//acceptë„ ë¹„ë™ê¸°ë¡œ íŒ¨í‚·ë°›ì•„ì˜¤ë¯€ë¡œ, ì™„ë£Œ íŒ¨í‚· ë°›ì•„ì˜¤ê¸° ìœ„í•´ì„œ ë¦¬ìŠ¤ë„ˆ ì†Œì¼“ë„ iocpë“±ë¡í•´ì•¼í•¨
+	// ê·¸ë˜ì•¼ GetQueuedCompletionStatusë¡œ ìƒˆë¡œìš´ ì—°ê²°ì™„ë£Œ ì´ë²¤íŠ¸ë¥¼ êº¼ë‚¼ ìˆ˜ ìˆìŒ
+	//êµ¬ì²´ì ìœ¼ë¡œ AcceptExì˜ ì™„ë£Œ í†µì§€ëŠ” ë¦¬ìŠ¤ë„ˆ ì†Œì¼“ê³¼ ì—°ê²°ëœ í¬íŠ¸ë¡œ ë“¤ì–´ì˜´
+	//GQCSê°€ ë¦¬ìŠ¤ë„ˆì˜ completion keyì™€ overlappedë°˜í™˜
+	//ê·¸ ì´í›„ì—” acceptedëœ ì†Œì¼“ì„ iocpì— ë“±ë¡ í›„ wsarecvë¥¼ ì²˜ìŒìœ¼ë¡œ ë“±ë¡
 	if (SocketUtils::SetReuseAddress(_socket, true) == false)
 		return false;
 
@@ -62,18 +62,18 @@ bool Listener::StartAccept(ServerServiceRef service)
 		return false;
 
 	const int32 acceptCount = _service->GetMaxSessionCount();
-	// Å¬¶óÀÇ ¿¬°á ¿äÃ»À» ¹ŞÀ» ÁØºñÇÏ´Â ºÎºĞ (Connect)
+	// í´ë¼ì˜ ì—°ê²° ìš”ì²­ì„ ë°›ì„ ì¤€ë¹„í•˜ëŠ” ë¶€ë¶„ (Connect)
 	for (int32 i = 0; i < acceptCount; i++)
-	{	//µ¿½Ã¿¡ ¿©·¯°³ÀÇ acceptex¿äÃ»À» ¹Ì¸® °É¾î³õ´Â
+	{	//ë™ì‹œì— ì—¬ëŸ¬ê°œì˜ acceptexìš”ì²­ì„ ë¯¸ë¦¬ ê±¸ì–´ë†“ëŠ”
 		IocpEvent* acceptEvent = new IocpEvent(EventType::Accept);
 		acceptEvent->owner = shared_from_this();
 		_acceptEvents.push_back(acceptEvent);
 		RegisterAccept(acceptEvent);
 	}
-	//MaxSessionCount °³¼ö¸¸Å­ AcceptEx ºñµ¿±â ¿äÃ» °É¾îµÒ
-	//ÀÌ·¸°Ô ÇÏ¿© ¿©·¯ Å¬¶óÀÌ¾ğÆ®°¡ µ¿½Ã¿¡ Á¢¼ÓÇØµµ ´ë±â¾øÀÌ Ã³¸® °¡´É
-	// ownerÀº ÀÌ ÀÌº¥Æ®¸¦ Ã³¸®ÇÒ ÁÖÀÎ(Listener)À» ÃßÀûÇÏ±âÀ§ÇÔ
-	// RegisterAccept()¿¡¼­ ½ÇÁ¦ AcceptEx()È£Ãâ
+	//MaxSessionCount ê°œìˆ˜ë§Œí¼ AcceptEx ë¹„ë™ê¸° ìš”ì²­ ê±¸ì–´ë‘ 
+	//ì´ë ‡ê²Œ í•˜ì—¬ ì—¬ëŸ¬ í´ë¼ì´ì–¸íŠ¸ê°€ ë™ì‹œì— ì ‘ì†í•´ë„ ëŒ€ê¸°ì—†ì´ ì²˜ë¦¬ ê°€ëŠ¥
+	// ownerì€ ì´ ì´ë²¤íŠ¸ë¥¼ ì²˜ë¦¬í•  ì£¼ì¸(Listener)ì„ ì¶”ì í•˜ê¸°ìœ„í•¨
+	// RegisterAccept()ì—ì„œ ì‹¤ì œ AcceptEx()í˜¸ì¶œ
 
 	return true;
 }
@@ -88,10 +88,10 @@ HANDLE Listener::GetHandle()
 	return reinterpret_cast<HANDLE>(_socket);
 }
 
-// Ã¹ listener¿¡¼­ accept¿¡ ´ëÇÑ Ã³¸®´Â event·Î StartAccept·Î ¸¸µé¾îÁá´ø°Å¿¡ ´ëÇÑ Ã³¸® Dispatch¿¡¼­
+// ì²« listenerì—ì„œ acceptì— ëŒ€í•œ ì²˜ë¦¬ëŠ” eventë¡œ StartAcceptë¡œ ë§Œë“¤ì–´ì¤¬ë˜ê±°ì— ëŒ€í•œ ì²˜ë¦¬ Dispatchì—ì„œ
 /*
 for (int32 i = 0; i < acceptCount; i++)
-	{	//µ¿½Ã¿¡ ¿©·¯°³ÀÇ acceptex¿äÃ»À» ¹Ì¸® °É¾î³õ´Â
+	{	//ë™ì‹œì— ì—¬ëŸ¬ê°œì˜ acceptexìš”ì²­ì„ ë¯¸ë¦¬ ê±¸ì–´ë†“ëŠ”
 		IocpEvent* acceptEvent = new IocpEvent(EventType::Accept);
 		acceptEvent->owner = shared_from_this();
 		_acceptEvents.push_back(acceptEvent);
@@ -107,36 +107,36 @@ void Listener::Dispatch(IocpEvent* acceptEvent, int32 numOfBytes)
 void Listener::RegisterAccept(IocpEvent* acceptEvent)
 {
 	SessionRef session = _service->CreateSession(); // Register IOCP
-	//¿©±â¼­ sessionÀ» sessionFactory·Î ¸¸µê -> session¸¸µé¸é¼­ socket¸¸µê
-	//±×¸®°í iocpcore¿¡ ±× sessionÀÇ socketÇÚµéÀ» »ç¿ëÇØ¼­ µî·Ï
-	//¹Ì¸® acceptµÉ ¼ÒÄÏ(Å¬¶ó)¸¦ ¸¸µé¾î ÇØ´ç ¼ÒÄÏ¿¡ ¿¬°áµÈÁ¤º¸¸¦ ¹Ş¾Æ ´Ù½Ã iocp¿¡ µî·Ï
+	//ì—¬ê¸°ì„œ sessionì„ sessionFactoryë¡œ ë§Œë“¦ -> sessionë§Œë“¤ë©´ì„œ socketë§Œë“¦
+	//ê·¸ë¦¬ê³  iocpcoreì— ê·¸ sessionì˜ socketí•¸ë“¤ì„ ì‚¬ìš©í•´ì„œ ë“±ë¡
+	//ë¯¸ë¦¬ acceptë  ì†Œì¼“(í´ë¼)ë¥¼ ë§Œë“¤ì–´ í•´ë‹¹ ì†Œì¼“ì— ì—°ê²°ëœì •ë³´ë¥¼ ë°›ì•„ ë‹¤ì‹œ iocpì— ë“±ë¡
 
-	//Å¬¶óÀÇ ÀÔÃâ·Â¿ë sessionÀ» ¿©±â¼­ ¸¸µê
+	//í´ë¼ì˜ ì…ì¶œë ¥ìš© sessionì„ ì—¬ê¸°ì„œ ë§Œë“¦
 	acceptEvent->Init();
 	acceptEvent->session = session;
 
 
 	DWORD bytesReceived = 0;
 	if (false == SocketUtils::AcceptEx(_socket, session->GetSocket(), session->_recvBuffer.WritePos(), 0, sizeof(SOCKADDR_IN) + 16, sizeof(SOCKADDR_IN) + 16, OUT & bytesReceived, static_cast<LPOVERLAPPED>(acceptEvent)))
-	{//¸¶Áö¸· overlapped±â¹İ acceptevent±×´ë·Î getqueuedcompletionstatus ½Ã ¿Ï·áÅëÁö ¹ŞÀ¸¸é ±×´ë·Î ¹ŞÀ½
+	{//ë§ˆì§€ë§‰ overlappedê¸°ë°˜ accepteventê·¸ëŒ€ë¡œ getqueuedcompletionstatus ì‹œ ì™„ë£Œí†µì§€ ë°›ìœ¼ë©´ ê·¸ëŒ€ë¡œ ë°›ìŒ
 		const int32 errorCode = ::WSAGetLastError();
 		if (errorCode != WSA_IO_PENDING)
 		{
-			// ÀÏ´Ü ´Ù½Ã Accept °É¾îÁØ´Ù
+			// ì¼ë‹¨ ë‹¤ì‹œ Accept ê±¸ì–´ì¤€ë‹¤
 			RegisterAccept(acceptEvent);
 		}
 	}
 }
 
-void Listener::ProcessAccept(IocpEvent* acceptEvent)//Å¬¶ó¿¬°á½Ã Æ®¸®°Å iocp->dispatch¸¦ ÅëÇØ
+void Listener::ProcessAccept(IocpEvent* acceptEvent)//í´ë¼ì—°ê²°ì‹œ íŠ¸ë¦¬ê±° iocp->dispatchë¥¼ í†µí•´
 {
-	//ÀÌÀü°ú ´Ş¶óÁø°Ç ¿ø·¡ ¿ì¸®°¡ accept(ºí·ÎÅ·)ÇÔ¼ö·Î ¾ò¾î¿Â Å¬¶ó¼ÒÄÏÀ» ±â¹İÀ¸·Î
-	//wsarecvÇÏ¿´Áö¸¸, ÀÌÁ¨ ¸ÕÀú ¼ÒÄÏÀ» ¸¸µé¾î °É¾î³õ°í »ç¿ë.
+	//ì´ì „ê³¼ ë‹¬ë¼ì§„ê±´ ì›ë˜ ìš°ë¦¬ê°€ accept(ë¸”ë¡œí‚¹)í•¨ìˆ˜ë¡œ ì–»ì–´ì˜¨ í´ë¼ì†Œì¼“ì„ ê¸°ë°˜ìœ¼ë¡œ
+	//wsarecví•˜ì˜€ì§€ë§Œ, ì´ì   ë¨¼ì € ì†Œì¼“ì„ ë§Œë“¤ì–´ ê±¸ì–´ë†“ê³  ì‚¬ìš©.
 	SessionRef session = acceptEvent->session;
 
 	if (false == SocketUtils::SetUpdateAcceptSocket(session->GetSocket(), _socket))
-	{//³»ºÎÀûÀ¸·Î setsockoptÈ£Ãâ acceptex·Î ¾òÀº ¼ÒÄÏ¿¡ ¸®½º³Ê ÄÁÅØ½ºÆ® ¿¬°áÇÏ¿©¾ß getpeernameÁ¤»óµ¿ÀÛ
-		// ½ÇÆĞ ½Ã ÀÌ¹ø acceptÆ÷±âÈÄ ´Ù½Ã acceptex Àçµî·Ï
+	{//ë‚´ë¶€ì ìœ¼ë¡œ setsockoptí˜¸ì¶œ acceptexë¡œ ì–»ì€ ì†Œì¼“ì— ë¦¬ìŠ¤ë„ˆ ì»¨í…ìŠ¤íŠ¸ ì—°ê²°í•˜ì—¬ì•¼ getpeernameì •ìƒë™ì‘
+		// ì‹¤íŒ¨ ì‹œ ì´ë²ˆ acceptí¬ê¸°í›„ ë‹¤ì‹œ acceptex ì¬ë“±ë¡
 		RegisterAccept(acceptEvent);
 		return;
 	}
@@ -144,7 +144,7 @@ void Listener::ProcessAccept(IocpEvent* acceptEvent)//Å¬¶ó¿¬°á½Ã Æ®¸®°Å iocp->di
 	SOCKADDR_IN sockAddress;
 	int32 sizeOfSockAddr = sizeof(sockAddress);
 	if (SOCKET_ERROR == ::getpeername(session->GetSocket(), OUT reinterpret_cast<SOCKADDR*>(&sockAddress), &sizeOfSockAddr))
-	{//getpeername -> ¹æ±İ ¿¬°áµÈ Å¬¶ó ip/Æ÷Æ® ¾ğÀ½. ½ÇÆĞ½Ã ÀÌ¹ø °Ç °Ç³Ê¶Ù°í ´Ù½Ã AcceptEx
+	{//getpeername -> ë°©ê¸ˆ ì—°ê²°ëœ í´ë¼ ip/í¬íŠ¸ ì–¸ìŒ. ì‹¤íŒ¨ì‹œ ì´ë²ˆ ê±´ ê±´ë„ˆë›°ê³  ë‹¤ì‹œ AcceptEx
 		RegisterAccept(acceptEvent);
 		return;
 	}
@@ -152,6 +152,6 @@ void Listener::ProcessAccept(IocpEvent* acceptEvent)//Å¬¶ó¿¬°á½Ã Æ®¸®°Å iocp->di
 	cout << "Client Connected!" << endl;
 
 	session->SetNetAddress(NetAddress(sockAddress));
-	session->ProcessConnect(); //¿©±â¼­ wsarecvÃ¹ ¼¼ÆÃ ¹× È£Ãâ ÀÌÈÄ Å¬¶ó io±â´Ù¸²
-	RegisterAccept(acceptEvent);//´Ù¸¥ Å¬¶ó acceptex¸¦ À§ÇØ¼­
+	session->ProcessConnect(); //ì—¬ê¸°ì„œ wsarecvì²« ì„¸íŒ… ë° í˜¸ì¶œ ì´í›„ í´ë¼ ioê¸°ë‹¤ë¦¼
+	RegisterAccept(acceptEvent);//ë‹¤ë¥¸ í´ë¼ acceptexë¥¼ ìœ„í•´ì„œ
 }

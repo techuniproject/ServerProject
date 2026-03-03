@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "TilemapActor.h"
 #include "GameInstance.h"
 #include "Tilemap.h"
@@ -49,7 +49,7 @@ void TilemapActor::Render(HDC hdc)
 	Vec2Int size = spriteO->GetSize();
 	Vec2 cameraPos = GET_SINGLE(GameInstance)->GetCameraPos();
 
-	// ÄÃ¸µ : º¸¿©¾ß ÇÒ ¾Öµé¸¸ º¸¿©ÁÖ±â
+	// ì»¬ë§ : ë³´ì—¬ì•¼ í•  ì• ë“¤ë§Œ ë³´ì—¬ì£¼ê¸°
 	int32 leftX = ((int32)cameraPos.x - GWinSizeX / 2);
 	int32 leftY = ((int32)cameraPos.y - GWinSizeY / 2);
 	int32 rightX = ((int32)cameraPos.x + GWinSizeX / 2);
@@ -71,7 +71,7 @@ void TilemapActor::Render(HDC hdc)
 				continue;
 			if (y < 0 || y >= mapSize.y)
 				continue;
-			// ¿ŞÂÊ »ó´Ü ¸ğ¼­¸®¸¦ ±âÁØÀ¸·Î ¸ÂÃßÀÚ
+			// ì™¼ìª½ ìƒë‹¨ ëª¨ì„œë¦¬ë¥¼ ê¸°ì¤€ìœ¼ë¡œ ë§ì¶”ì
 			switch (tiles[y][x].value)
 			{
 				case 0:

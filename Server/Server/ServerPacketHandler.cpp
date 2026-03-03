@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "ServerPacketHandler.h"
 #include "BufferReader.h"
 #include "BufferWriter.h"
@@ -16,14 +16,14 @@ PacketHandlerFunc g_packet_handler[HANDLER_MAX];
 
 bool ServerPacketHandler::HandlePacket(GameSessionRef session, BYTE* buffer, int32 length)
 {
-    // 1) Çì´õ ÀĞ±â
+    // 1) í—¤ë” ì½ê¸°
     PacketHeader* header = reinterpret_cast<PacketHeader*>(buffer);
 
-    // 2) id ¹üÀ§ Ã¼Å©
+    // 2) id ë²”ìœ„ ì²´í¬
     if (header->id >= HANDLER_MAX)
         return false;
 
-    // 3) µî·ÏµÈ ÇÚµé·¯ ½ÇÇà
+    // 3) ë“±ë¡ëœ í•¸ë“¤ëŸ¬ ì‹¤í–‰
     return g_packet_handler[header->id](session, buffer, length);
 }
 
@@ -41,7 +41,7 @@ SendBufferRef ServerPacketHandler::Make_S_MyPlayer(const Protocol::ObjectInfo& i
 {
     Protocol::S_MyPlayer pkt;
 
-	Protocol::ObjectInfo* objectInfo = pkt.mutable_info(); //message±¸¼ºÇÏ´Â struct pointer¹İÈ¯
+	Protocol::ObjectInfo* objectInfo = pkt.mutable_info(); //messageêµ¬ì„±í•˜ëŠ” struct pointerë°˜í™˜
 
 	*objectInfo = info;
 
@@ -91,7 +91,7 @@ SendBufferRef ServerPacketHandler::Make_S_Broadcast(const Protocol::S_BROADCAST&
 
 bool Handle_INVALID(GameSessionRef& session, BYTE* buffer, int32 length)
 {
-    //ÃÊ±â ÇÔ¼ö Æ÷ÀÎÅÍ ¼³Á¤¿ë ÇÔ¼ö
+    //ì´ˆê¸° í•¨ìˆ˜ í¬ì¸í„° ì„¤ì •ìš© í•¨ìˆ˜
     return false;
 }
 
@@ -117,10 +117,10 @@ bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move& pkt)
             curSessionPlayer->info.set_dir(pkt.info().dir());
             curSessionPlayer->info.set_weapontype(pkt.info().weapontype());
             if (nextPos == curSessionPlayer->GetCellPos()) {
-                //Á¦ÀÚ¸®¸é Ã¼Å©ÇÒ ÇÊ¿ä°¡ ÀÖ³ª?
-                //ÀÌµ¿ÀÏ¶§¸¸ Ã¼Å©ÇØ¾ßµÇ´Âµ¥, ÀÌ°Ô ½ºÅ³À» »ç¿ëÇÏ¸é Ã¼Å©ÇØ¹ö¸².
-                //Å¬¶óÀÇ ÀÌµ¿¼Óµµ°¡ ºü¸¦¶§ ¼ø°£ÀûÀ¸·Î ¼­¹ö´Â Åë°ú¾È½ÃÄ×´Âµ¥ ¶Ç´Â ¹é¾÷Çß´Âµ¥,
-                // µ¿±âÈ­°úÁ¤¿¡¼­ ÀÏÄ¡ÇÏÁö ¾Ê´Â ¹®Á¦ »ı±è Å¬¶ó´Â ¶Õ¾î¼­ °¡¸é¾ÈµÇ´Â ¿µ¿ª °¬´Âµ¥ ¼­¹ö´Â Åë°ú¾È½ÃÅ´
+                //ì œìë¦¬ë©´ ì²´í¬í•  í•„ìš”ê°€ ìˆë‚˜?
+                //ì´ë™ì¼ë•Œë§Œ ì²´í¬í•´ì•¼ë˜ëŠ”ë°, ì´ê²Œ ìŠ¤í‚¬ì„ ì‚¬ìš©í•˜ë©´ ì²´í¬í•´ë²„ë¦¼.
+                //í´ë¼ì˜ ì´ë™ì†ë„ê°€ ë¹ ë¥¼ë•Œ ìˆœê°„ì ìœ¼ë¡œ ì„œë²„ëŠ” í†µê³¼ì•ˆì‹œì¼°ëŠ”ë° ë˜ëŠ” ë°±ì—…í–ˆëŠ”ë°,
+                // ë™ê¸°í™”ê³¼ì •ì—ì„œ ì¼ì¹˜í•˜ì§€ ì•ŠëŠ” ë¬¸ì œ ìƒê¹€ í´ë¼ëŠ” ëš«ì–´ì„œ ê°€ë©´ì•ˆë˜ëŠ” ì˜ì—­ ê°”ëŠ”ë° ì„œë²„ëŠ” í†µê³¼ì•ˆì‹œí‚´
 
             }
             
@@ -129,39 +129,39 @@ bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move& pkt)
             if (isMove) {
                 float speed = curSessionPlayer->info.movespeed();
                 if (speed <= 0) speed = 1.0f;
-                // ¾à°£ÀÇ ¿ÀÂ÷ Çã¿ë (³×Æ®¿öÅ© ·º µîÀ» °í·ÁÇÏ¿© 10~20% Á¤µµ ºÁÁÜ)
-                // ³Ê¹« ºıºıÇÏ¸é Á¤»ó À¯Àúµµ ·º °É¸± ¶§ ·Ñ¹éµÊ
+                // ì•½ê°„ì˜ ì˜¤ì°¨ í—ˆìš© (ë„¤íŠ¸ì›Œí¬ ë ‰ ë“±ì„ ê³ ë ¤í•˜ì—¬ 10~20% ì •ë„ ë´ì¤Œ)
+                // ë„ˆë¬´ ë¹¡ë¹¡í•˜ë©´ ì •ìƒ ìœ ì €ë„ ë ‰ ê±¸ë¦´ ë•Œ ë¡¤ë°±ë¨
                 uint64 minIntervalMs = (uint64)((48.0f / speed) * 1000);
-                minIntervalMs = (uint64)(minIntervalMs * 0.9f); // ¿ÀÂ÷ ¹üÀ§
+                minIntervalMs = (uint64)(minIntervalMs * 0.9f); // ì˜¤ì°¨ ë²”ìœ„
                 uint64 now = ::GetTickCount64();
                 if (now - curSessionPlayer->GetLastMoveTime() < minIntervalMs)
                 {
-                    // [°ËÁõ ½ÇÆĞ] ³Ê¹« ºü¸§! ÀÌµ¿ Çã¿ë x ½ºÇÇµåÇÙ
+                    // [ê²€ì¦ ì‹¤íŒ¨] ë„ˆë¬´ ë¹ ë¦„! ì´ë™ í—ˆìš© x ìŠ¤í”¼ë“œí•µ
                     curSession->Send(ServerPacketHandler::Make_S_Move(curSessionPlayer->info));
                     return;
                 }
                 
                 int dist = abs(nextPos.y - curPos.y) + abs(nextPos.x - curPos.x);
                 if (dist > 1) {
-                    //ÀÏ´Ü ÀÌµ¿°ü·Ã ÁÂÇ¥´Â ¼­¹ö¿¡¼­ ¼öÁ¤ x ->ÀÌ°Ç Å¬¶óº¸´Ù ÇÙÀÌ³ª Ä¡Æ®¹æÁö¿ë
-                    //ÇöÀç ·ÎÁ÷¿¡¼­ ÀÌ°Ô °¡´ÉÇÑ°Ç ÅÚÆ÷ µîÀÌ¹Ç·Î ÆĞÅ¶¼ö°¡ ¸¹À» ¼ö ÀÖ¾î ¹æÇâ ¹× stateµµ ¼öÁ¤ x
-                    //ÀÌµ¿À» Å©°Ô ÇÑ¹ø¿¡ ÅÚÆ÷½ÃÅ°¸é Å¬¶ó·ÎÁ÷²¿ÀÎ°Å Çª´Â°Ç º¸³»Áà¾ßÇÒ¼öµµ?
+                    //ì¼ë‹¨ ì´ë™ê´€ë ¨ ì¢Œí‘œëŠ” ì„œë²„ì—ì„œ ìˆ˜ì • x ->ì´ê±´ í´ë¼ë³´ë‹¤ í•µì´ë‚˜ ì¹˜íŠ¸ë°©ì§€ìš©
+                    //í˜„ì¬ ë¡œì§ì—ì„œ ì´ê²Œ ê°€ëŠ¥í•œê±´ í…”í¬ ë“±ì´ë¯€ë¡œ íŒ¨í‚·ìˆ˜ê°€ ë§ì„ ìˆ˜ ìˆì–´ ë°©í–¥ ë° stateë„ ìˆ˜ì • x
+                    //ì´ë™ì„ í¬ê²Œ í•œë²ˆì— í…”í¬ì‹œí‚¤ë©´ í´ë¼ë¡œì§ê¼¬ì¸ê±° í‘¸ëŠ”ê±´ ë³´ë‚´ì¤˜ì•¼í• ìˆ˜ë„?
                     curSession->Send(ServerPacketHandler::Make_S_Move(curSessionPlayer->info));
                     return;
                 }
                
                 if (curSessionPlayer->CanGoBySector(nextPos)) {
-                    //TODO Validation ÇØÅ· Ã¼Å·   
+                    //TODO Validation í•´í‚¹ ì²´í‚¹   
                     curSessionPlayer->SetLastMoveTime(now);
                     auto optitem = gameRoom->GetItemAt(nextPos);
                     if (optitem.has_value()) {
-                        //ÇÃ·¹ÀÌ¾î ÀÌµ¿ÇÒ¶§ ´ÙÀ½Ä­ ¾ÆÀÌÅÛ ÀÖÀ¸¸é
+                        //í”Œë ˆì´ì–´ ì´ë™í• ë•Œ ë‹¤ìŒì¹¸ ì•„ì´í…œ ìˆìœ¼ë©´
                         Item& item = optitem.value();
                         if (pkt.info().objectid() == item.itemInfo.playerid()) {
                             gameRoom->DeleteItem(item.itemInfo.itemid());
                             item.itemInfo.set_isalive(false);
                             Protocol::S_ITEM itempkt;
-                            Protocol::ItemInfo* iteminfo = itempkt.mutable_iteminfo(); //message±¸¼ºÇÏ´Â struct pointer¹İÈ¯
+                            Protocol::ItemInfo* iteminfo = itempkt.mutable_iteminfo(); //messageêµ¬ì„±í•˜ëŠ” struct pointerë°˜í™˜
                             *iteminfo = item.itemInfo;
                             switch (iteminfo->itemtype()) {
                             case Protocol::ITEM_TYPE::ITEM_TYPE_ATTACK:
@@ -182,7 +182,7 @@ bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move& pkt)
                     }
                     curSessionPlayer->info.set_posx(pkt.info().posx());
                     curSessionPlayer->info.set_posy(pkt.info().posy());
-                    // sectorº¯°æµÇ¸é °»½ÅÈÄ ÇØ´ç Á¤º¸µéÀ» ±â¹İÀ¸·Î µ¿±âÈ­
+                    // sectorë³€ê²½ë˜ë©´ ê°±ì‹ í›„ í•´ë‹¹ ì •ë³´ë“¤ì„ ê¸°ë°˜ìœ¼ë¡œ ë™ê¸°í™”
 
                     if (!curSessionPlayer->isSameSector(gameRoom->GetSectorPos(pkt.info().posx(), pkt.info().posy()))) {
                         gameRoom->InsertAtSector(gameRoom->GetSectorPos(pkt.info().posx(), pkt.info().posy()), static_cast<GameObject*>(curSessionPlayer.get()));
@@ -236,7 +236,7 @@ bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move& pkt)
                               };
                             gameRoom->DoSomethingCrossingSectors(nextPos, curPos, AddObjectsForNewSectors, RemoveObjectsFromLastSectors);              
                         }                 
-                       //Broadcast´Â ÇöÀç Å¬¶ó°¡ »õ·Î¿î ¼½ÅÍ ÁøÀÔ ½Ã ´Ù¸¥ ¿ÀºêÁ§Æ®µé Ãß°¡/»èÁ¦ ¿©ºÎ ¾Ë±â À§ÇÔ
+                       //BroadcastëŠ” í˜„ì¬ í´ë¼ê°€ ìƒˆë¡œìš´ ì„¹í„° ì§„ì… ì‹œ ë‹¤ë¥¸ ì˜¤ë¸Œì íŠ¸ë“¤ ì¶”ê°€/ì‚­ì œ ì—¬ë¶€ ì•Œê¸° ìœ„í•¨
                         SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Broadcast(broadcastRoomPlayers);
                         curSession->Send(sendBuffer);
                     }
@@ -277,7 +277,7 @@ bool Handle_C_CHAT(GameSessionRef& session, Protocol::C_CHAT& pkt)
     auto gameRoom = session->gameRoom.lock();
     if (!gameRoom) return false;
 
-    // 1) ¿ø·¡ ÇÏ´ø ±×´ë·Î, »ç¿ëÀÚ Ã¤ÆÃÀ» ºê·ÎµåÄ³½ºÆ®
+    // 1) ì›ë˜ í•˜ë˜ ê·¸ëŒ€ë¡œ, ì‚¬ìš©ì ì±„íŒ…ì„ ë¸Œë¡œë“œìºìŠ¤íŠ¸
     gameRoom->PushJob([gameRoom, pkt]() {
         Protocol::S_CHAT echo;
         echo.set_msg(pkt.msg());
@@ -286,7 +286,7 @@ bool Handle_C_CHAT(GameSessionRef& session, Protocol::C_CHAT& pkt)
         gameRoom->Broadcast(sb);
         });
 
-    // 2) "/npc " ¶Ç´Â "/ai " ¸í·ÉÀÌ¸é LLM ÀÛ¾÷ Å¥¿¡ ÅõÀÔ
+    // 2) "/npc " ë˜ëŠ” "/ai " ëª…ë ¹ì´ë©´ LLM ì‘ì—… íì— íˆ¬ì…
     std::string msg = pkt.msg();
     auto starts_with = [&](const char* p) { return msg.rfind(p, 0) == 0; };
 
@@ -295,11 +295,11 @@ bool Handle_C_CHAT(GameSessionRef& session, Protocol::C_CHAT& pkt)
         r.playerId = pkt.playerid();
         r.npcId = 0;
         r.convId = 0;
-        r.userText = msg.substr(msg.find(' ') + 1); // Á¢µÎ»ç µÚ¸¸ LLM¿¡ º¸³¿
-        r.room = gameRoom;                       // ´äº¯Àº ÀÌ ¹æ¿¡ ºê·ÎµåÄ³½ºÆ®
+        r.userText = msg.substr(msg.find(' ') + 1); // ì ‘ë‘ì‚¬ ë’¤ë§Œ LLMì— ë³´ëƒ„
+        r.room = gameRoom;                       // ë‹µë³€ì€ ì´ ë°©ì— ë¸Œë¡œë“œìºìŠ¤íŠ¸
         r.systemPrompt =
-            "´ç½ÅÀº ¸¶À» ¾È³» NPCÀÔ´Ï´Ù. Á¤ÁßÇÏ°í Âª°Ô ´ë´ä. ¿å¼³/°³ÀÎÁ¤º¸/±¤°í ±İÁö. ÇÑ±¹¾î.";
-        r.contextJson = "{}"; // ÇÊ¿äÇÏ¸é ÇÃ·¹ÀÌ¾î/Äù½ºÆ® »óÅÂ ¿ä¾à ³Ö±â
+            "ë‹¹ì‹ ì€ ë§ˆì„ ì•ˆë‚´ NPCì…ë‹ˆë‹¤. ì •ì¤‘í•˜ê³  ì§§ê²Œ ëŒ€ë‹µ. ìš•ì„¤/ê°œì¸ì •ë³´/ê´‘ê³  ê¸ˆì§€. í•œêµ­ì–´.";
+        r.contextJson = "{}"; // í•„ìš”í•˜ë©´ í”Œë ˆì´ì–´/í€˜ìŠ¤íŠ¸ ìƒíƒœ ìš”ì•½ ë„£ê¸°
         GAIQueue.Push(std::move(r));
     }
     return true;
@@ -321,7 +321,7 @@ bool Handle_C_ARROW(GameSessionRef& session, Protocol::C_ARROW& pkt)
     //        {
     //            monster->OnDamaged(dynamic_pointer_cast<Creature>(gameRoom->FindObject(pkt.playerid())));
     //            if (auto m = std::dynamic_pointer_cast<Monster>(monster)) {
-    //                m->ApplyHitStun(505); //ÇÃ·¹ÀÌ¾î °ø°İ ÄğÅ¸ÀÓ 500ÀÌ¶ó °°ÀÌ 500ÀÌ¸é µÑ´Ù µ¿½Ã¿¡ ¶§¸²
+    //                m->ApplyHitStun(505); //í”Œë ˆì´ì–´ ê³µê²© ì¿¨íƒ€ì„ 500ì´ë¼ ê°™ì´ 500ì´ë©´ ë‘˜ë‹¤ ë™ì‹œì— ë•Œë¦¼
     //            }
     //        }
 
@@ -354,7 +354,7 @@ bool Handle_C_SPEED(GameSessionRef& session, Protocol::C_SPEED& pkt)
 }
 
 /*
-//¾ø¾Ù¶§
+//ì—†ì•¨ë•Œ
  shared_ptr<GameRoom> gameRoom = session->gameRoom.lock();
     if (gameRoom) {
         gameRoom->PushJob([gameRoom, pkt]() {

@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "GameInstance.h"
 #include "Player.h"
 #include "InputManager.h"
@@ -41,7 +41,7 @@ Player::Player()
 	_flipbookStaff[DIR_RIGHT] = GET_SINGLE(GameInstance)->GetFlipbook(L"FB_StaffRight");
 
 	//shared_ptr<CameraComponent> camera = make_shared<CameraComponent>();
-	//AddComponent(camera);//¿©±â¼­ shared_from_this È£ÃâµÇ¾î ¹®Á¦
+	//AddComponent(camera);//ì—¬ê¸°ì„œ shared_from_this í˜¸ì¶œë˜ì–´ ë¬¸ì œ
 	
 	
 	//_stat.attack = 100;
@@ -54,11 +54,11 @@ Player::~Player()
 
 void Player::AttatchDefaultComponent()
 {	/*
-	shared_from_this()´Â ÀÌ¹Ì ÀÌ °´Ã¼¸¦ ¼ÒÀ¯ÇÏ°í ÀÖ´Â shared_ptrÀÌ Á¸ÀçÇÑ´Ù´Â ÀüÁ¦ ÇÏ¿¡¼­¸¸ µ¿ÀÛÇÕ´Ï´Ù.
-	±×·±µ¥ make_shared<T>()·Î °´Ã¼¸¦ ¸¸µé¸é:
-	TÀÇ »ı¼ºÀÚ°¡ ¸ÕÀú È£ÃâµÊ
-	»ı¼ºÀÚ°¡ ³¡³­ µÚ¿¡¾ß, ±× °´Ã¼¸¦ ¼ÒÀ¯ÇÏ´Â shared_ptr<T>°¡ ¿Ï¼ºµÊ
-	Áï, »ı¼ºÀÚ ½ÇÇà Áß¿¡´Â ¾ÆÁ÷ shared_ptrÀÌ °´Ã¼¸¦ ¼ÒÀ¯ÇÏÁö ¾ÊÀ½ ¡æ shared_from_this()´Â ³»ºÎÀûÀ¸·Î ¾àÇÑ ÂüÁ¶(weak_ptr)¸¦ Ã£´Âµ¥, µî·ÏµÈ °Ô ¾øÀ¸´Ï bad_weak_ptr ¿¹¿Ü¸¦ ´øÁı´Ï´Ù.
+	shared_from_this()ëŠ” ì´ë¯¸ ì´ ê°ì²´ë¥¼ ì†Œìœ í•˜ê³  ìˆëŠ” shared_ptrì´ ì¡´ì¬í•œë‹¤ëŠ” ì „ì œ í•˜ì—ì„œë§Œ ë™ì‘í•©ë‹ˆë‹¤.
+	ê·¸ëŸ°ë° make_shared<T>()ë¡œ ê°ì²´ë¥¼ ë§Œë“¤ë©´:
+	Tì˜ ìƒì„±ìê°€ ë¨¼ì € í˜¸ì¶œë¨
+	ìƒì„±ìê°€ ëë‚œ ë’¤ì—ì•¼, ê·¸ ê°ì²´ë¥¼ ì†Œìœ í•˜ëŠ” shared_ptr<T>ê°€ ì™„ì„±ë¨
+	ì¦‰, ìƒì„±ì ì‹¤í–‰ ì¤‘ì—ëŠ” ì•„ì§ shared_ptrì´ ê°ì²´ë¥¼ ì†Œìœ í•˜ì§€ ì•ŠìŒ â†’ shared_from_this()ëŠ” ë‚´ë¶€ì ìœ¼ë¡œ ì•½í•œ ì°¸ì¡°(weak_ptr)ë¥¼ ì°¾ëŠ”ë°, ë“±ë¡ëœ ê²Œ ì—†ìœ¼ë‹ˆ bad_weak_ptr ì˜ˆì™¸ë¥¼ ë˜ì§‘ë‹ˆë‹¤.
 	*/
 	//shared_ptr<CameraComponent> camera = make_shared<CameraComponent>();
 	//AddComponent(camera);
@@ -83,16 +83,16 @@ void Player::Tick()
 void Player::Render(HDC hdc)
 {
 	Super::Render(hdc);
-	// Å¸ÀÏ Å©±â ¾ò±â
-	auto& scene = GET_SINGLE(GameInstance)->GetCurrentScene(); // DevScene ÆÄ»ı
+	// íƒ€ì¼ í¬ê¸° ì–»ê¸°
+	auto& scene = GET_SINGLE(GameInstance)->GetCurrentScene(); // DevScene íŒŒìƒ
 	DevScene* dev = dynamic_cast<DevScene*>(&scene);
-	int tileSize = 48; // ±âº»°ª
+	int tileSize = 48; // ê¸°ë³¸ê°’
 	if (dev && GET_SINGLE(GameInstance)->GetTilemap(L"Tilemap_01")) tileSize = GET_SINGLE(GameInstance)->GetTilemap(L"Tilemap_01")->GetTileSize();
 
-	// ¿ùµåÁÂÇ¥´Â GameObject°¡ À¯Áö(_pos). Áß½ÉÀ» POINT·Î º¯È¯
+	// ì›”ë“œì¢Œí‘œëŠ” GameObjectê°€ ìœ ì§€(_pos). ì¤‘ì‹¬ì„ POINTë¡œ ë³€í™˜
 	POINT center{ (LONG)_pos.x, (LONG)_pos.y };
 
-	// info().hp, info().maxhp »ç¿ë
+	// info().hp, info().maxhp ì‚¬ìš©
 	DrawHealthBar(hdc, center, tileSize, info.hp(), info.maxhp());
 }
 
@@ -102,9 +102,9 @@ void Player::TickIdle()
 	
 }
 /*
-FPS°¡ 1600 ¡æ 800 ¡æ 400 ÀÌ·± ½ÄÀ¸·Î ¹İÅä¸· ³ª¸é,
+FPSê°€ 1600 â†’ 800 â†’ 400 ì´ëŸ° ì‹ìœ¼ë¡œ ë°˜í† ë§‰ ë‚˜ë©´,
 
-deltaTime(= 1/FPS) °ªÀº ¹İ´ë·Î 0.0006 ¡æ 0.0012 ¡æ 0.0025 ¡¦ ÀÌ·± ½ÄÀ¸·Î Ä¿Áü.
+deltaTime(= 1/FPS) ê°’ì€ ë°˜ëŒ€ë¡œ 0.0006 â†’ 0.0012 â†’ 0.0025 â€¦ ì´ëŸ° ì‹ìœ¼ë¡œ ì»¤ì§.
 */
 
 void Player::TickMove()
@@ -135,18 +135,18 @@ void Player::TickMove()
 			break;
 		}
 	}	*/
-	//¿ø·¡ length·Î ÇÏ´ø°Å ÇÁ·¹ÀÓ µå¶ø ¶Ç´Â Åë½Å ºÒ¾ÈÁ¤ÇÒ¶§ »ı±â´Â ¿ÀÂ÷¶§¹®¿¡
-	//Àß ¾Èµé¾î°¡´Â °æ¿ì ±×´ë·Î Âß°¡´Â ¹ö±× »ı±è. length() 3À¸·ÎÇÏ¸é ±×³ª¸¶ ´úÇÔ.
+	//ì›ë˜ lengthë¡œ í•˜ë˜ê±° í”„ë ˆì„ ë“œë ë˜ëŠ” í†µì‹  ë¶ˆì•ˆì •í• ë•Œ ìƒê¸°ëŠ” ì˜¤ì°¨ë•Œë¬¸ì—
+	//ì˜ ì•ˆë“¤ì–´ê°€ëŠ” ê²½ìš° ê·¸ëŒ€ë¡œ ì­‰ê°€ëŠ” ë²„ê·¸ ìƒê¹€. length() 3ìœ¼ë¡œí•˜ë©´ ê·¸ë‚˜ë§ˆ ëœí•¨.
 
 	float deltaTime = GET_SINGLE(GameInstance)->GetDeltaTime();
-	deltaTime = min(deltaTime, 0.05f); //ÇÁ·¹ÀÓµå¶ø ½ÉÇØÁ®¼­ 0.05º¸´Ù Ä¿Áö¸é º¸Á¤
+	deltaTime = min(deltaTime, 0.05f); //í”„ë ˆì„ë“œë ì‹¬í•´ì ¸ì„œ 0.05ë³´ë‹¤ ì»¤ì§€ë©´ ë³´ì •
 		switch (info.dir())
 		{
 		case DIR_UP:
 			_pos.y -= info.movespeed() * deltaTime;
 			if (_pos.y <= _destPos.y) {
 				_pos = _destPos;
-				SetState(IDLE, false);//ÆĞÅ¶ º¸³¾ ÇÊ¿ä¾øÀ½ ÃÖÃÊ moveÆĞÅ¶Àü´ŞÇÏ¸é ¸ğµç Å¬¶ó µ¿ÀÏ·ÎÁ÷ÀÌ±â¶§¹®
+				SetState(IDLE, false);//íŒ¨í‚· ë³´ë‚¼ í•„ìš”ì—†ìŒ ìµœì´ˆ moveíŒ¨í‚·ì „ë‹¬í•˜ë©´ ëª¨ë“  í´ë¼ ë™ì¼ë¡œì§ì´ê¸°ë•Œë¬¸
 			}
 			break;
 		case DIR_DOWN:

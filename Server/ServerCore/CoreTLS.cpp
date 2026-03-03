@@ -1,5 +1,5 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "CoreTLS.h"
 
 thread_local uint32 LThreadId = 0;
-//ÇöÀç ½ÇÇà ½º·¹µåÀÇ tls¸¦ »ç¿ë.
+//í˜„ì¬ ì‹¤í–‰ ìŠ¤ë ˆë“œì˜ tlsë¥¼ ì‚¬ìš©.

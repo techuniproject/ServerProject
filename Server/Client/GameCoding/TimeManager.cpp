@@ -1,10 +1,10 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "TimeManager.h"
 
 void TimeManager::Init()
 {
 	::QueryPerformanceFrequency(reinterpret_cast<LARGE_INTEGER*>(&_frequency));
-	::QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(&_prevCount)); // CPU Ŭ��
+	::QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(&_prevCount)); // CPU 클럭
 }
 
 void TimeManager::Update()

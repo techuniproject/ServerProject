@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Game.h"
 #include "GameInstance.h"
 #include "TimeManager.h"
@@ -21,7 +21,7 @@ Game::Game()
 
 Game::~Game()
 {
-	// »ç½Ç ¸¶Áö¸·¿¡ ..
+	// ì‚¬ì‹¤ ë§ˆì§€ë§‰ì— ..
 	GET_SINGLE(GameInstance)->Clear();
 	//GET_SINGLE(SceneManager)->Clear();
 	//GET_SINGLE(ResourceManager)->Clear();
@@ -37,9 +37,9 @@ void Game::Init(HWND hwnd,HINSTANCE hInstance)
 
 	::GetClientRect(hwnd, &_rect);
 
-	hdcBack = ::CreateCompatibleDC(hdc); // hdc¿Í È£È¯µÇ´Â DC¸¦ »ı¼º
-	_bmpBack = ::CreateCompatibleBitmap(hdc, _rect.right, _rect.bottom); // hdc¿Í È£È¯µÇ´Â ºñÆ®¸Ê »ı¼º
-	HBITMAP prev = (HBITMAP)::SelectObject(hdcBack, _bmpBack); // DC¿Í BMP¸¦ ¿¬°á
+	hdcBack = ::CreateCompatibleDC(hdc); // hdcì™€ í˜¸í™˜ë˜ëŠ” DCë¥¼ ìƒì„±
+	_bmpBack = ::CreateCompatibleBitmap(hdc, _rect.right, _rect.bottom); // hdcì™€ í˜¸í™˜ë˜ëŠ” ë¹„íŠ¸ë§µ ìƒì„±
+	HBITMAP prev = (HBITMAP)::SelectObject(hdcBack, _bmpBack); // DCì™€ BMPë¥¼ ì—°ê²°
 	::DeleteObject(prev);
 
 	GET_SINGLE(GameInstance)->Init(hwnd);
@@ -47,7 +47,7 @@ void Game::Init(HWND hwnd,HINSTANCE hInstance)
 	//GET_SINGLE(TimeManager)->Init();
 	//GET_SINGLE(InputManager)->Init(hwnd);
 	//GET_SINGLE(SceneManager)->Init();
-	//GET_SINGLE(ResourceManager)->Init(hwnd, fs::path(L"C:\\Users\\¼­Á¤¿ø\\Desktop\\ServerClient\\ServerProject\\Server\\Client\\Resources"));
+	//GET_SINGLE(ResourceManager)->Init(hwnd, fs::path(L"C:\\Users\\ì„œì •ì›\\Desktop\\ServerClient\\ServerProject\\Server\\Client\\Resources"));
 	//GET_SINGLE(SoundManager)->Init(hwnd);
 
 	CreateChatUI();
@@ -76,7 +76,7 @@ void Game::Update()
 	
 
 	
-	//if (GetAsyncKeyState(VK_F1) & 0x0001) // ´­¸± ¶§¸¸
+	//if (GetAsyncKeyState(VK_F1) & 0x0001) // ëˆŒë¦´ ë•Œë§Œ
 	//{
 	//	ShowChatUI();
 	//}
@@ -110,7 +110,7 @@ void Game::Render()
 	}
 
 	// Double Buffering
-	::BitBlt(hdc, 0, 0, _rect.right, _rect.bottom, hdcBack, 0, 0, SRCCOPY); // ºñÆ® ºí¸´ : °í¼Ó º¹»ç
+	::BitBlt(hdc, 0, 0, _rect.right, _rect.bottom, hdcBack, 0, 0, SRCCOPY); // ë¹„íŠ¸ ë¸”ë¦¿ : ê³ ì† ë³µì‚¬
 	::PatBlt(hdcBack, 0, 0, _rect.right, _rect.bottom, WHITENESS);
 }
 
@@ -151,14 +151,14 @@ void Game::AppendChat(const wstring& msg,  COLORREF color)
 
 COLORREF Game::GetColorFromId(int id)
 {
-	// ÇØ½Ã: id °ª¿¡¼­ R,G,B ÃßÃâ
+	// í•´ì‹œ: id ê°’ì—ì„œ R,G,B ì¶”ì¶œ
 	unsigned int hash = std::hash<int>{}(id);
 
-	BYTE r = (hash & 0xFF);          // ÇÏÀ§ 8ºñÆ®
-	BYTE g = ((hash >> 8) & 0xFF);   // Áß°£ 8ºñÆ®
-	BYTE b = ((hash >> 16) & 0xFF);  // »óÀ§ 8ºñÆ®
+	BYTE r = (hash & 0xFF);          // í•˜ìœ„ 8ë¹„íŠ¸
+	BYTE g = ((hash >> 8) & 0xFF);   // ì¤‘ê°„ 8ë¹„íŠ¸
+	BYTE b = ((hash >> 16) & 0xFF);  // ìƒìœ„ 8ë¹„íŠ¸
 
-	// ³Ê¹« ¾îµÎ¿î »öÀÌ¸é ¹à°Ô º¸Á¤
+	// ë„ˆë¬´ ì–´ë‘ìš´ ìƒ‰ì´ë©´ ë°ê²Œ ë³´ì •
 	int brightness = r + g + b;
 	if (brightness < 100) { r += 100; g += 100; b += 100; }
 
@@ -169,10 +169,10 @@ COLORREF Game::GetDiversedColorFromId(int id)
 {
 	unsigned int hash = std::hash<int>{}(id);
 
-	// Hue 0~359µµ
+	// Hue 0~359ë„
 	double hue = (hash % 360);
 
-	// °íÁ¤µÈ Ã¤µµ, ¸íµµ
+	// ê³ ì •ëœ ì±„ë„, ëª…ë„
 	double s = 0.7, l = 0.5;
 
 	double c = (1 - fabs(2 * l - 1)) * s;

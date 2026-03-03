@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 class Component;
 class Collider;
@@ -27,8 +27,8 @@ public:
 	virtual void OnComponentEndOverlap(shared_ptr<Collider> collider, shared_ptr<Collider> other);
 
 	virtual bool IntersectsWithCamRect(RECT CamRect) { return true; }
-	//ÀÏ´Ü actorÀº ´Ù Åë°úµÇ°Ô -> flipbookactor¸¸ µû·Î ·ÎÁ÷¼öÇàµÇµµ·Ï
-	//sceneÀÌ actor±â¹İ °ü¸®ÇÏ¹Ç·Î
+	//ì¼ë‹¨ actorì€ ë‹¤ í†µê³¼ë˜ê²Œ -> flipbookactorë§Œ ë”°ë¡œ ë¡œì§ìˆ˜í–‰ë˜ë„ë¡
+	//sceneì´ actorê¸°ë°˜ ê´€ë¦¬í•˜ë¯€ë¡œ
 
 protected:
 	Vec2 _pos = {0, 0};

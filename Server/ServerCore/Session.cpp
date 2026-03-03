@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Session.h"
 #include "SocketUtils.h"
 #include "Service.h"
@@ -10,7 +10,7 @@
 Session::Session() : _recvBuffer(BUFFER_SIZE)
 {
 	_socket = SocketUtils::CreateSocket();
-	//¼¼¼Ç 1°³ = ¼ÒÄÏ 1°³ = ÇØ´ç ¿¬°á¿¡ ´ëÇÑ ¸ğµç ÀÌº¥Æ® Ã³¸® ÁÖÃ¼
+	//ì„¸ì…˜ 1ê°œ = ì†Œì¼“ 1ê°œ = í•´ë‹¹ ì—°ê²°ì— ëŒ€í•œ ëª¨ë“  ì´ë²¤íŠ¸ ì²˜ë¦¬ ì£¼ì²´
 }
 
 Session::~Session()
@@ -20,9 +20,9 @@ Session::~Session()
 
 //void Session::Send(BYTE* buffer, int32 len)
 //{
-//	// »ı°¢ÇÒ ¹®Á¦
-//	// 1) ¹öÆÛ °ü¸®?
-//	// 2) sendEvent °ü¸®? ´ÜÀÏ? ¿©·¯°³? WSASend ÁßÃ¸?
+//	// ìƒê°í•  ë¬¸ì œ
+//	// 1) ë²„í¼ ê´€ë¦¬?
+//	// 2) sendEvent ê´€ë¦¬? ë‹¨ì¼? ì—¬ëŸ¬ê°œ? WSASend ì¤‘ì²©?
 //
 //	// TEMP
 //	IocpEvent* sendEvent = new IocpEvent(EventType::Send);
@@ -30,7 +30,7 @@ Session::~Session()
 //	sendEvent->buffer.resize(len);
 //	::memcpy(sendEvent->buffer.data(), buffer, len);
 //
-//	WRITE_LOCK;//¸ÖÆ¼½º·¹µå È¯°æ¿¡¼­ ¾î´À ½º·¹µå°¡ ¾ğÁ¦ send¸¦ È£ÃâÇÒÁö ¸ğ¸£±â ¶§¹®¿¡ ¶ô
+//	WRITE_LOCK;//ë©€í‹°ìŠ¤ë ˆë“œ í™˜ê²½ì—ì„œ ì–´ëŠ ìŠ¤ë ˆë“œê°€ ì–¸ì œ sendë¥¼ í˜¸ì¶œí• ì§€ ëª¨ë¥´ê¸° ë•Œë¬¸ì— ë½
 //	RegisterSend(sendEvent);
 //}
 
@@ -43,10 +43,10 @@ void Session::Send(SendBufferRef sendBuffer)
 		_sendQueue.push(sendBuffer);
 		registerSend = _sendRegistered.exchange(true) == false;
 	}
-	//SendÀÚÃ¼´Â ¸ÖÆ¼½º·¹µå È¯°æ¿¡¼­ °æÀïÀ» ÇÏ¿© ÇÏ³ªÀÇ ½º·¹µå°¡ µé¾î¿Í¼­ lockÀ» °É°ÍÀÓ
-	// ±× ¿ÍÁß¿¡ lockÀÌ ¾È°É¸° registersendºÎºĞÀº ´Ù¸¥½º·¹µå°¡ ½ÇÇàÇÒ ¼ö ÀÖµµ·Ï ÇØº¼ °ÍÀÓ
-	// ÇÏÁö¸¸, ¿ì¸®´Â lock °æÀï¿¡¼­ ÀÌ±ä ½º·¹µå°¡ registersend±îÁö ÇÏµµ·Ï ÇÏ±â À§ÇØ boolÀÌ false¿´À»¶§ 
-	// ½ºÅÃÀÇ registersend¸¦ true·Î ÇÏ¿© registersend±îÁö ½ÇÇàÇÏµµ·Ï ÇÔ.
+	//Sendìì²´ëŠ” ë©€í‹°ìŠ¤ë ˆë“œ í™˜ê²½ì—ì„œ ê²½ìŸì„ í•˜ì—¬ í•˜ë‚˜ì˜ ìŠ¤ë ˆë“œê°€ ë“¤ì–´ì™€ì„œ lockì„ ê±¸ê²ƒì„
+	// ê·¸ ì™€ì¤‘ì— lockì´ ì•ˆê±¸ë¦° registersendë¶€ë¶„ì€ ë‹¤ë¥¸ìŠ¤ë ˆë“œê°€ ì‹¤í–‰í•  ìˆ˜ ìˆë„ë¡ í•´ë³¼ ê²ƒì„
+	// í•˜ì§€ë§Œ, ìš°ë¦¬ëŠ” lock ê²½ìŸì—ì„œ ì´ê¸´ ìŠ¤ë ˆë“œê°€ registersendê¹Œì§€ í•˜ë„ë¡ í•˜ê¸° ìœ„í•´ boolì´ falseì˜€ì„ë•Œ 
+	// ìŠ¤íƒì˜ registersendë¥¼ trueë¡œ í•˜ì—¬ registersendê¹Œì§€ ì‹¤í–‰í•˜ë„ë¡ í•¨.
 
 	/*if (_sendRegistered == false)
 	{
@@ -71,7 +71,7 @@ void Session::Disconnect(const WCHAR* cause)
 	// TEMP
 	wcout << "Disconnect : " << cause << endl;
 
-	OnDisconnected(); // ÄÁÅÙÃ÷ ÄÚµå¿¡¼­ ÀçÁ¤ÀÇ
+	OnDisconnected(); // ì»¨í…ì¸  ì½”ë“œì—ì„œ ì¬ì •ì˜
 	GetService()->ReleaseSession(GetSessionRef());
 
 	RegisterDisconnect();
@@ -82,13 +82,13 @@ HANDLE Session::GetHandle()
 	return reinterpret_cast<HANDLE>(_socket);
 }
 /*
-AcceptEx ¿Ï·á ¡æ Listener::Dispatch ¡æ ProcessAccept
+AcceptEx ì™„ë£Œ â†’ Listener::Dispatch â†’ ProcessAccept
 
-session->ProcessConnect() ¡æ Ã¹ WSARecv µî·Ï
+session->ProcessConnect() â†’ ì²« WSARecv ë“±ë¡
 
-Å¬¶ó°¡ º¸³¿ ¡æ Session::Dispatch(Recv) ¡æ ProcessRecv ¡æ ´Ù½Ã RegisterRecv()
+í´ë¼ê°€ ë³´ëƒ„ â†’ Session::Dispatch(Recv) â†’ ProcessRecv â†’ ë‹¤ì‹œ RegisterRecv()
 
-ÀÌÈÄ¿¡µµ º¸³¾ ¶§¸¶´Ù **Ç×»ó Session::Dispatch(Recv)**·Î Ã³¸®
+ì´í›„ì—ë„ ë³´ë‚¼ ë•Œë§ˆë‹¤ **í•­ìƒ Session::Dispatch(Recv)**ë¡œ ì²˜ë¦¬
 
 */
 void Session::Dispatch(IocpEvent* iocpEvent, int32 numOfBytes)
@@ -113,7 +113,7 @@ void Session::Dispatch(IocpEvent* iocpEvent, int32 numOfBytes)
 	}
 }
 
-bool Session::RegisterConnect()//Å¬¶óÀÔÀå¿¡¼­ ´Ù¸¥ ¼­¹ö·Î ¿¬°áÇØ¾ßÇÒ¶§
+bool Session::RegisterConnect()//í´ë¼ì…ì¥ì—ì„œ ë‹¤ë¥¸ ì„œë²„ë¡œ ì—°ê²°í•´ì•¼í• ë•Œ
 {
 	if (IsConnected())
 		return false;
@@ -124,7 +124,7 @@ bool Session::RegisterConnect()//Å¬¶óÀÔÀå¿¡¼­ ´Ù¸¥ ¼­¹ö·Î ¿¬°áÇØ¾ßÇÒ¶§
 	if (SocketUtils::SetReuseAddress(_socket, true) == false)
 		return false;
 
-	if (SocketUtils::BindAnyAddress(_socket, 0/*³²´Â°Å*/) == false)
+	if (SocketUtils::BindAnyAddress(_socket, 0/*ë‚¨ëŠ”ê±°*/) == false)
 		return false;
 
 	_connectEvent.Init();
@@ -195,7 +195,7 @@ void Session::RegisterSend()
 	_sendEvent.Init();
 	_sendEvent.owner = shared_from_this(); // ADD_REF
 
-	// º¸³¾ µ¥ÀÌÅÍ¸¦ sendEvent¿¡ µî·Ï
+	// ë³´ë‚¼ ë°ì´í„°ë¥¼ sendEventì— ë“±ë¡
 	{
 		WRITE_LOCK;
 
@@ -205,14 +205,14 @@ void Session::RegisterSend()
 			SendBufferRef sendBuffer = _sendQueue.front();
 
 			writeSize += sendBuffer->WriteSize();
-			// TODO : ¿¹¿Ü Ã¼Å©
+			// TODO : ì˜ˆì™¸ ì²´í¬
 
 			_sendQueue.pop();
 			_sendEvent.sendBuffers.push_back(sendBuffer);
 		}
 	}
 
-	// Scatter-Gather (Èğ¾îÁ® ÀÖ´Â µ¥ÀÌÅÍµéÀ» ¸ğ¾Æ¼­ ÇÑ ¹æ¿¡ º¸³½´Ù)
+	// Scatter-Gather (í©ì–´ì ¸ ìˆëŠ” ë°ì´í„°ë“¤ì„ ëª¨ì•„ì„œ í•œ ë°©ì— ë³´ë‚¸ë‹¤)
 	vector<WSABUF> wsaBufs;
 	wsaBufs.reserve(_sendEvent.sendBuffers.size());
 	for (SendBufferRef sendBuffer : _sendEvent.sendBuffers)
@@ -258,19 +258,19 @@ void Session::RegisterSend()
 //	}
 //}
 /*
-¼­¹ö Accept ¿Ï·á ¡æ ¼¼¼Ç »ı¼º
+ì„œë²„ Accept ì™„ë£Œ â†’ ì„¸ì…˜ ìƒì„±
 
-session->ProcessConnect() ¡æ RegisterRecv() ¡æ Ã¹ WSARecv È£Ãâ
+session->ProcessConnect() â†’ RegisterRecv() â†’ ì²« WSARecv í˜¸ì¶œ
 
-Å¬¶ó°¡ send()
+í´ë¼ê°€ send()
 
-Ä¿³ÎÀÌ ¿ì¸®°¡ µî·ÏÇØ µĞ WSARecv ¿äÃ»À» ¿Ï·á »óÅÂ·Î ¸¸µê
+ì»¤ë„ì´ ìš°ë¦¬ê°€ ë“±ë¡í•´ ë‘” WSARecv ìš”ì²­ì„ ì™„ë£Œ ìƒíƒœë¡œ ë§Œë“¦
 
-¿Ï·á Á¤º¸¸¦ IOCP Å¥¿¡ ³ÖÀ½
+ì™„ë£Œ ì •ë³´ë¥¼ IOCP íì— ë„£ìŒ
 
-¿öÄ¿ ½º·¹µå¿¡¼­ GetQueuedCompletionStatus()·Î ²¨³»¼­ Ã³¸®
+ì›Œì»¤ ìŠ¤ë ˆë“œì—ì„œ GetQueuedCompletionStatus()ë¡œ êº¼ë‚´ì„œ ì²˜ë¦¬
 
-Ã³¸® ³¡³ª¸é ´Ù½Ã WSARecv µî·Ï ¡æ ´ÙÀ½ µ¥ÀÌÅÍ ±â´Ù¸²
+ì²˜ë¦¬ ëë‚˜ë©´ ë‹¤ì‹œ WSARecv ë“±ë¡ â†’ ë‹¤ìŒ ë°ì´í„° ê¸°ë‹¤ë¦¼
 */
 void Session::ProcessConnect()
 {
@@ -278,13 +278,13 @@ void Session::ProcessConnect()
 
 	_connected.store(true);
 
-	// ¼¼¼Ç µî·Ï
+	// ì„¸ì…˜ ë“±ë¡
 	GetService()->AddSession(GetSessionRef());
 
-	// ÄÁÅÙÃ÷ ÄÚµå¿¡¼­ ÀçÁ¤ÀÇ
+	// ì»¨í…ì¸  ì½”ë“œì—ì„œ ì¬ì •ì˜
 	OnConnected();
 
-	// ¼ö½Å µî·Ï
+	// ìˆ˜ì‹  ë“±ë¡
 	RegisterRecv();
 }
 
@@ -309,7 +309,7 @@ void Session::ProcessRecv(int32 numOfBytes)
 		return;
 	}
 	int32 dataSize = _recvBuffer.DataSize();
-	// ÄÁÅÙÃ÷ ÄÚµå¿¡¼­ ÀçÁ¤ÀÇ
+	// ì»¨í…ì¸  ì½”ë“œì—ì„œ ì¬ì •ì˜
 	int32 processLen = OnRecv(_recvBuffer.ReadPos(), dataSize);
 
 	if (processLen < 0 || dataSize < processLen || _recvBuffer.OnRead(processLen) == false)
@@ -318,10 +318,10 @@ void Session::ProcessRecv(int32 numOfBytes)
 		return;
 	}
 
-	// Ä¿¼­ Á¤¸®
+	// ì»¤ì„œ ì •ë¦¬
 	_recvBuffer.Clean();
 
-	// ¼ö½Å µî·Ï
+	// ìˆ˜ì‹  ë“±ë¡
 	RegisterRecv();
 }
 
@@ -337,7 +337,7 @@ void Session::ProcessSend(int32 numOfBytes)
 		return;
 	}
 
-	// ÄÁÅÙÃ÷ ÄÚµå¿¡¼­ ÀçÁ¤ÀÇ
+	// ì»¨í…ì¸  ì½”ë“œì—ì„œ ì¬ì •ì˜
 	OnSend(numOfBytes);
 
 	/*WRITE_LOCK;
@@ -371,7 +371,7 @@ void Session::ProcessSend(int32 numOfBytes)
 //		return;
 //	}
 //
-//	// ÄÁÅÙÃ÷ ÄÚµå¿¡¼­ ÀçÁ¤ÀÇ
+//	// ì»¨í…ì¸  ì½”ë“œì—ì„œ ì¬ì •ì˜
 //	OnSend(numOfBytes);
 //}
 
@@ -410,17 +410,17 @@ int32 PacketSession::OnRecv(BYTE* buffer, int32 len)
 	while (true)
 	{
 		int32 dataSize = len - processLen;
-		// ÃÖ¼ÒÇÑ Çì´õ´Â ÆÄ½ÌÇÒ ¼ö ÀÖ¾î¾ß ÇÑ´Ù
+		// ìµœì†Œí•œ í—¤ë”ëŠ” íŒŒì‹±í•  ìˆ˜ ìˆì–´ì•¼ í•œë‹¤
 		if (dataSize < sizeof(PacketHeader))
-			break;//ÆĞÅ¶À» ÀĞ±âÀ§ÇÑ Çì´õ¸¸Å­ÀÇ Å©±âµµ ¾ÆÁ÷ ÀĞ¾î¿ÀÁö¸øÇÑ °æ¿ì
+			break;//íŒ¨í‚·ì„ ì½ê¸°ìœ„í•œ í—¤ë”ë§Œí¼ì˜ í¬ê¸°ë„ ì•„ì§ ì½ì–´ì˜¤ì§€ëª»í•œ ê²½ìš°
 
 		PacketHeader header = *(reinterpret_cast<PacketHeader*>(&buffer[processLen]));
-		// Çì´õ¿¡ ±â·ÏµÈ ÆĞÅ¶ Å©±â¸¦ ÆÄ½ÌÇÒ ¼ö ÀÖ¾î¾ß ÇÑ´Ù
+		// í—¤ë”ì— ê¸°ë¡ëœ íŒ¨í‚· í¬ê¸°ë¥¼ íŒŒì‹±í•  ìˆ˜ ìˆì–´ì•¼ í•œë‹¤
 		if (dataSize < header.size)
-			break; //ÀĞ¾î¿Âµ¥ÀÌÅÍ°¡ ¾ÆÁ÷ ¿Ï¼º ÆĞÅ¶ÀÇ Å©±âº¸´Ù ÀÛÀ»¶§ Å»Ãâ
+			break; //ì½ì–´ì˜¨ë°ì´í„°ê°€ ì•„ì§ ì™„ì„± íŒ¨í‚·ì˜ í¬ê¸°ë³´ë‹¤ ì‘ì„ë•Œ íƒˆì¶œ
 
-		// ÆĞÅ¶ Á¶¸³ ¼º°ø
-		OnRecvPacket(&buffer[processLen], header.size);//ÄÁÅÙÃ÷¿¡¼­ ÀÌÁ¦ ÆĞÅ¶À» Ã³¸®
+		// íŒ¨í‚· ì¡°ë¦½ ì„±ê³µ
+		OnRecvPacket(&buffer[processLen], header.size);//ì»¨í…ì¸ ì—ì„œ ì´ì œ íŒ¨í‚·ì„ ì²˜ë¦¬
 		
 		processLen += header.size;
 	}

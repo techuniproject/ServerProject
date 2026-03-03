@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "GameInstance.h"
 #include "MyPlayer.h"
 #include "InputManager.h"
@@ -13,7 +13,7 @@
 #include "UI.h"
 
 
-MyPlayer::MyPlayer()//Ä«¸Þ¶ó ´Þ¸° ÇÃ·¹ÀÌ¾î ÀÌµ¿°ü·Ã Ã³¸®
+MyPlayer::MyPlayer()//ì¹´ë©”ë¼ ë‹¬ë¦° í”Œë ˆì´ì–´ ì´ë™ê´€ë ¨ ì²˜ë¦¬
 {
 }
 
@@ -84,7 +84,7 @@ void MyPlayer::TickInput()
 	if (GET_SINGLE(GameInstance)->GetButtonDown(KeyType::Q)) {
 		//SetCellPos(Vec2Int(GetCellPos().x + 15, GetCellPos().y + 15));
 		//_keyPressed = true;
-		//¼­¹ö¿¡¼­ Å« ÆøÀÇ ÀÌµ¿Àº °Å¸£°í ¿ø·¡ ¼­¹ö¿¡¼­ °ü¸®ÇÏ´Â ÁÂÇ¥·Î ´Ù½Ã ÀÌµ¿½ÃÅ´
+		//ì„œë²„ì—ì„œ í° í­ì˜ ì´ë™ì€ ê±°ë¥´ê³  ì›ëž˜ ì„œë²„ì—ì„œ ê´€ë¦¬í•˜ëŠ” ì¢Œí‘œë¡œ ë‹¤ì‹œ ì´ë™ì‹œí‚´
 	}
 
 	uint64 now = GetTickCount64();
@@ -94,10 +94,10 @@ void MyPlayer::TickInput()
 
 	if (pressed&& now >= _nextSkillAt) {
 		SetState(SKILL);    
-		_nextSkillAt = now + SKILL_CD/GetAttackSpeed();    //°ø°Ý ¾Ö´Ï¸ÞÀÌ¼Ç ´Ù 0.5ÃÊ   
+		_nextSkillAt = now + SKILL_CD/GetAttackSpeed();    //ê³µê²© ì• ë‹ˆë©”ì´ì…˜ ë‹¤ 0.5ì´ˆ   
 	}
  }
-//MyplayerÀº Áö±Ý Å¬¶ó¿¡¼­ ¹Ì¸® ¿òÁ÷ÀÌ°í, ¼­¹ö¿¡ Åëº¸ÇÏ°í ³ª¸ÓÁö Å¬¶ó¿¡ broadcast
+//Myplayerì€ ì§€ê¸ˆ í´ë¼ì—ì„œ ë¯¸ë¦¬ ì›€ì§ì´ê³ , ì„œë²„ì— í†µë³´í•˜ê³  ë‚˜ë¨¸ì§€ í´ë¼ì— broadcast
 void MyPlayer::TryMove()
 {
 	if (_keyPressed == false)
@@ -126,7 +126,7 @@ void MyPlayer::SyncToServer(int& frame)
 	//	frame++;
 	//}
 	//	_speed+=1000000;
-	//	SetMoveSpeed(_speed); //½ºÇÇµåÇÙ ¿ëµµ
+	//	SetMoveSpeed(_speed); //ìŠ¤í”¼ë“œí•µ ìš©ë„
 }
 
 
@@ -141,7 +141,7 @@ void MyPlayer::Tick()
 	packetSendCountPerFrame = 0;
 	Super::Tick();
 	
-	//ÇÁ·¹ÀÓ¸¶´Ù »óÅÂ ¹Ù²ñÀ» °¨ÁöÇÏ¿© ¼­¹ö¿¡ Åëº¸ (¼­¹ö¶ó ¸Å ÇÁ·¹ÀÓ º¸³»´Â°Ô Á¤¼®Àº ¾Æ´Ô)
+	//í”„ë ˆìž„ë§ˆë‹¤ ìƒíƒœ ë°”ë€œì„ ê°ì§€í•˜ì—¬ ì„œë²„ì— í†µë³´ (ì„œë²„ë¼ ë§¤ í”„ë ˆìž„ ë³´ë‚´ëŠ”ê²Œ ì •ì„ì€ ì•„ë‹˜)
 	SyncToServer(packetSendCountPerFrame);
 	if (packetSendCountPerFrame > 0)
 	{

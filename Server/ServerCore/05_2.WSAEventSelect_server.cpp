@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include <iostream>
 #include <thread>
 #include <vector>
@@ -10,22 +10,22 @@ using namespace std;
 #include "ThreadManager.h"
 #include "SocketUtils.h"
 
-// WSAEventSelect = WSAEventSelect°¡ ÇÙ½ÉÀÌ µÇ´Â (Windows Àü¿ë)
-// ¼ÒÄÏ°ú °ü·ÃµÈ ³×Æ®¿öÅ© ÀÌº¥Æ®¸¦ [ÀÌº¥Æ® °´Ã¼]¸¦ ÅëÇØ °¨Áö.
-// ¼ÒÄÏ¸¶´Ù 1°³ÀÇ ÀÌº¥Æ® °´Ã¼ ¿¬°á, ¼ÒÄÏ°ú ÀÌº¥Æ®´Â 1:1 ¸ÅÇÎ ±¸Á¶
-// ÀÌº¥Æ® ¹ß»ı ¿©ºÎ´Â Ä¿³Î ·¹º§¿¡¼­ °¨Áö
+// WSAEventSelect = WSAEventSelectê°€ í•µì‹¬ì´ ë˜ëŠ” (Windows ì „ìš©)
+// ì†Œì¼“ê³¼ ê´€ë ¨ëœ ë„¤íŠ¸ì›Œí¬ ì´ë²¤íŠ¸ë¥¼ [ì´ë²¤íŠ¸ ê°ì²´]ë¥¼ í†µí•´ ê°ì§€.
+// ì†Œì¼“ë§ˆë‹¤ 1ê°œì˜ ì´ë²¤íŠ¸ ê°ì²´ ì—°ê²°, ì†Œì¼“ê³¼ ì´ë²¤íŠ¸ëŠ” 1:1 ë§¤í•‘ êµ¬ì¡°
+// ì´ë²¤íŠ¸ ë°œìƒ ì—¬ë¶€ëŠ” ì»¤ë„ ë ˆë²¨ì—ì„œ ê°ì§€
 // 
-// Å¬¶óÀÌ¾ğÆ® Á¢¼Ó ¿äÃ» : select(FD_ISSET(listenSocket)->accept()), WSAEventSelect(FD_ACCEPTÀÌº¥Æ® ¹ß»ı))
-// Å¬¶óÀÌ¾ğÆ® µ¥ÀÌÅÍ º¸³¿ : select(FD_ISSET(sock)->recv(), WSAEventSelect(FD_READ ÀÌº¥Æ® ¹ß»ı)
-// Å¬¶óÀÌ¾ğÆ® ¿¬°á ²÷À½ : select(recv()->0¹İÈ¯), WSAEventSelect(FD_CLOSE ÀÌº¥Æ® ¹ß»ı)
+// í´ë¼ì´ì–¸íŠ¸ ì ‘ì† ìš”ì²­ : select(FD_ISSET(listenSocket)->accept()), WSAEventSelect(FD_ACCEPTì´ë²¤íŠ¸ ë°œìƒ))
+// í´ë¼ì´ì–¸íŠ¸ ë°ì´í„° ë³´ëƒ„ : select(FD_ISSET(sock)->recv(), WSAEventSelect(FD_READ ì´ë²¤íŠ¸ ë°œìƒ)
+// í´ë¼ì´ì–¸íŠ¸ ì—°ê²° ëŠìŒ : select(recv()->0ë°˜í™˜), WSAEventSelect(FD_CLOSE ì´ë²¤íŠ¸ ë°œìƒ)
 // 
-// »ı¼º : WSACreateEvent (¼öµ¿ ¸®¼Â Manual-Reset + Non-Signaled »óÅÂ ½ÃÀÛ)
-// »èÁ¦ : WSACloseEvent 
-// ½ÅÈ£ »óÅÂ °¨Áö : WSAWaitForMultipleEvents
-// ±¸Ã¼ÀûÀÎ ³×Æ®¿öÅ© ÀÌº¥Æ® ¾Ë¾Æ³»±â : WSAEnumNetworkEvents
+// ìƒì„± : WSACreateEvent (ìˆ˜ë™ ë¦¬ì…‹ Manual-Reset + Non-Signaled ìƒíƒœ ì‹œì‘)
+// ì‚­ì œ : WSACloseEvent 
+// ì‹ í˜¸ ìƒíƒœ ê°ì§€ : WSAWaitForMultipleEvents
+// êµ¬ì²´ì ì¸ ë„¤íŠ¸ì›Œí¬ ì´ë²¤íŠ¸ ì•Œì•„ë‚´ê¸° : WSAEnumNetworkEvents
 
-// ÀÌ ¹æ½Äµµ ºñµ¿±â ÀÌº¥Æ® ¸ğµ¨ÀÌÁö¸¸, ¸í½ÃÀû ºí·ÎÅ·ÀÌ WSAWaitForMultipleEvents¸¦ ÅëÇØ ÀÏ¾î³²
-// recv´Â ³íºí·ÎÅ· ¼ÒÄÏÀÌ¹Ç·Î ºí·ÏÀÌ ¾ÈµÇÁö¸¸, ºí·ÎÅ· ÇÔ¼ö¸¦ »ç¿ëÇÏ¹Ç·Î ºí·ÏÀÌ µÇ´Â ºÎºĞÀÌ ÀÖÀ½
+// ì´ ë°©ì‹ë„ ë¹„ë™ê¸° ì´ë²¤íŠ¸ ëª¨ë¸ì´ì§€ë§Œ, ëª…ì‹œì  ë¸”ë¡œí‚¹ì´ WSAWaitForMultipleEventsë¥¼ í†µí•´ ì¼ì–´ë‚¨
+// recvëŠ” ë…¼ë¸”ë¡œí‚¹ ì†Œì¼“ì´ë¯€ë¡œ ë¸”ë¡ì´ ì•ˆë˜ì§€ë§Œ, ë¸”ë¡œí‚¹ í•¨ìˆ˜ë¥¼ ì‚¬ìš©í•˜ë¯€ë¡œ ë¸”ë¡ì´ ë˜ëŠ” ë¶€ë¶„ì´ ìˆìŒ
 
 
 const int32 BUF_SIZE = 1000;
@@ -46,7 +46,7 @@ int main()
 	if (listenSocket == INVALID_SOCKET)
 		return 0;
 
-	//³í ºí·ÎÅ·
+	//ë…¼ ë¸”ë¡œí‚¹
 	u_long on = 1;
 	if (::ioctlsocket(listenSocket, FIONBIO, &on) == INVALID_SOCKET)
 		return 0;
@@ -67,7 +67,7 @@ int main()
 	WSAEVENT listenEvent = ::WSACreateEvent();
 	wsaEvents.push_back(listenEvent);
 	sessions.push_back(Session{ listenSocket });
-	// DummySession(listenSocket¸ÅÇÎ) À» Ãß°¡. Session°ú ÀÌº¥Æ® 1:1·Î °¡Á®°¡´Âµ¥ ÀÎµ¦½º ¸ÂÃß±â À§ÇÔ
+	// DummySession(listenSocketë§¤í•‘) ì„ ì¶”ê°€. Sessionê³¼ ì´ë²¤íŠ¸ 1:1ë¡œ ê°€ì ¸ê°€ëŠ”ë° ì¸ë±ìŠ¤ ë§ì¶”ê¸° ìœ„í•¨
 
 	if (::WSAEventSelect(listenSocket, listenEvent, FD_ACCEPT | FD_CLOSE) == SOCKET_ERROR)
 		return 0;
@@ -77,14 +77,14 @@ int main()
 
 
 		int32 index = ::WSAWaitForMultipleEvents(wsaEvents.size(), &wsaEvents[0], FALSE, WSA_INFINITE, FALSE);
-		//¿©±â¼­ ºí·ÎÅ· µÊ
-		// ÀÌº¥Æ®°¡ ¿©·¯°³ ¹ß»ıÇØµµ,´Ù¼ö¸¦ °¨ÁöÇÏ±ä ÇÏÁö¸¸, ÇÑ¹øÀÇ È£Ãâ¿¡¼­´Â °¡Àå ¸ÕÀú ¹ß»ıÇÑ ÇÏ³ªÀÇ ÀÌº¥Æ®ÀÇ ÀÎµ¦½º ¹İÈ¯
+		//ì—¬ê¸°ì„œ ë¸”ë¡œí‚¹ ë¨
+		// ì´ë²¤íŠ¸ê°€ ì—¬ëŸ¬ê°œ ë°œìƒí•´ë„,ë‹¤ìˆ˜ë¥¼ ê°ì§€í•˜ê¸´ í•˜ì§€ë§Œ, í•œë²ˆì˜ í˜¸ì¶œì—ì„œëŠ” ê°€ì¥ ë¨¼ì € ë°œìƒí•œ í•˜ë‚˜ì˜ ì´ë²¤íŠ¸ì˜ ì¸ë±ìŠ¤ ë°˜í™˜
 		if (index == WSA_WAIT_FAILED)
 			continue;
 
 		index -= WSA_WAIT_EVENT_0;
-		// ÀÌ°É ¹İÈ¯ index°ª¿¡¼­ »©¸é ½ÃÀÛ À§Ä¡ ¾Ë ¼ö ÀÖÀ½.
-		// ¹è¿­¿¡¼­ÀÇ ÀÌº¥Æ®ÀÇ ½ÃÀÛ À§Ä¡
+		// ì´ê±¸ ë°˜í™˜ indexê°’ì—ì„œ ë¹¼ë©´ ì‹œì‘ ìœ„ì¹˜ ì•Œ ìˆ˜ ìˆìŒ.
+		// ë°°ì—´ì—ì„œì˜ ì´ë²¤íŠ¸ì˜ ì‹œì‘ ìœ„ì¹˜
 
 		WSANETWORKEVENTS networkEvents;
 		if (::WSAEnumNetworkEvents(sessions[index].socket, wsaEvents[index], &networkEvents) == SOCKET_ERROR)
@@ -114,7 +114,7 @@ int main()
 					return 0;
 			}
 		}
-		//Client Session ¼ÒÄÏ Ã¼Å©
+		//Client Session ì†Œì¼“ ì²´í¬
 		if (networkEvents.lNetworkEvents & FD_READ)
 		{
 			if (networkEvents.iErrorCode[FD_READ_BIT] != 0)
@@ -133,7 +133,7 @@ int main()
 			cout << "RecvLen = " << recvLen << endl;
 		}
 
-		// ÇÏ³ªÀÇ ÀÌº¥Æ®¸¦ ÇÏ³ªÀÇ ·çÇÁ¿¡¼­ Ã³¸®ÇÏ¹Ç·Î, select¹æ½Äº¸´Ù ´À¸± ¼ö ÀÖÀ½
+		// í•˜ë‚˜ì˜ ì´ë²¤íŠ¸ë¥¼ í•˜ë‚˜ì˜ ë£¨í”„ì—ì„œ ì²˜ë¦¬í•˜ë¯€ë¡œ, selectë°©ì‹ë³´ë‹¤ ëŠë¦´ ìˆ˜ ìˆìŒ
 
 
 	}

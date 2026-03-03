@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "GameInstance.h"
 #include "CameraComponent.h"
 #include "Actor.h"
@@ -36,7 +36,7 @@ void CameraComponent::TickComponent()
 
 	GET_SINGLE(GameInstance)->SetCameraPos(pos);
 
-	//Rect´Â 800x600Å©±â ÀÎµ¥ ¾îÂ÷ÇÇ pos°¡ Å¬·¥ÇÁÇØÁÖ°íÀÖÀ¸´Ï posÀÌ¿ë
+	//RectëŠ” 800x600í¬ê¸° ì¸ë° ì–´ì°¨í”¼ posê°€ í´ëž¨í”„í•´ì£¼ê³ ìžˆìœ¼ë‹ˆ posì´ìš©
 	LONG leftX = (LONG)pos.x - 400;
 	LONG topY = (LONG)pos.y - 300;
 	GET_SINGLE(GameInstance)->SetCameraRect(RECT{ leftX,topY,leftX + 800,topY + 600 });

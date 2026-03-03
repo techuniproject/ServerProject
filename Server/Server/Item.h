@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 
 
@@ -20,7 +20,7 @@ struct Item
 
 	static Protocol::ITEM_TYPE GetRandomItemType();
 	//bool _isAlive=false;
-	//uint32 _belongingid=0;//¸ó½ºÅÍ µå¶ø½Ã Ã³Ä¡ÇÑ ÇÃ·¹ÀÌ¾î¸¸ ¸ÔÀ» ¼ö ÀÖµµ·Ï ½Äº°ÇÏ±â À§ÇÔ.
+	//uint32 _belongingid=0;//ëª¬ìŠ¤í„° ë“œëì‹œ ì²˜ì¹˜í•œ í”Œë ˆì´ì–´ë§Œ ë¨¹ì„ ìˆ˜ ìˆë„ë¡ ì‹ë³„í•˜ê¸° ìœ„í•¨.
 	//Vec2Int _pos = { 0,0 };
 	//Protocol::ITEM_TYPE _itemType= Protocol::ITEM_TYPE_ATTACK;
 	Protocol::ItemInfo itemInfo;

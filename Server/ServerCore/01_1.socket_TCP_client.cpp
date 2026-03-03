@@ -1,56 +1,56 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include <iostream>
 
-// Å¬¶ó
-// 1) ¼ÒÄÏ »ı¼º				- ex) »ó´ë¹æ¿¡°Ô ¹®ÀÇ¸¦ ÁÖ´Â ÇÚµåÆù
-// 2) ¼­¹ö¿¡ ¿¬°á ¿äÃ»
-// 3) Åë½Å
+// í´ë¼
+// 1) ì†Œì¼“ ìƒì„±				- ex) ìƒëŒ€ë°©ì—ê²Œ ë¬¸ì˜ë¥¼ ì£¼ëŠ” í•¸ë“œí°
+// 2) ì„œë²„ì— ì—°ê²° ìš”ì²­
+// 3) í†µì‹ 
 
 int main()
 {
-	// 1) ¼ÒÄÏ »ı¼º	- ³»°¡ »ç¿ëÇÏ´Â ¼ÒÄÏ
+	// 1) ì†Œì¼“ ìƒì„±	- ë‚´ê°€ ì‚¬ìš©í•˜ëŠ” ì†Œì¼“
 	WSADATA wsaData;
 	if (::WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
 		return 0;
 
-	// ipv4 ¹öÀü, TCP ¹æ½Ä
+	// ipv4 ë²„ì „, TCP ë°©ì‹
 	SOCKET clientSocket = ::socket(AF_INET, SOCK_STREAM, 0);
 	if (clientSocket == INVALID_SOCKET)
 		return 0;
 
-	// 2) ÁÖ¼Ò/Æ÷Æ® ¹øÈ£ ¼³Á¤ (bind) - ¿¬°áÇÏ°í ½ÍÀº »ó´ëÃø ÁÖ¼Ò Àû±â
+	// 2) ì£¼ì†Œ/í¬íŠ¸ ë²ˆí˜¸ ì„¤ì • (bind) - ì—°ê²°í•˜ê³  ì‹¶ì€ ìƒëŒ€ì¸¡ ì£¼ì†Œ ì ê¸°
 	SOCKADDR_IN serverAddr;
 	::memset(&serverAddr, 0, sizeof(serverAddr));
 	serverAddr.sin_family = AF_INET;
 	// serverAddr.sin_addr.s_addr = ::htonl(INADDR_ANY);
-	::inet_pton(AF_INET, "127.0.0.1", &serverAddr.sin_addr); // "127.0.0.1": ·çÇÁ¹é ÁÖ¼Ò(ÀÚ½ÅÀÇ ÁÖ¼Ò)
-	// IPÁÖ¼Ò 127.0.0.1Àº ·çÇÁ¹é ÁÖ¼Ò·Î ·ÎÄÃÈ¯°æ¿¡¼­ ½º½º·Î Åë½ÅÇÒ ¶§ »ç¿ë
+	::inet_pton(AF_INET, "127.0.0.1", &serverAddr.sin_addr); // "127.0.0.1": ë£¨í”„ë°± ì£¼ì†Œ(ìì‹ ì˜ ì£¼ì†Œ)
+	// IPì£¼ì†Œ 127.0.0.1ì€ ë£¨í”„ë°± ì£¼ì†Œë¡œ ë¡œì»¬í™˜ê²½ì—ì„œ ìŠ¤ìŠ¤ë¡œ í†µì‹ í•  ë•Œ ì‚¬ìš©
 	serverAddr.sin_port = ::htons(7777); // 80 : HTTP
 
 	if (::connect(clientSocket, (SOCKADDR*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR)
 		return 0;
 
 	// -----------
-	// ¿¬°á ¼º°ø!
+	// ì—°ê²° ì„±ê³µ!
 	cout << "Connected To Server!" << endl;
 
 	while (true)
 	{
-		// ÆĞÅ¶
+		// íŒ¨í‚·
 		char sendBuffer[100] = "Hello ! I am Client!";
 
-		// send: ¸Ş¼¼Áö¸¦ º¸³»´Â ÇÔ¼ö
-		// ÀüÈ­¸¦ °Ç »ó´ë¿¡´Ù°¡ ÇØ´ç ¹öÆÛ Å©±â¸¸Å­ Àü¼Û
+		// send: ë©”ì„¸ì§€ë¥¼ ë³´ë‚´ëŠ” í•¨ìˆ˜
+		// ì „í™”ë¥¼ ê±´ ìƒëŒ€ì—ë‹¤ê°€ í•´ë‹¹ ë²„í¼ í¬ê¸°ë§Œí¼ ì „ì†¡
 		int32 resultCode = ::send(clientSocket, sendBuffer, sizeof(sendBuffer), 0);
 		if (resultCode == SOCKET_ERROR)
 			return 0;
-		/*ÀÛ¼º ¼­Á¤¿ø*/
-		// send¸¦ º¸³»Áö¸¸, ¼­¹ö¿¡¼­ recv¸¦ ¾ÈÇÏ¸é Ä¿³Î¿¡¼­ÀÇ »ó´ë recv¹öÆÛ ¿ë·®ÀÌ ´Ù Âû¶§±îÁø
-		// sendbuffer¿¡ µ¥ÀÌÅÍ º¹»çµÇ¾î ¼º°øÇÏ¿© ³Ñ¾î°¡ÁöÁö¸¸, recv ¹öÆÛ ¿ë·®ÀÌ ¸ÕÀú ´Ù Â÷°í OS´Â ¸ø¹Ş´Â »óÅÂ·Î
-		// TCP ÆĞÅ¶À¸·Î ¾Ë·ÁÁÖ¸é¼­ recv¹öÆÛ¿¡ Àü¼ÛÀ» ¸ØÃß°í, ³ªÀÇ send¹öÆÛ°¡ ´Ù Âû¶§±îÁø send°¡ ÀÌ·ç¾îÁ® ´Ù Â÷¸é
-		// send°¡ blockµÇ¾î error³ªÅ¸³ª¸é¼­ ¸ØÃß°ÔµÊ.
+		/*ì‘ì„± ì„œì •ì›*/
+		// sendë¥¼ ë³´ë‚´ì§€ë§Œ, ì„œë²„ì—ì„œ recvë¥¼ ì•ˆí•˜ë©´ ì»¤ë„ì—ì„œì˜ ìƒëŒ€ recvë²„í¼ ìš©ëŸ‰ì´ ë‹¤ ì°°ë•Œê¹Œì§„
+		// sendbufferì— ë°ì´í„° ë³µì‚¬ë˜ì–´ ì„±ê³µí•˜ì—¬ ë„˜ì–´ê°€ì§€ì§€ë§Œ, recv ë²„í¼ ìš©ëŸ‰ì´ ë¨¼ì € ë‹¤ ì°¨ê³  OSëŠ” ëª»ë°›ëŠ” ìƒíƒœë¡œ
+		// TCP íŒ¨í‚·ìœ¼ë¡œ ì•Œë ¤ì£¼ë©´ì„œ recvë²„í¼ì— ì „ì†¡ì„ ë©ˆì¶”ê³ , ë‚˜ì˜ sendë²„í¼ê°€ ë‹¤ ì°°ë•Œê¹Œì§„ sendê°€ ì´ë£¨ì–´ì ¸ ë‹¤ ì°¨ë©´
+		// sendê°€ blockë˜ì–´ errorë‚˜íƒ€ë‚˜ë©´ì„œ ë©ˆì¶”ê²Œë¨.
 
-		// ¼­¹ö°¡ ¿¡ÄÚ·Î º¸³½ °ÍÀ» ¹Ş´Â °Í
+		// ì„œë²„ê°€ ì—ì½”ë¡œ ë³´ë‚¸ ê²ƒì„ ë°›ëŠ” ê²ƒ
 		char recvBuffer[100];
 		int32 recvLen = ::recv(clientSocket, recvBuffer, sizeof(recvBuffer), 0);
 		if (recvLen <= 0)

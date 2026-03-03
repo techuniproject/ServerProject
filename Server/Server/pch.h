@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "CorePch.h"
 
@@ -33,15 +33,15 @@ using Dir = Protocol::DIR_TYPE;
 #include "ServerPacketHandler.h"
 
 
-// --- [LLM ÅëÇÕ Àü¿ª ½ºÀ§Ä¡] ---------------------------------
-#define FEATURE_LLM_CHAT 1  // ²ô·Á¸é 0
+// --- [LLM í†µí•© ì „ì—­ ìŠ¤ìœ„ì¹˜] ---------------------------------
+#define FEATURE_LLM_CHAT 1  // ë„ë ¤ë©´ 0
 
 #if FEATURE_LLM_CHAT
-// WinHTTP´Â ¸µÅ©¸¦ ÇÑ ¹ø¸¸ °É¸é µÊ (ÇÁ·ÎÁ§Æ® ¼³Á¤¿¡¼­ °É¾îµµ OK)
+// WinHTTPëŠ” ë§í¬ë¥¼ í•œ ë²ˆë§Œ ê±¸ë©´ ë¨ (í”„ë¡œì íŠ¸ ì„¤ì •ì—ì„œ ê±¸ì–´ë„ OK)
 #include <winhttp.h>
 #pragma comment(lib, "winhttp.lib")
 
-// ¼±ÅÃ: LLM ¸ğµ¨/¼³Á¤ Àü¿ª(ÇÊ¿äÇÏ¸é)
+// ì„ íƒ: LLM ëª¨ë¸/ì„¤ì • ì „ì—­(í•„ìš”í•˜ë©´)
 #ifndef LLM_MODEL_NAME
 #define LLM_MODEL_NAME L"gpt-4.1-mini"
 #endif

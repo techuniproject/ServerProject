@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 class ResourceBase;
 class Texture;
@@ -20,7 +20,7 @@ public:
 
 	const fs::path& GetResourcePath() { return _resourcePath; }
 
-	shared_ptr<Texture> GetTexture(const wstring& key) { return _textures[key]; }//key¾øÀ¸¸é ¸¸µé¾î¼­ ¹®Á¦..
+	shared_ptr<Texture> GetTexture(const wstring& key) { return _textures[key]; }//keyì—†ìœ¼ë©´ ë§Œë“¤ì–´ì„œ ë¬¸ì œ..
 	shared_ptr<Texture> GetTexture(const wstring& key) const;
 	shared_ptr<Texture> LoadTexture(const wstring& key, const wstring& path, uint32 transparent = RGB(255, 0, 255));
 	

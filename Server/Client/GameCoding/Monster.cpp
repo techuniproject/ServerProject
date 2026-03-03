@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "GameInstance.h"
 #include "Monster.h"
 #include "InputManager.h"
@@ -50,7 +50,7 @@ void Monster::Tick()
 	_pos.x = std::lerp(_pos.x, _destPos.x, alpha);
 	_pos.y = std::lerp(_pos.y, _destPos.y, alpha);
 
-	// ½º³À
+	// ìŠ¤ëƒ…
 	if (std::hypot(_destPos.x - _pos.x, _destPos.y - _pos.y) < 0.001f) _pos = _destPos;
 	
 }
@@ -76,7 +76,7 @@ void Monster::TickIdle()
 	//_pos.x = std::lerp(_pos.x, _destPos.x, alpha);
 	//_pos.y = std::lerp(_pos.y, _destPos.y, alpha);
 
-	//// ½º³À
+	//// ìŠ¤ëƒ…
 	//if (std::hypot(_destPos.x - _pos.x, _destPos.y - _pos.y) < 0.001f) _pos = _destPos;
 	//
 	
@@ -92,13 +92,13 @@ void Monster::TickMove()
 	//_pos.x = std::lerp(_pos.x, _destPos.x, alpha);
 	//_pos.y = std::lerp(_pos.y, _destPos.y, alpha);
 
-	//// ½º³À
+	//// ìŠ¤ëƒ…
 	//if (std::hypot(_destPos.x - _pos.x, _destPos.y - _pos.y) < 0.001f) _pos = _destPos;
 
 	
 	
 	
-	//deltaTime = min(deltaTime, 0.05f); //ÇÁ·¹ÀÓµå¶ø ½ÉÇØÁ®¼­ 0.05º¸´Ù Ä¿Áö¸é º¸Á¤
+	//deltaTime = min(deltaTime, 0.05f); //í”„ë ˆìž„ë“œëž ì‹¬í•´ì ¸ì„œ 0.05ë³´ë‹¤ ì»¤ì§€ë©´ ë³´ì •
 	//Vec2 dir = (_destPos - _pos);
 	//bool horizontal = abs(dir.x) > abs(dir.y);
 	////if (horizontal)
@@ -180,7 +180,7 @@ void Monster::TickHit()
 	//	_pos.x = std::lerp(_pos.x, _destPos.x, alpha);
 	//	_pos.y = std::lerp(_pos.y, _destPos.y, alpha);
 
-	//	// ½º³À
+	//	// ìŠ¤ëƒ…
 	//	if (std::hypot(_destPos.x - _pos.x, _destPos.y - _pos.y) < 0.001f) _pos = _destPos;
 	//}
 }

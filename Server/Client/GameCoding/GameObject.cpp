@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "GameInstance.h"
 #include "GameObject.h"
 #include "Creature.h"
@@ -68,14 +68,14 @@ void GameObject::SetState(ObjectState state, bool dirtyFlag)
 	//_state = state;
 	UpdateAnimation();
 
-	//»óÅÂ ¹Ù²ñ
+	//ìƒíƒœ ë°”ë€œ
 	_dirtyFlag = dirtyFlag;
 }
 
 void GameObject::SetDir(Dir dir)
 {
-	//»óÅÂ ¹Ù²ñ
-	if (dir != info.dir()) { //ÀÌ°É ¾ø¾Ö¸é º®¿¡ Ãæµ¹½Ã ÇØ´ç ¹æÇâ°¡¸é dirtyflag ÂüÀÌµÇ¾î °è¼Ó ÆĞÅ¶º¸³¿
+	//ìƒíƒœ ë°”ë€œ
+	if (dir != info.dir()) { //ì´ê±¸ ì—†ì• ë©´ ë²½ì— ì¶©ëŒì‹œ í•´ë‹¹ ë°©í–¥ê°€ë©´ dirtyflag ì°¸ì´ë˜ì–´ ê³„ì† íŒ¨í‚·ë³´ëƒ„
 		_dirtyFlag = true;
 		info.set_dir(dir);
 		UpdateAnimation();
@@ -135,7 +135,7 @@ void GameObject::SetCellPos(Vec2Int cellPos, bool dirtyFlag, bool teleport /*= f
 	if (teleport)
 		_pos = _destPos;
 
-	//»óÅÂ ¹Ù²ñ
+	//ìƒíƒœ ë°”ë€œ
 	_dirtyFlag = dirtyFlag;
 }
 

@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Utils.h"
 
 void Utils::DrawText(HDC hdc, Pos pos, const wstring& str)
@@ -56,14 +56,14 @@ void Utils::ReadBmp(const wstring& path)
 
 bool Utils::IsRectIntersect(RECT r1, RECT r2)
 {
-	//Actor°Å µé¾î¿À¸é ¾îÂ÷ÇÇ ±æÀÌ°¡ 500,600,500,600 0ÀÓ 
+	//Actorê±° ë“¤ì–´ì˜¤ë©´ ì–´ì°¨í”¼ ê¸¸ì´ê°€ 500,600,500,600 0ìž„ 
 	// 300 400 800 800
-	// 1. °¡·Î°¡ ¾È °ãÄ¡¸é Å»¶ô (Early Exit)
+	// 1. ê°€ë¡œê°€ ì•ˆ ê²¹ì¹˜ë©´ íƒˆë½ (Early Exit)
 	if (r1.left >= r2.right || r1.right <= r2.left) return false;
 
-	// 2. ¼¼·Î°¡ ¾È °ãÄ¡¸é Å»¶ô
+	// 2. ì„¸ë¡œê°€ ì•ˆ ê²¹ì¹˜ë©´ íƒˆë½
 	if (r1.top >= r2.bottom || r1.bottom <= r2.top) return false;
 
-	// 3. ¿©±â±îÁö ¿ÔÀ¸¸é ¹«Á¶°Ç °ãÄ§
+	// 3. ì—¬ê¸°ê¹Œì§€ ì™”ìœ¼ë©´ ë¬´ì¡°ê±´ ê²¹ì¹¨
 	return true;
 }

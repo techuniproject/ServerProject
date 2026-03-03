@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include <iostream>
 #include <thread>
 #include <vector>
@@ -9,62 +9,62 @@ using namespace std;
 #include "TestMain.h"
 #include "ThreadManager.h"
 
-//UDP ¼­¹ö
-// 1) »õ·Î¿î ¼ÒÄÏ »ı¼º
-// 2) ¼ÒÄÏ¿¡ IPÁÖ¼Ò/ Æ÷Æ®¹øÈ£ ¼³Á¤(bind)
+//UDP ì„œë²„
+// 1) ìƒˆë¡œìš´ ì†Œì¼“ ìƒì„±
+// 2) ì†Œì¼“ì— IPì£¼ì†Œ/ í¬íŠ¸ë²ˆí˜¸ ì„¤ì •(bind)
 // -------
-// 3) Å¬¶ó¿Í Åë½Å
+// 3) í´ë¼ì™€ í†µì‹ 
 
 int main()
 {
-	// 1) ¼ÒÄÏ »ı¼º
+	// 1) ì†Œì¼“ ìƒì„±
 	WSADATA wsaData;
 	if (::WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
 		return 0;
 
 
-	// ipv4 ¹öÀü, TCP ¹æ½Ä
+	// ipv4 ë²„ì „, TCP ë°©ì‹
 	SOCKET listenSocket = ::socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-	if (listenSocket == INVALID_SOCKET) // ¿À·ù ¹İÈ¯°ªÀÌ ¾Æ´Ï¶ó¸é Åë°ú
+	if (listenSocket == INVALID_SOCKET) // ì˜¤ë¥˜ ë°˜í™˜ê°’ì´ ì•„ë‹ˆë¼ë©´ í†µê³¼
 		return 0;
 
 
 
-	// 2) ÁÖ¼Ò/Æ÷Æ® ¹øÈ£ ¼³Á¤ (bind)
+	// 2) ì£¼ì†Œ/í¬íŠ¸ ë²ˆí˜¸ ì„¤ì • (bind)
 	SOCKADDR_IN serverAddr;
-	::memset(&serverAddr, 0, sizeof(serverAddr)); //0À¸·Î ¹Ğ¾î ÃÊ±âÈ­
-	serverAddr.sin_family = AF_INET; //Àü¼Û ÁÖ¼ÒÀÇ ÁÖ¼Ò ÆĞ¹Ğ¸®(Ã¼°è) : Ç×»ó AF_INET(IPv4)À¸·Î ¼³Á¤
-	serverAddr.sin_addr.s_addr = ::htonl(INADDR_ANY); // 0.0.0.0 ¼­¹ö°¡ °¡Áö°í ÀÖ´Â ¸ğµç IPÁÖ¼Ò¿¡¼­ÀÇ ¿äÃ»À» ¹Ş´Â ¶æ
-	serverAddr.sin_port = ::htons(7777); // 80±îÁö´Â HTTP°¡ »ç¿ë Áß - »ç¿ëÇÒ Æ÷Æ® ¹øÈ£¸¦ ÁöÁ¤ -7777
+	::memset(&serverAddr, 0, sizeof(serverAddr)); //0ìœ¼ë¡œ ë°€ì–´ ì´ˆê¸°í™”
+	serverAddr.sin_family = AF_INET; //ì „ì†¡ ì£¼ì†Œì˜ ì£¼ì†Œ íŒ¨ë°€ë¦¬(ì²´ê³„) : í•­ìƒ AF_INET(IPv4)ìœ¼ë¡œ ì„¤ì •
+	serverAddr.sin_addr.s_addr = ::htonl(INADDR_ANY); // 0.0.0.0 ì„œë²„ê°€ ê°€ì§€ê³  ìˆëŠ” ëª¨ë“  IPì£¼ì†Œì—ì„œì˜ ìš”ì²­ì„ ë°›ëŠ” ëœ»
+	serverAddr.sin_port = ::htons(7777); // 80ê¹Œì§€ëŠ” HTTPê°€ ì‚¬ìš© ì¤‘ - ì‚¬ìš©í•  í¬íŠ¸ ë²ˆí˜¸ë¥¼ ì§€ì • -7777
 
 	if (::bind(listenSocket, (SOCKADDR*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR)
 		return 0;
 
 
-	//// 3) ¾÷¹« °³½Ã (listen)
+	//// 3) ì—…ë¬´ ê°œì‹œ (listen)
 	//if (::listen(listenSocket, SOMAXCONN) == SOCKET_ERROR)
 	//	return 0;
-	//TCP¿¡¼± Å¬¶óÀÇ listening ¼ÒÄÏÀÌ ¿¬°áÀ» ±â´Ù¸®Áö¸¸, UDP´Â ¾øÀ½
+	//TCPì—ì„  í´ë¼ì˜ listening ì†Œì¼“ì´ ì—°ê²°ì„ ê¸°ë‹¤ë¦¬ì§€ë§Œ, UDPëŠ” ì—†ìŒ
 
 	while (true)
 	{
 		SOCKADDR_IN clientAddr;
 		::memset(&clientAddr, 0, sizeof(clientAddr));
-		int32 addrLen = sizeof(clientAddr); //»ó´ë Å¬¶óÀÇ ÁÖ¼Ò¸¦ ÀúÀåÇÏ±â À§ÇÔ
+		int32 addrLen = sizeof(clientAddr); //ìƒëŒ€ í´ë¼ì˜ ì£¼ì†Œë¥¼ ì €ì¥í•˜ê¸° ìœ„í•¨
 
 		//SOCKET clientSocket = ::accept(listenSocket, (SOCKADDR*)&clientAddr, &addrLen);
 		//if (clientSocket == INVALID_SOCKET)
 		//	return 0;
 
-		////----¿©±â±îÁø ÀÌÁ¦ »ó´ë Å¬¶ó¿Í Á÷Á¢ Åë½ÅÇÒ ¼ÒÄÏ ¸¸µé¾îÁ® »ó´ë Å¬¶ó¿Í Åë½Å °¡´É »óÅÂ
+		////----ì—¬ê¸°ê¹Œì§„ ì´ì œ ìƒëŒ€ í´ë¼ì™€ ì§ì ‘ í†µì‹ í•  ì†Œì¼“ ë§Œë“¤ì–´ì ¸ ìƒëŒ€ í´ë¼ì™€ í†µì‹  ê°€ëŠ¥ ìƒíƒœ
 
 		//char ip[16];
-		//::inet_ntop(AF_INET, &clientAddr.sin_addr, ip, sizeof(ip)); // ipÃßÃâ ÇÔ¼ö
+		//::inet_ntop(AF_INET, &clientAddr.sin_addr, ip, sizeof(ip)); // ipì¶”ì¶œ í•¨ìˆ˜
 		//cout << "Client Connected! IP = " << ip << endl;
-		//TCP¿¡¼­ connect ±â¹İ ¸Î´Â °úÁ¤ UDP¿¡¼± ¾øÀ½
+		//TCPì—ì„œ connect ê¸°ë°˜ ë§ºëŠ” ê³¼ì • UDPì—ì„  ì—†ìŒ
 
 
-		// ÆĞÅ¶
+		// íŒ¨í‚·
 		char recvBuffer[100];
 
 
@@ -74,7 +74,7 @@ int main()
 
 		//int32 recvLen = ::recv(clientSocket, recvBuffer, sizeof(recvBuffer), 0);
 		//if (recvLen <= 0)
-		//	return 0; //TCPÇü½Ä
+		//	return 0; //TCPí˜•ì‹
 
 		cout << "Recv Data : " << recvBuffer << endl;
 		cout << "Recv Data Len: " << recvLen << endl;
@@ -84,5 +84,5 @@ int main()
 	}
 
 	::closesocket(listenSocket);
-	::WSACleanup(); //WSAStartUp È£Ãâ ½Ã È£ÃâÇØ¾ß ÇÏ´Â ÇÔ¼ö
+	::WSACleanup(); //WSAStartUp í˜¸ì¶œ ì‹œ í˜¸ì¶œí•´ì•¼ í•˜ëŠ” í•¨ìˆ˜
 }

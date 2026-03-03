@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "GameInstance.h"
 #include "ObjectManager.h"
 #include "InputManager.h"
@@ -17,7 +17,7 @@
 #include "MyPlayer.h"
 #include "ClientPacketHandler.h"
 
-DEFINE_DEFAULT_CONSTRUCTOR(GameInstance); //unique_ptr¶§¹®¿¡ Çì´õ¸¦ ¾Ë¾Æ¾ß ¸Þ¸ð¸® °ü¸® ÄÚµå ¸¸µé ¼ö ÀÖÀ½
+DEFINE_DEFAULT_CONSTRUCTOR(GameInstance); //unique_ptrë•Œë¬¸ì— í—¤ë”ë¥¼ ì•Œì•„ì•¼ ë©”ëª¨ë¦¬ ê´€ë¦¬ ì½”ë“œ ë§Œë“¤ ìˆ˜ ìžˆìŒ
 DEFINE_DEFAULT_DESTRUCTOR(GameInstance);
 
 
@@ -44,7 +44,7 @@ void GameInstance::Init(HWND hwnd)
 	_TimeManager->Init();
 	_InputManager->Init(hwnd);
 	_SceneManager->Init();
-	_ResourceManager->Init(hwnd, fs::path(L"C:\\Users\\¼­Á¤¿ø\\Desktop\\ServerClient\\ServerProject\\Server\\Client\\Resources"));
+	_ResourceManager->Init(hwnd, fs::path(L"C:\\Users\\ì„œì •ì›\\Desktop\\ServerClient\\ServerProject\\Server\\Client\\Resources"));
 	_SoundManager->Init(hwnd);
 	_NetworkManager->Init();
 	ClientPacketHandler::Init();

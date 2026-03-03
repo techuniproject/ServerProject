@@ -1,4 +1,4 @@
-#include "pch.h"
+Ôªø#include "pch.h"
 #include "Panel.h"
 
 Panel::Panel()
@@ -52,7 +52,7 @@ bool Panel::RemoveChild(shared_ptr<UI> ui)
 	if (findIt == _children.end())
 		return false;
 
-	// TODO: ªË¡¶?
+	// TODO: ÏÇ≠Ï†ú?
 	_children.erase(findIt);
 	return true;
 }

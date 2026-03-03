@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Creature.h"
 
 class Player : public Creature
@@ -20,7 +20,7 @@ private:
 
 	uint64 _waitUntil = 0;
 public:
-	GameSessionRef session; //´Ù¸¥ Å¬¶óÀÇ Á¸Àç¸¦ ¾Ë±â À§ÇÑ Åë½ÅÃ¢±¸ -³ªÁß¿¡ privateÀ¸·Î ¸·±â
+	GameSessionRef session; //ë‹¤ë¥¸ í´ë¼ì˜ ì¡´ì¬ë¥¼ ì•Œê¸° ìœ„í•œ í†µì‹ ì°½êµ¬ -ë‚˜ì¤‘ì— privateìœ¼ë¡œ ë§‰ê¸°
 
 };
 

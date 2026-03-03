@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "NetworkManager.h"
 #include "ThreadManager.h"
 #include "Service.h"
@@ -12,7 +12,7 @@ void NetworkManager::Init()
 	_service = make_shared<ClientService>(
 		NetAddress(L"127.0.0.1", 7777),
 		make_shared<IocpCore>(),
-		[=]() { return CreateSession(); }, // TODO : SessionManager µî
+		[=]() { return CreateSession(); }, // TODO : SessionManager ë“±
 		1);
 
 	assert(_service->Start());
@@ -26,7 +26,7 @@ void NetworkManager::Init()
 	//				service->GetIocpCore()->Dispatch();
 	//			}
 	//		});
-	//}//¿öÄ¿ ½º·¹µå·Î µû·Î ³×Æ®¿öÅ© Ã³¸®ÇÏ¸é ¸ŞÀÎ½º·¹µå¿ÍÀÇ µ¿±âÈ­°¡ ÄÁÅÙÃ÷ÀûÀ¸·Î º¹ÀâÇØÁü
+	//}//ì›Œì»¤ ìŠ¤ë ˆë“œë¡œ ë”°ë¡œ ë„¤íŠ¸ì›Œí¬ ì²˜ë¦¬í•˜ë©´ ë©”ì¸ìŠ¤ë ˆë“œì™€ì˜ ë™ê¸°í™”ê°€ ì»¨í…ì¸ ì ìœ¼ë¡œ ë³µì¡í•´ì§
 
 
 
@@ -34,7 +34,7 @@ void NetworkManager::Init()
 
 void NetworkManager::Update()
 {
-	_service->GetIocpCore()->Dispatch(0);//Timeout 0À¸·ÎÇØ¼­ ±â´Ù¸®Áö¾Ê°í ºüÁ®³ª°¡µµ·Ï
+	_service->GetIocpCore()->Dispatch(0);//Timeout 0ìœ¼ë¡œí•´ì„œ ê¸°ë‹¤ë¦¬ì§€ì•Šê³  ë¹ ì ¸ë‚˜ê°€ë„ë¡
 }
 
 shared_ptr<ServerSession> NetworkManager::CreateSession()

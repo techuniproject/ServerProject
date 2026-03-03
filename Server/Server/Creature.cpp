@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Creature.h"
 #include "GameRoom.h"
 
@@ -14,9 +14,9 @@ Creature::~Creature()
 }
 
 
-void Creature::Update()//¾îÂ÷ÇÇ ¸ŞÀÎ½º·¹µå ·ÎÁ÷ÀÌ¶ó lock½Å°æX, sendµµ ¸ŞÀÎÀÌ ÇØµµµÇ±äÇÔ
+void Creature::Update()//ì–´ì°¨í”¼ ë©”ì¸ìŠ¤ë ˆë“œ ë¡œì§ì´ë¼ lockì‹ ê²½X, sendë„ ë©”ì¸ì´ í•´ë„ë˜ê¸´í•¨
 {
-	//¿©±â¼­ È£ÃâÇÏ´Â ·ÎÁ÷Àº JobÀ¸·Î Ã³¸®¾ÈÇØµµµÊ ¸ŞÀÎ½º·¹µå°¡ ÇÔ
+	//ì—¬ê¸°ì„œ í˜¸ì¶œí•˜ëŠ” ë¡œì§ì€ Jobìœ¼ë¡œ ì²˜ë¦¬ì•ˆí•´ë„ë¨ ë©”ì¸ìŠ¤ë ˆë“œê°€ í•¨
 	//Super::Update();
 
 	switch (info.state())
@@ -42,9 +42,9 @@ void Creature::Update()//¾îÂ÷ÇÇ ¸ŞÀÎ½º·¹µå ·ÎÁ÷ÀÌ¶ó lock½Å°æX, sendµµ ¸ŞÀÎÀÌ ÇØµ
 
 bool Creature::OnDamaged(shared_ptr<Creature>  attacker)
 {
-	//false¸é µ¥¹ÌÁö applyhitstunµµ Àû¿ë x ->¸ó½ºÅÍÀÇ °æ¿ì
-	// bool·Î ¹Ù²Û°Ç ÆÇÁ¤½Ã Leave¸¦ È£ÃâÇÏ¸ç ÀÌÈÄ¿¡ applyhitstun°ú °°ÀÌ ÇØ´ç creatureÁ¤º¸»ç¿ë½Ã null crash ¹æÁö
-	// ¿ø·¡ rtti·Î µ¿ÀûÆÇÁ¤ÇßÁö¸¸ ºñ¿ë°¨¼Ò
+	//falseë©´ ë°ë¯¸ì§€ applyhitstunë„ ì ìš© x ->ëª¬ìŠ¤í„°ì˜ ê²½ìš°
+	// boolë¡œ ë°”ê¾¼ê±´ íŒì •ì‹œ Leaveë¥¼ í˜¸ì¶œí•˜ë©° ì´í›„ì— applyhitstunê³¼ ê°™ì´ í•´ë‹¹ creatureì •ë³´ì‚¬ìš©ì‹œ null crash ë°©ì§€
+	// ì›ë˜ rttië¡œ ë™ì íŒì •í–ˆì§€ë§Œ ë¹„ìš©ê°ì†Œ
 	if (attacker == nullptr)
 		return false;
 
@@ -62,7 +62,7 @@ bool Creature::OnDamaged(shared_ptr<Creature>  attacker)
 			SendBufferRef sendBuf = ServerPacketHandler::Make_S_RemoveObject(pkt);
 			GRoom->Broadcast(sendBuf);
 	
-			//¿©±â¼­ »©¹ö¸®¸é ÀÌÁ¦ Åë½ÅÀº ¾Æ¿¹ ÀÌ Å¬¶ó¿Í´Â ¸øÇÔ ÇØ´ç ÇÃ·¹ÀÌ¾î¿¡°Ô Àü¼Û¾ÈÇÏ±â¶§¹®
+			//ì—¬ê¸°ì„œ ë¹¼ë²„ë¦¬ë©´ ì´ì œ í†µì‹ ì€ ì•„ì˜ˆ ì´ í´ë¼ì™€ëŠ” ëª»í•¨ í•´ë‹¹ í”Œë ˆì´ì–´ì—ê²Œ ì „ì†¡ì•ˆí•˜ê¸°ë•Œë¬¸
 			GRoom->Leave(GetObjectID());
 
 			
@@ -75,7 +75,7 @@ bool Creature::OnDamaged(shared_ptr<Creature>  attacker)
 			pkt.set_attackedid(GetObjectID());
 			pkt.set_hp(info.hp());
 			SendBufferRef sendBuf = ServerPacketHandler::Make_S_Attack(pkt);
-			GRoom->Broadcast(sendBuf);//sector´Ù¸¥°÷¿¡ ÀÖ¾îµµ µ¥¹ÌÁö´Â Àû¿ëÇØ¾ßÇÏ´Ï±î ¸ğµç Å¬¶ó´ë»ó Àü¼Û
+			GRoom->Broadcast(sendBuf);//sectorë‹¤ë¥¸ê³³ì— ìˆì–´ë„ ë°ë¯¸ì§€ëŠ” ì ìš©í•´ì•¼í•˜ë‹ˆê¹Œ ëª¨ë“  í´ë¼ëŒ€ìƒ ì „ì†¡
 		}
 		return true;
 	}

@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 class Button;
 
@@ -18,15 +18,15 @@ private:
 	HDC hdc = {};
 	HINSTANCE _hInstance = {};
 public:
-	//Ã¤ÆÃÃ¢ ÇÚµé
+	//ì±„íŒ…ì°½ í•¸ë“¤
 	static HWND _chathwnd;
 	static HWND _chatInput;
 	static HWND _chatSendBtn;
 public:
 	void CreateChatUI();
 	static void AppendChat(const wstring& msg, COLORREF color);
-	static COLORREF GetColorFromId(int id); //ÇØ½Ã »ç¿ë
-	static COLORREF GetDiversedColorFromId(int id); //ÇØ½Ã »ç¿ë
+	static COLORREF GetColorFromId(int id); //í•´ì‹œ ì‚¬ìš©
+	static COLORREF GetDiversedColorFromId(int id); //í•´ì‹œ ì‚¬ìš©
 	void ShowChatUI();
 private:
 	// Double Buffering

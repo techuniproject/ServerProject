@@ -1,4 +1,4 @@
-#include <iostream>
+ï»¿#include <iostream>
 #include <windows.h>
 #include <atomic>
 #include <mutex>
@@ -17,11 +17,11 @@ public:
 	int ReleaseRef() {
 		int refCount = --_refCount;
 		if (refCount == 0)
-			delete this; // virtual ¼Ò¸êÀÚÀÌ¹Ç·Î ÇØ´ç ¹®¹ıÀº Knight*¸¦ °¡¸®Å°¸é Knight ¼Ò¸êÀÚ ±îÁö È£ÃâµÇ¾î ÀüÃ¼ °´Ã¼ ÆÄ±«
+			delete this; // virtual ì†Œë©¸ìì´ë¯€ë¡œ í•´ë‹¹ ë¬¸ë²•ì€ Knight*ë¥¼ ê°€ë¦¬í‚¤ë©´ Knight ì†Œë©¸ì ê¹Œì§€ í˜¸ì¶œë˜ì–´ ì „ì²´ ê°ì²´ íŒŒê´´
 		return refCount;
 	}
 protected:
-	atomic<int> _refCount=1; // Áõ°¨ ¿¬»êÀÚ µî ¿øÀÚÀû ¿¬»êÀ» À§ÇØ atomicÀ¸·Î »ç¿ë
+	atomic<int> _refCount=1; // ì¦ê° ì—°ì‚°ì ë“± ì›ìì  ì—°ì‚°ì„ ìœ„í•´ atomicìœ¼ë¡œ ì‚¬ìš©
 };
 
 
@@ -32,12 +32,12 @@ public:
 	TSharedPtr(){}
 	TSharedPtr(T* ptr) { Set(ptr); }
 
-	//º¹»ç
+	//ë³µì‚¬
 	TSharedPtr(const TSharedPtr& other) { Set(other._ptr); }
-	//ÀÌµ¿
+	//ì´ë™
 	TSharedPtr(TSharedPtr&& other)noexcept { _ptr = other._ptr; other._ptr=nullptr }
 
-	//»ó¼Ó °ü°è º¹»ç
+	//ìƒì† ê´€ê³„ ë³µì‚¬
 	template<typename U>
 	TSharedPtr(const TSharedPtr<U>& rhs) { Set(static_cast<T*>(rhs._ptr)); }
 	
@@ -108,10 +108,10 @@ void Test(Knight* knight) {
 int main() {
 	 
 	KnightRef knight(new Knight);
-	knight->ReleaseRef();// »ı¼ºÀÚ¿¡¼­ Ä«¿îÆ® 1½ÃÀÛ½Ã 2·Î Áõ°¡µÇ¾î ÀÓÀÇ·Î 1³·Ãç 1-based·Î °ü¸®
-							//Ç¥ÁØÀº ¾Ë¾Æ¼­ 1ºÎÅÍ ½ÃÀÛÇÏµµ·Ï°ü¸®
-	//½º¸¶Æ® Æ÷ÀÎÅÍ »ç¿ë ½Ã º¹»ç µîÀ¸·Î refcount°¡ ¾Ë¾Æ¼­ °ü¸®°¡ RAII¿øÄ¢¿¡ ÀÇÇØ µÇ¹Ç·Î
-	// ½º·¹µå ¼¼ÀÌÇÁÇÏ´Ù.
+	knight->ReleaseRef();// ìƒì„±ìì—ì„œ ì¹´ìš´íŠ¸ 1ì‹œì‘ì‹œ 2ë¡œ ì¦ê°€ë˜ì–´ ì„ì˜ë¡œ 1ë‚®ì¶° 1-basedë¡œ ê´€ë¦¬
+							//í‘œì¤€ì€ ì•Œì•„ì„œ 1ë¶€í„° ì‹œì‘í•˜ë„ë¡ê´€ë¦¬
+	//ìŠ¤ë§ˆíŠ¸ í¬ì¸í„° ì‚¬ìš© ì‹œ ë³µì‚¬ ë“±ìœ¼ë¡œ refcountê°€ ì•Œì•„ì„œ ê´€ë¦¬ê°€ RAIIì›ì¹™ì— ì˜í•´ ë˜ë¯€ë¡œ
+	// ìŠ¤ë ˆë“œ ì„¸ì´í”„í•˜ë‹¤.
 
 
 }

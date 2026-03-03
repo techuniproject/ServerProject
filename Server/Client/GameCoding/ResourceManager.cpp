@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "ResourceManager.h"
 #include "Texture.h"
 #include "Sprite.h"
@@ -8,7 +8,7 @@
 
 ResourceManager::~ResourceManager()
 {
-	Clear();// ¸Ê¸¸ ºñ¿ì¸é shared_ptr ÇØÁ¦. ¿ÜºÎ°¡ Àâ°í ÀÖÀ¸¸é À¯ÁöµÊ.
+	Clear();// ë§µë§Œ ë¹„ìš°ë©´ shared_ptr í•´ì œ. ì™¸ë¶€ê°€ ì¡ê³  ìˆìœ¼ë©´ ìœ ì§€ë¨.
 }
 
 void ResourceManager::Init(HWND hwnd, fs::path resourcePath)
@@ -23,7 +23,7 @@ void ResourceManager::Init(HWND hwnd, fs::path resourcePath)
 
 void ResourceManager::Clear()
 {
-	// ¿ÜºÎ°¡ held ÁßÀÌ¸é »ì¾ÆÀÖ°í, ¾Æ´Ï¸é ÆÄ±«µÊ.
+	// ì™¸ë¶€ê°€ held ì¤‘ì´ë©´ ì‚´ì•„ìˆê³ , ì•„ë‹ˆë©´ íŒŒê´´ë¨.
 	_sounds.clear();
 	_tilemaps.clear();
 	_flipbooks.clear();
@@ -50,8 +50,8 @@ shared_ptr<Texture> ResourceManager::LoadTexture(const wstring& key, const wstri
 	shared_ptr<Texture> tex = std::make_shared<Texture>();
 	tex->LoadBmp(_hwnd, fullPath.c_str());
 	tex->SetTransparent(transparent);
-	_textures[key] = tex;//key°¡¾øÀ¸¸é ±âº»»ı¼º ÈÄ ´ëÀÔ, keyÀÖÀ¸¸é ¹Ù²ãÄ¡±â
-	//_textures.emplace(key, tex);//ÀÎÀÚ Àü´ŞÈÄ Á÷Á¢ »ı¼º, key ÀÖÀ¸¸é »ğÀÔ ½ÇÆĞ
+	_textures[key] = tex;//keyê°€ì—†ìœ¼ë©´ ê¸°ë³¸ìƒì„± í›„ ëŒ€ì…, keyìˆìœ¼ë©´ ë°”ê¿”ì¹˜ê¸°
+	//_textures.emplace(key, tex);//ì¸ì ì „ë‹¬í›„ ì§ì ‘ ìƒì„±, key ìˆìœ¼ë©´ ì‚½ì… ì‹¤íŒ¨
 
 	return tex;
 }

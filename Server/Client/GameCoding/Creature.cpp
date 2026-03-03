@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "GameInstance.h"
 #include "Creature.h"
 #include "InputManager.h"
@@ -63,24 +63,24 @@ void Creature::OnDamaged(shared_ptr<Creature>  attacker)
 
 
 
-// °£´Ü HP¹Ù: center ±âÁØ, Å¸ÀÏ Å©±â¿¡ ¸ÂÃç Æø ÀÚµ¿
+// ê°„ë‹¨ HPë°”: center ê¸°ì¤€, íƒ€ì¼ í¬ê¸°ì— ë§ì¶° í­ ìë™
 void Creature::DrawHealthBar(HDC hdc, POINT center, int tileSize, int hp, int hpMax) {
     if (hpMax <= 0 || hp <= 0) return;
     Vec2 cameraPos = GET_SINGLE(GameInstance)->GetCameraPos();
 
-    // ¿ùµå Áß½É ¡æ È­¸é Áß½É ÁÂÇ¥ (TransparentBlt ½Ä°ú µ¿ÀÏÇÑ ¿ÀÇÁ¼Â)
-    //  * TransparentBlt´Â ÁÂ»ó´Ü(sx,sy)À» ±¸ÇßÁö¸¸,
-    //    HP¹Ù´Â "Áß½É"¿¡¼­ »ó´ë À§Ä¡·Î °è»êÇÏ¹Ç·Î Áß½É¸¸ º¸Á¤ÇØÁÖ¸é µÊ.
+    // ì›”ë“œ ì¤‘ì‹¬ â†’ í™”ë©´ ì¤‘ì‹¬ ì¢Œí‘œ (TransparentBlt ì‹ê³¼ ë™ì¼í•œ ì˜¤í”„ì…‹)
+    //  * TransparentBltëŠ” ì¢Œìƒë‹¨(sx,sy)ì„ êµ¬í–ˆì§€ë§Œ,
+    //    HPë°”ëŠ” "ì¤‘ì‹¬"ì—ì„œ ìƒëŒ€ ìœ„ì¹˜ë¡œ ê³„ì‚°í•˜ë¯€ë¡œ ì¤‘ì‹¬ë§Œ ë³´ì •í•´ì£¼ë©´ ë¨.
     const int screenCx = center.x - (cameraPos.x - GWinSizeX / 2);
     const int screenCy = center.y - (cameraPos.y - GWinSizeY / 2);
 
-    // ºñÀ² ¹× ¹Ù Å©±â
+    // ë¹„ìœ¨ ë° ë°” í¬ê¸°
     float t = (float)hp / (float)hpMax;
     if (t < 0.f) t = 0.f; else if (t > 1.f) t = 1.f;
     const int barW = max(28, tileSize - 8);
     const int barH = 6;
 
-    // ½ºÇÁ¶óÀÌÆ® »ó´Ü À§¿¡ Ç¥½Ã
+    // ìŠ¤í”„ë¼ì´íŠ¸ ìƒë‹¨ ìœ„ì— í‘œì‹œ
     RECT rc = {
         screenCx - barW / 2,
         screenCy - (tileSize / 2) - 10,
@@ -90,12 +90,12 @@ void Creature::DrawHealthBar(HDC hdc, POINT center, int tileSize, int hp, int hp
     if (rc.left > rc.right)   std::swap(rc.left, rc.right);
     if (rc.top > rc.bottom)  std::swap(rc.top, rc.bottom);
 
-    // ¹è°æ
+    // ë°°ê²½
     HBRUSH bg = CreateSolidBrush(RGB(30, 30, 30));
     FillRect(hdc, &rc, bg);
     DeleteObject(bg);
 
-    // Ã¤¿ò(HP ºñÀ²)
+    // ì±„ì›€(HP ë¹„ìœ¨)
     auto clamp255 = [](int v) { return v < 0 ? 0 : (v > 255 ? 255 : v); };
     int r = clamp255((int)(255 * (1.f - t)) + (int)(32 * t));
     int g = clamp255((int)(64 * (1.f - t)) + (int)(255 * t));
@@ -106,7 +106,7 @@ void Creature::DrawHealthBar(HDC hdc, POINT center, int tileSize, int hp, int hp
     FillRect(hdc, &fill, fg);
     DeleteObject(fg);
 
-    // Å×µÎ¸®
+    // í…Œë‘ë¦¬
     HPEN pen = CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
     HGDIOBJ oldPen = SelectObject(hdc, pen);
     HGDIOBJ oldBr = SelectObject(hdc, GetStockObject(HOLLOW_BRUSH));
@@ -115,7 +115,7 @@ void Creature::DrawHealthBar(HDC hdc, POINT center, int tileSize, int hp, int hp
     SelectObject(hdc, oldBr);
     DeleteObject(pen);
 
-    // (¼±ÅÃ) ¼ıÀÚ Ç¥½Ã
+    // (ì„ íƒ) ìˆ«ì í‘œì‹œ
     // SetBkMode(hdc, TRANSPARENT);
     // SetTextColor(hdc, RGB(220,220,220));
     // wchar_t buf[32]; swprintf(buf, 32, L"%d/%d", hp, hpMax);

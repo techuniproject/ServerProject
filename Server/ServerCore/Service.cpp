@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Service.h"
 #include "Session.h"
 #include "Listener.h"
@@ -31,8 +31,8 @@ SessionRef Service::CreateSession()
 
 	return session;
 }
-//service¿¡¼­ sessionÀ» setÀ¸·Î ½º¸¶Æ®Æ÷ÀÎÅÍ·Î °ü¸®ÇÏ¿© ¼ö¸íÀ» º¸Àå½ÃÅ°´Â °Í
-//ÀÌº¥Æ® Ã³¸®µÇ´Â °úÁ¤¼Ó¿¡¼­ Æ÷ÀÎÅÍ°¡ ¼Ò½ÇµÇÁö ¾Êµµ·Ï º¸Àå.
+//serviceì—ì„œ sessionì„ setìœ¼ë¡œ ìŠ¤ë§ˆíŠ¸í¬ì¸í„°ë¡œ ê´€ë¦¬í•˜ì—¬ ìˆ˜ëª…ì„ ë³´ì¥ì‹œí‚¤ëŠ” ê²ƒ
+//ì´ë²¤íŠ¸ ì²˜ë¦¬ë˜ëŠ” ê³¼ì •ì†ì—ì„œ í¬ì¸í„°ê°€ ì†Œì‹¤ë˜ì§€ ì•Šë„ë¡ ë³´ì¥.
 void Service::AddSession(SessionRef session)
 {
 	WRITE_LOCK;
@@ -83,15 +83,15 @@ ServerService::ServerService(NetAddress address, IocpCoreRef core, SessionFactor
 
 bool ServerService::Start()
 {
-	if (CanStart() == false) //SessionFactory nullptrÀÎÁö È®ÀÎ
+	if (CanStart() == false) //SessionFactory nullptrì¸ì§€ í™•ì¸
 		return false;
 
 	_listener = make_shared<Listener>();
 	if (_listener == nullptr)
 		return false;
 
-	// ServerService´Â Service¸¦ »ó¼Ó¹Ş´Âµ¥ enabled_shared_from_this´Â Service¿¡ ÀÖ±â¶§¹®¿¡ shared_from_thisÈ£Ãâ ½Ã
-	// Service*ÇüÅÂ·Î ¹İÈ¯ÇÏ¹Ç·Î ÀÌ¸¦ ½º¸¶Æ® Æ÷ÀÎÅÍ Ä³½ºÆÃÀ» À§ÇÑ static_pointer_cast·Î ÇØÁÖ¸é µÊ
+	// ServerServiceëŠ” Serviceë¥¼ ìƒì†ë°›ëŠ”ë° enabled_shared_from_thisëŠ” Serviceì— ìˆê¸°ë•Œë¬¸ì— shared_from_thisí˜¸ì¶œ ì‹œ
+	// Service*í˜•íƒœë¡œ ë°˜í™˜í•˜ë¯€ë¡œ ì´ë¥¼ ìŠ¤ë§ˆíŠ¸ í¬ì¸í„° ìºìŠ¤íŒ…ì„ ìœ„í•œ static_pointer_castë¡œ í•´ì£¼ë©´ ë¨
 	ServerServiceRef service = static_pointer_cast<ServerService>(shared_from_this());
 	if (_listener->StartAccept(service) == false)
 		return false;

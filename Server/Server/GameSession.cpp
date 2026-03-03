@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "GameSession.h"
 #include "GameSessionManager.h"
 #include "ServerPacketHandler.h"
@@ -7,30 +7,30 @@
 #include "Monster.h"
 
 /*
-¿ø·¡ ¸ÞÀÎ½º·¹µå´Â °ÔÀÓ ·ÎÁ÷ °ü·Ã ¼öÄ¡¸¦ ´ã´çÇÏ°í,
-¿öÄ¿½º·¹µå´Â I/OÃ³¸®¸¦ ÇÏ°í, ÆÐÅ¶À» ´Ù½Ã »Ñ·ÁÁÖ´Â ¿ªÇÒÀ» ÇÏ´Â°Ô ÀÏ¹ÝÀûÀÎµ¥,
-¼öÄ¡¸¦ º¯°æÇÔ°ú µ¿½Ã¿¡ broadcast¸¦ ÅëÇØ ¾Ë¸®´Â °úÁ¤¿¡¼­ broadcast°¡ ¸ÕÀú ÀÏ¾î³ª¹ö¸®¸é,
-Å¬¶ó°¡ ¼­¹ö¿¡¼­ °ÔÀÓ·ÎÁ÷ Ã³¸® Àü¿¡ ¹Ì¸® ¹Þ¾Æ Ã³¸®ÇÏ´Â ¹®Á¦°¡ »ý±è.
-±×·¯¹Ç·Î ¸ÞÀÎ½º·¹µå°¡ °ÔÀÓ·ÎÁ÷ Ã³¸®ÇÏ°í³ª¼­ broadcast¸¦ ÇÏµµ·Ï ¼±ÅÃ
+ì›ëž˜ ë©”ì¸ìŠ¤ë ˆë“œëŠ” ê²Œìž„ ë¡œì§ ê´€ë ¨ ìˆ˜ì¹˜ë¥¼ ë‹´ë‹¹í•˜ê³ ,
+ì›Œì»¤ìŠ¤ë ˆë“œëŠ” I/Oì²˜ë¦¬ë¥¼ í•˜ê³ , íŒ¨í‚·ì„ ë‹¤ì‹œ ë¿Œë ¤ì£¼ëŠ” ì—­í• ì„ í•˜ëŠ”ê²Œ ì¼ë°˜ì ì¸ë°,
+ìˆ˜ì¹˜ë¥¼ ë³€ê²½í•¨ê³¼ ë™ì‹œì— broadcastë¥¼ í†µí•´ ì•Œë¦¬ëŠ” ê³¼ì •ì—ì„œ broadcastê°€ ë¨¼ì € ì¼ì–´ë‚˜ë²„ë¦¬ë©´,
+í´ë¼ê°€ ì„œë²„ì—ì„œ ê²Œìž„ë¡œì§ ì²˜ë¦¬ ì „ì— ë¯¸ë¦¬ ë°›ì•„ ì²˜ë¦¬í•˜ëŠ” ë¬¸ì œê°€ ìƒê¹€.
+ê·¸ëŸ¬ë¯€ë¡œ ë©”ì¸ìŠ¤ë ˆë“œê°€ ê²Œìž„ë¡œì§ ì²˜ë¦¬í•˜ê³ ë‚˜ì„œ broadcastë¥¼ í•˜ë„ë¡ ì„ íƒ
 
-ioÀÛ¾÷ÀÌ »ý°¢º¸´Ù ¹«°Å¿ö ¸ÞÀÎ½º·¹µå°¡ ÇØ´ç ÀÛ¾÷±îÁö Ã³¸®ÇÏ¸é ºñ¿ëÀÌ Å¬ ¼ö ÀÖ¾î
-ioÀÛ¾÷À» ´Ù½Ã ¿öÄ¿½º·¹µå°¡ Ã³¸®ÇÏµµ·Ï Ã³¸®ÇÏ´Â ioÀÛ¾÷Å¥¸¦ ¿öÄ¿½º·¹µå°£ °æÇÕ(¶ô°É¾î¼­)À» ÅëÇØ
-Ã³¸®ÇÏ´Â°Ô ³ªÀ» ¼öµµ ÀÖÀ½.
-´ë½Å ¸ÞÀÎ½º·¹µå°¡ ÆÐÅ¶¸¸µå´Â(make½Ã¸®Áî)¸¦ Ã³¸®ÇÏ´Â°ÍÀº ºÐ¸íÇÔ(µ¥ÀÌÅÍ ÀÏ°ü¼º¶§¹®) ÀÌÈÄ, send/broadcastµîÀ» ¿öÄ¿ÇÑÅ× ³Ñ±è
+ioìž‘ì—…ì´ ìƒê°ë³´ë‹¤ ë¬´ê±°ì›Œ ë©”ì¸ìŠ¤ë ˆë“œê°€ í•´ë‹¹ ìž‘ì—…ê¹Œì§€ ì²˜ë¦¬í•˜ë©´ ë¹„ìš©ì´ í´ ìˆ˜ ìžˆì–´
+ioìž‘ì—…ì„ ë‹¤ì‹œ ì›Œì»¤ìŠ¤ë ˆë“œê°€ ì²˜ë¦¬í•˜ë„ë¡ ì²˜ë¦¬í•˜ëŠ” ioìž‘ì—…íë¥¼ ì›Œì»¤ìŠ¤ë ˆë“œê°„ ê²½í•©(ë½ê±¸ì–´ì„œ)ì„ í†µí•´
+ì²˜ë¦¬í•˜ëŠ”ê²Œ ë‚˜ì„ ìˆ˜ë„ ìžˆìŒ.
+ëŒ€ì‹  ë©”ì¸ìŠ¤ë ˆë“œê°€ íŒ¨í‚·ë§Œë“œëŠ”(makeì‹œë¦¬ì¦ˆ)ë¥¼ ì²˜ë¦¬í•˜ëŠ”ê²ƒì€ ë¶„ëª…í•¨(ë°ì´í„° ì¼ê´€ì„±ë•Œë¬¸) ì´í›„, send/broadcastë“±ì„ ì›Œì»¤í•œí…Œ ë„˜ê¹€
 */
 
 void GameSession::OnConnected()
 {
 	GSessionManager.Add(GetSessionRef());
 
-	//Send(ServerPacketHandler::Make_S_EnterGame());//È¯¿µ ÆÐÅ¶
-	//°ÔÀÓ ÀÔÀå
+	//Send(ServerPacketHandler::Make_S_EnterGame());//í™˜ì˜ íŒ¨í‚·
+	//ê²Œìž„ ìž…ìž¥
 	//GRoom->EnterRoom(GetSessionRef());
 	auto room = GRoom;
 	auto session = GetSessionRef();
 	session->gameRoom = GRoom;
 
-	//¸ÞÀÎ½º·¹µå°¡ Room¿¡ Playerµî·ÏÇÏ¿© °ÔÀÓ°ü·Ã °ü¸®
+	//ë©”ì¸ìŠ¤ë ˆë“œê°€ Roomì— Playerë“±ë¡í•˜ì—¬ ê²Œìž„ê´€ë ¨ ê´€ë¦¬
 	room->PushJob([room, session]() {
 
 		shared_ptr<Player> curPlayer = GameObject::CreatePlayer();
@@ -49,20 +49,20 @@ void GameSession::OnConnected()
 		room->Enter(curPlayer);
 
 		{
-		//ÇöÀç Å¬¶ó GameSession¿¡ ÇöÀç ¸¸µç ÇÃ·¹ÀÌ¾î Á¤º¸ Àü´Þ
-		//¿ø·¡ ´Ù GameRoom¿¡¼­ Ã³¸®
+		//í˜„ìž¬ í´ë¼ GameSessionì— í˜„ìž¬ ë§Œë“  í”Œë ˆì´ì–´ ì •ë³´ ì „ë‹¬
+		//ì›ëž˜ ë‹¤ GameRoomì—ì„œ ì²˜ë¦¬
 
 		SendBufferRef sendBuf = ServerPacketHandler::Make_S_MyPlayer(curPlayer->info);
-		//room->PushSendJob(session, sendBuf); // ¿öÄ¿°¡ ioÃ³¸®ÇÏµµ·Ï
-		session->Send(sendBuf);//¸ÞÀÎ½º·¹µå°¡ Ã³¸®ÇÏ´Â °æ¿ì
+		//room->PushSendJob(session, sendBuf); // ì›Œì»¤ê°€ ioì²˜ë¦¬í•˜ë„ë¡
+		session->Send(sendBuf);//ë©”ì¸ìŠ¤ë ˆë“œê°€ ì²˜ë¦¬í•˜ëŠ” ê²½ìš°
 		}
-		//ÇöÀç Gameroom¿¡ ÀÖ´Â °ÔÀÓ¿ÀºêÁ§Æ® Á¤º¸ Á¢¼Ó Å¬¶ó¿¡ Àü´Þ
+		//í˜„ìž¬ Gameroomì— ìžˆëŠ” ê²Œìž„ì˜¤ë¸Œì íŠ¸ ì •ë³´ ì ‘ì† í´ë¼ì— ì „ë‹¬
 		//{
 		//	Protocol::S_AddObject GameRoomObjects;
-		//	//¸ÞÀÎ½º·¹µå°¡ JobÃ³¸®ÇÏ¹Ç·Î, Á÷Á¢ RoomÀÇ mapÂü°í(thread_safe ¿öÄ¿¸¸ ¾È°ÇµéÀÌ°ÔÇÏ¸é)
+		//	//ë©”ì¸ìŠ¤ë ˆë“œê°€ Jobì²˜ë¦¬í•˜ë¯€ë¡œ, ì§ì ‘ Roomì˜ mapì°¸ê³ (thread_safe ì›Œì»¤ë§Œ ì•ˆê±´ë“¤ì´ê²Œí•˜ë©´)
 		//	for (auto& info : room->GetPlayersForJob()) {
 		//		if (info.second == session->player.lock())
-		//			continue;//Àü¿¡ º¸³½°Å Áßº¹ ¹æÁö
+		//			continue;//ì „ì— ë³´ë‚¸ê±° ì¤‘ë³µ ë°©ì§€
 		//		*GameRoomObjects.add_objects() = info.second->info;
 		//	}
 		//	for (auto& info : room->GetMonstersForJob())
@@ -70,7 +70,7 @@ void GameSession::OnConnected()
 
 		//	SendBufferRef sendBuf = ServerPacketHandler::Make_S_AddObject(GameRoomObjects);
 		//	session->Send(sendBuf); 
-		//	//room->PushSendJob(session, sendBuf); // ¿öÄ¿°¡ ioÃ³¸®ÇÏµµ·Ï
+		//	//room->PushSendJob(session, sendBuf); // ì›Œì»¤ê°€ ioì²˜ë¦¬í•˜ë„ë¡
 		//}
 		{
 			Protocol::S_AddObject GameRoomCurSectorObjects;
@@ -100,12 +100,12 @@ void GameSession::OnConnected()
 			session->Send(sendBuf); 
 		}
 		{
-			//´Ù¸¥ ¸ðµç Å¬¶ó¿¡°Ô Ãß°¡µÈ ÇÃ·¹ÀÌ¾î Á¤º¸ Àü´Þ
+			//ë‹¤ë¥¸ ëª¨ë“  í´ë¼ì—ê²Œ ì¶”ê°€ëœ í”Œë ˆì´ì–´ ì •ë³´ ì „ë‹¬
 			Protocol::S_AddObject AddedPlayer;
 			*AddedPlayer.add_objects() = curPlayer->info;
 
 			SendBufferRef sendBuf = ServerPacketHandler::Make_S_AddObject(AddedPlayer);
-			//room->PushBroadcastJob(sendBuf); //¿öÄ¿°¡ Ã³¸®ÇÏµµ·Ï
+			//room->PushBroadcastJob(sendBuf); //ì›Œì»¤ê°€ ì²˜ë¦¬í•˜ë„ë¡
 			room->BroadcastBySector(sendBuf,curPlayer->GetCurSectorPos());
 		}		
 		
@@ -118,7 +118,7 @@ void GameSession::OnDisconnected()
 {
 	GSessionManager.Remove(static_pointer_cast<GameSession>(shared_from_this()));
 
-	//°ÔÀÓ ³ª°¡±â
+	//ê²Œìž„ ë‚˜ê°€ê¸°
 	// GRoom->LeaveRoom(GetSessionRef());
 
 	auto room = GRoom;

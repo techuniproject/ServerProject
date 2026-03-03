@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "CorePch.h"
 #include "Types.h"
@@ -30,11 +30,11 @@ namespace fs = std::filesystem;
 
 #pragma comment(lib, "msimg32.lib")
 
-//UI winapi »ö»ó
-#include <richedit.h>   // Ãß°¡
+//UI winapi ìƒ‰ìƒ
+#include <richedit.h>   // ì¶”ê°€
 
 
-// »ç¿îµå
+// ì‚¬ìš´ë“œ
 #include <MMSystem.h>
 #include <dsound.h>
 #pragma comment (lib, "winmm.lib")

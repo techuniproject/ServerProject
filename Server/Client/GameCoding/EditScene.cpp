@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "GameInstance.h"
 #include "EditScene.h"
 #include "InputManager.h"
@@ -65,7 +65,7 @@ void EditScene::Update()
 		int32 midX = (maxX + minX) / 2;
 		int32 midY = (maxY + minY) / 2;
 
-		// ¶óÀÎ °³¼ö
+		// ë¼ì¸ ê°œìˆ˜
 		file << static_cast<int32>(_lines.size()) << endl;
 
 		for (auto& line : _lines)
@@ -91,7 +91,7 @@ void EditScene::Update()
 		wifstream file;
 		file.open(L"Unit.txt");
 
-		// ¶óÀÎ °³¼ö
+		// ë¼ì¸ ê°œìˆ˜
 		int32 count;
 		file >> count;
 

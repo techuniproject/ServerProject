@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Creature.h"
 #include "Item.h"
 
@@ -28,9 +28,9 @@ private:
 private:
 	uint64 _waitUntil = 0;
 
-	std::vector<Vec2Int> _path;           // ÇöÀç µû¶ó°¡¾ß ÇÒ °æ·Î
-	//uint64 _lastPathUpdate;               // ¸¶Áö¸· °æ·Î °»½Å ½Ã°¢
-	//uint64 _pathUpdateInterval;           // ¸î ms¸¶´Ù °æ·Î °»½ÅÇÒÁö
+	std::vector<Vec2Int> _path;           // í˜„ì¬ ë”°ë¼ê°€ì•¼ í•  ê²½ë¡œ
+	//uint64 _lastPathUpdate;               // ë§ˆì§€ë§‰ ê²½ë¡œ ê°±ì‹  ì‹œê°
+	//uint64 _pathUpdateInterval;           // ëª‡ msë§ˆë‹¤ ê²½ë¡œ ê°±ì‹ í• ì§€
 
 	Item item;
 	uint64 _findMaxDist = 10;

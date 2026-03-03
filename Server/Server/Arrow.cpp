@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Arrow.h"
 #include "GameRoom.h"
 #include "Monster.h"
@@ -34,7 +34,7 @@ void Arrow::UpdateIdle()
 
 	if (CanGoBySector(nextPos))
 	{
-		SetCellPos(nextPos); //»óÅÂ¹Ù²Ù´Âtrue±âÁØ ½º³À¼¦À¸·Î Àü´ŞÇÔ
+		SetCellPos(nextPos); //ìƒíƒœë°”ê¾¸ëŠ”trueê¸°ì¤€ ìŠ¤ëƒ…ìƒ·ìœ¼ë¡œ ì „ë‹¬í•¨
 		float moveTimeInSec = 48.0f / info.movespeed();
 		long long moveTick = (long long)(moveTimeInSec * 1000);
 		_waitUntil = GetTickCount64() + moveTick;
@@ -45,7 +45,7 @@ void Arrow::UpdateIdle()
 	}
 	else
 	{
-		//¿©±â¼­ ¸ó½ºÅÏÁö º®ÀÎÁö ÆÇ´ÜÇØ¼­ ÇÇ°İ Ãß°¡.
+		//ì—¬ê¸°ì„œ ëª¬ìŠ¤í„´ì§€ ë²½ì¸ì§€ íŒë‹¨í•´ì„œ í”¼ê²© ì¶”ê°€.
 	/*	if (auto creature = room->GetCreatureAtSector(nextPos)) {
 
 			if (dynamic_cast<Monster*>(creature)) {
@@ -62,10 +62,10 @@ void Arrow::UpdateIdle()
 		Monster* mon = room->GetMonsterAtSector(nextPos);
 		Player* pl = room->GetPlayerAtSector(nextPos);
 		if (mon) {
-			//¸ó½ºÅÍ¸¸ ÆÇÁ¤ ½Ã
+			//ëª¬ìŠ¤í„°ë§Œ íŒì • ì‹œ
 			if (mon->OnDamaged(static_pointer_cast<Creature>(shared_from_this()))) {
-				//OnDamaged¿¡¼­ ÇÇ°¡ 0ÀÌ¸é Leave¸¦ ÅëÇØ ¼ö¸í ÆÄ±âÇÏ±â¶§¹®¿¡ °Ë»çÇØ¾ßÇÔ
-				mon->ApplyHitStun(505); //ÇÃ·¹ÀÌ¾î °ø°İ ÄğÅ¸ÀÓ 500ÀÌ¶ó °°ÀÌ 500ÀÌ¸é µÑ´Ù µ¿½Ã¿¡ ¶§¸²
+				//OnDamagedì—ì„œ í”¼ê°€ 0ì´ë©´ Leaveë¥¼ í†µí•´ ìˆ˜ëª… íŒŒê¸°í•˜ê¸°ë•Œë¬¸ì— ê²€ì‚¬í•´ì•¼í•¨
+				mon->ApplyHitStun(505); //í”Œë ˆì´ì–´ ê³µê²© ì¿¨íƒ€ì„ 500ì´ë¼ ê°™ì´ 500ì´ë©´ ë‘˜ë‹¤ ë™ì‹œì— ë•Œë¦¼
 			}
 		}
 		else if (pl) {

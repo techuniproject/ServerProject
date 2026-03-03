@@ -1,13 +1,13 @@
-#pragma once
+ï»¿#pragma once
 
 struct AIRequest {
-    uint32_t playerId;                // ´©°¡ º¸³Â´ÂÁö
-    uint32_t npcId;                   // NPC ½Äº°(¾øÀ¸¸é 0)
-    uint32_t convId;                  // ´ëÈ­ ¼¼¼Ç(ÇÊ¿ä ¾øÀ¸¸é 0)
+    uint32_t playerId;                // ëˆ„ê°€ ë³´ëƒˆëŠ”ì§€
+    uint32_t npcId;                   // NPC ì‹ë³„(ì—†ìœ¼ë©´ 0)
+    uint32_t convId;                  // ëŒ€í™” ì„¸ì…˜(í•„ìš” ì—†ìœ¼ë©´ 0)
     std::string userText;             // UTF-8
-    std::weak_ptr<class GameRoom> room; // ¹æ¼ÛÇÒ ¹æ(¸ŞÀÎ ½º·¹µå¿¡¼­ Broadcast)
-    std::string systemPrompt;         // NPC Æä¸£¼Ò³ª ±ÔÄ¢
-    std::string contextJson;          // ¿ä¾à ÄÁÅØ½ºÆ®(¼±ÅÃ)
+    std::weak_ptr<class GameRoom> room; // ë°©ì†¡í•  ë°©(ë©”ì¸ ìŠ¤ë ˆë“œì—ì„œ Broadcast)
+    std::string systemPrompt;         // NPC í˜ë¥´ì†Œë‚˜ ê·œì¹™
+    std::string contextJson;          // ìš”ì•½ ì»¨í…ìŠ¤íŠ¸(ì„ íƒ)
 };
 
 class AIQueue {

@@ -1,5 +1,5 @@
-#pragma once
-//GameSessionRef -> ServerSessionRef·Î ¹Ù²Ù±â
+ï»¿#pragma once
+//GameSessionRef -> ServerSessionRefë¡œ ë°”ê¾¸ê¸°
 #include "Protocol.pb.h"
 #include <CorePch.h>
 

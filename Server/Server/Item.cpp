@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "Item.h"
 
 atomic<uint64> Item::s_itemidGenerator = 1;

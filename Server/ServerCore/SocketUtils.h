@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 //#include "NetAddress.h"
 class NetAddress;
 /*----------------
@@ -8,7 +8,7 @@ class NetAddress;
 class SocketUtils
 {
 public:
-	//#include <mswsock.h> »ç¿ë
+	//#include <mswsock.h> ì‚¬ìš©
 	static LPFN_CONNECTEX		ConnectEx;
 	static LPFN_DISCONNECTEX	DisconnectEx;
 	static LPFN_ACCEPTEX		AcceptEx;

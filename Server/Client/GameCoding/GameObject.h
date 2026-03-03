@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "FlipbookActor.h"
 
 class GameObject : public FlipbookActor
@@ -52,10 +52,10 @@ protected:
 	//Vec2 _speed = {};
 	//Dir _dir = DIR_DOWN;
 	//ObjectState _state = IDLE;
-protected://»óÅÂ ¹Ù²ñ ÃßÀû¿ë 
+protected://ìƒíƒœ ë°”ë€œ ì¶”ì ìš© 
 	bool _dirtyFlag = false;
 	
-public://³ªÁß¿£ private°ü¸®
+public://ë‚˜ì¤‘ì—” privateê´€ë¦¬
 	Protocol::ObjectInfo info;
 };
 

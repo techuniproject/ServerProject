@@ -1,43 +1,43 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include <iostream>
 
-// Å¬¶ó
-// 1) ¼ÒÄÏ »ı¼º
-// 2) ¼­¹ö¿¡ ¿¬°á ¿äÃ»
-// 3) Åë½Å
+// í´ë¼
+// 1) ì†Œì¼“ ìƒì„±
+// 2) ì„œë²„ì— ì—°ê²° ìš”ì²­
+// 3) í†µì‹ 
 
 
 int main()
 {
-	// 1) ¼ÒÄÏ »ı¼º
+	// 1) ì†Œì¼“ ìƒì„±
 	WSADATA wsaData;
 	if (::WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
 		return 0;
 
-	// ipv4 ¹öÀü, TCP ¹æ½Ä
+	// ipv4 ë²„ì „, TCP ë°©ì‹
 	SOCKET clientSocket = ::socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 	if (clientSocket == INVALID_SOCKET)
 		return 0;
 
-	// 2) ÁÖ¼Ò/Æ÷Æ® ¹øÈ£ ¼³Á¤ (bind)
+	// 2) ì£¼ì†Œ/í¬íŠ¸ ë²ˆí˜¸ ì„¤ì • (bind)
 	SOCKADDR_IN serverAddr;
 	::memset(&serverAddr, 0, sizeof(serverAddr));
 	serverAddr.sin_family = AF_INET;
 	// serverAddr.sin_addr.s_addr = ::htonl(INADDR_ANY);
 	::inet_pton(AF_INET, "127.0.0.1", &serverAddr.sin_addr);
-	// IPÁÖ¼Ò 127.0.0.1Àº ·çÇÁ¹é ÁÖ¼Ò·Î ·ÎÄÃÈ¯°æ¿¡¼­ ½º½º·Î Åë½ÅÇÒ ¶§ »ç¿ë
+	// IPì£¼ì†Œ 127.0.0.1ì€ ë£¨í”„ë°± ì£¼ì†Œë¡œ ë¡œì»¬í™˜ê²½ì—ì„œ ìŠ¤ìŠ¤ë¡œ í†µì‹ í•  ë•Œ ì‚¬ìš©
 	serverAddr.sin_port = ::htons(7777); // 80 : HTTP
 
 	/*if (::connect(clientSocket, (SOCKADDR*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR)
 		return 0;*/
 
 		// -----------
-		// ¿¬°á ¼º°ø!
+		// ì—°ê²° ì„±ê³µ!
 	cout << "Connected To Server!" << endl;
 
 	while (true)
 	{
-		// ÆĞÅ¶
+		// íŒ¨í‚·
 		char sendBuffer[100] = "Hello ! I am Client!";
 		//int32 resultCode = ::send(clientSocket, sendBuffer, sizeof(sendBuffer), 0);
 		int32 resultCode = ::sendto(clientSocket, sendBuffer, sizeof(sendBuffer), 0, (SOCKADDR*)&serverAddr, sizeof(serverAddr));

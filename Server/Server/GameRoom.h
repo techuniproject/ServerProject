@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Job.h"
 #include "Item.h"
 #include "Tilemap.h"
@@ -17,8 +17,8 @@ struct PQNode
 
 struct MyPQNode
 {
-	bool operator<(const MyPQNode& other)const { return f < other.f; }//less - Å«°Ô ¿ì¼±
-	bool operator>(const MyPQNode& other)const { return f > other.f; }//greater - ÀÛÀº°Ô ¿ì¼±
+	bool operator<(const MyPQNode& other)const { return f < other.f; }//less - í°ê²Œ ìš°ì„ 
+	bool operator>(const MyPQNode& other)const { return f > other.f; }//greater - ì‘ì€ê²Œ ìš°ì„ 
 
 	int f;
 	int g;
@@ -48,7 +48,7 @@ public:
 //	void RemoveObject(uint64 id);
 //	void Broadcast(SendBufferRef& sendBuffer);
 public:
-	void Init();//ÀÓ½Ã
+	void Init();//ì„ì‹œ
 	void Update();
 	shared_ptr<class GameObject> FindObject(uint64 id);
 	void PushJob(function<void()> func);
@@ -60,16 +60,16 @@ public:
 	void AddItem(Item item);
 	void DeleteItem(uint32 id);
 	
-	// ÇöÀç °ÔÀÓ·ë¿¡¼­ °ü¸®ÇÏ´Â °ÔÀÓ¿ÀºêÁ§Æ® Á¤º¸ ÀüÆÄ¿ëµµ
+	// í˜„ì¬ ê²Œì„ë£¸ì—ì„œ ê´€ë¦¬í•˜ëŠ” ê²Œì„ì˜¤ë¸Œì íŠ¸ ì •ë³´ ì „íŒŒìš©ë„
 	vector<Protocol::ObjectInfo> GetRoomPlayerInfo();
 	vector<Protocol::ObjectInfo> GetRoomMonsterInfo();
 	vector<Protocol::ObjectInfo> GetRoomArrowInfo();
 	vector<Protocol::ItemInfo> GetRoomItemInfo();
-	// À§ µÎ ÇÔ¼ö°¡ ¸ŞÀÎ ½º·¹µå°¡ ÀÛ¾÷ Å¥¿¡¼­ ²¨³»¼­ »ç¿ëÇÒ¶© ¹®Á¦¾øÀ½
-	//ÇÏÁö¸¸, ¿öÄ¿½º·¹µå°¡(GameSession, SeverPacketHandler)¿¡¼­ ÀÔÃâ·ÂÀÌ¿Í¼­ 
-	// ÀÌ ÇÔ¼ö¸¦ »ç¿ëÇÑ´Ù¸é, ÄÁÅ×ÀÌ³Ê¿¡ ´ëÇÑ Á¤º¸°¡ º¹»çº»À¸·Î ³Ñ¾î°¡±â¶§¹®¿¡ race condition
-	// Àº ÇÇÇÒ ¼ö ÀÖÁö¸¸, ±× »óÈ²¿¡¼­ ¸ŞÀÎ½º·¹µå°¡ ÀÛ¾÷Ã³¸®ÁßÀÌ¸é µ¥ÀÌÅÍ ºÒÀÏÄ¡ »ı±æ ¼ö ÀÖÀ½
-	// ±×·¯¹Ç·Î ¿öÄ¿½º·¹µå°¡ À§ µÎÇÔ¼ö¸¦ »ç¿ë½Ã µ¥ÀÌÅÍ ºÒÀÏÄ¡ °¨¾È ¶Ç´Â ¸ŞÀÎÀÌ ´Ù Ã³¸®ÇÏµµ·Ï Àü´Ş.
+	// ìœ„ ë‘ í•¨ìˆ˜ê°€ ë©”ì¸ ìŠ¤ë ˆë“œê°€ ì‘ì—… íì—ì„œ êº¼ë‚´ì„œ ì‚¬ìš©í• ë• ë¬¸ì œì—†ìŒ
+	//í•˜ì§€ë§Œ, ì›Œì»¤ìŠ¤ë ˆë“œê°€(GameSession, SeverPacketHandler)ì—ì„œ ì…ì¶œë ¥ì´ì™€ì„œ 
+	// ì´ í•¨ìˆ˜ë¥¼ ì‚¬ìš©í•œë‹¤ë©´, ì»¨í…Œì´ë„ˆì— ëŒ€í•œ ì •ë³´ê°€ ë³µì‚¬ë³¸ìœ¼ë¡œ ë„˜ì–´ê°€ê¸°ë•Œë¬¸ì— race condition
+	// ì€ í”¼í•  ìˆ˜ ìˆì§€ë§Œ, ê·¸ ìƒí™©ì—ì„œ ë©”ì¸ìŠ¤ë ˆë“œê°€ ì‘ì—…ì²˜ë¦¬ì¤‘ì´ë©´ ë°ì´í„° ë¶ˆì¼ì¹˜ ìƒê¸¸ ìˆ˜ ìˆìŒ
+	// ê·¸ëŸ¬ë¯€ë¡œ ì›Œì»¤ìŠ¤ë ˆë“œê°€ ìœ„ ë‘í•¨ìˆ˜ë¥¼ ì‚¬ìš©ì‹œ ë°ì´í„° ë¶ˆì¼ì¹˜ ê°ì•ˆ ë˜ëŠ” ë©”ì¸ì´ ë‹¤ ì²˜ë¦¬í•˜ë„ë¡ ì „ë‹¬.
 
 	map<uint64, shared_ptr<class Player>>& GetPlayersForJob() { return _players; }
 	map<uint64, shared_ptr<class Monster>>& GetMonstersForJob() { return _monsters; }
@@ -88,7 +88,7 @@ public:
 	void TickMonsterSpawn();
 	void DeleteProjectiles();
 public:
-	//Sector°ü·Ã ¸ğµç ¼­¹ö¿¡¼­°ü¸®ÇÏ´Â CreatureµéÀº »ı¼º ½Ã¿¡ SectorPos°»½Å ¹× ÄÁÅ×ÀÌ³Ê¿¡ Ãß°¡
+	//Sectorê´€ë ¨ ëª¨ë“  ì„œë²„ì—ì„œê´€ë¦¬í•˜ëŠ” Creatureë“¤ì€ ìƒì„± ì‹œì— SectorPosê°±ì‹  ë° ì»¨í…Œì´ë„ˆì— ì¶”ê°€
 	Sector* GetSectorAt(Vec2Int sectorPos);
 	Vec2Int GetSectorPos(int32 x, int32 y);
 	void InsertAtSector(Vec2Int sectorPos, GameObject* creature);
@@ -97,7 +97,7 @@ public:
 
 
 	bool CanGoBySector(Vec2Int cellPos);
-	//¸ñÀû : Á¤È®È÷ ±× À§Ä¡¿¡ ÀÖ´ÂÁö 
+	//ëª©ì  : ì •í™•íˆ ê·¸ ìœ„ì¹˜ì— ìˆëŠ”ì§€ 
 	Player* GetPlayerAtSector(Vec2Int cellPos);
 	Monster* GetMonsterAtSector(Vec2Int cellPos);
 	Arrow* GetArrowAtSector(Vec2Int cellPos);
@@ -107,7 +107,7 @@ public:
 	void DoSomethingCrossingSectors(Vec2Int curCellPos, Vec2Int LastCellPos, function<void(Vec2Int)>add, function<void(Vec2Int)>remove);
 	
 private:
-	// ¿öÄ¿½º·¹µå°¡ ¸ŞÀÎ½º·¹µå°¡ È£ÃâÇÏµµ·Ï ³Ö´Â Job
+	// ì›Œì»¤ìŠ¤ë ˆë“œê°€ ë©”ì¸ìŠ¤ë ˆë“œê°€ í˜¸ì¶œí•˜ë„ë¡ ë„£ëŠ” Job
 	JobQueue _jobs;
 private:
 	map<uint64, shared_ptr<Player>> _players;
@@ -118,7 +118,7 @@ private:
 public:
 	Tilemap _tilemap;
 	const int32 DESIRED_COUNT = 500;
-	vector<Sector>_gameRoomSector;//1Â÷¿ø¹è¿­·Î y*height +x ÇüÅÂ·Î ¾µ°ÅÀÓ Ä³½Ã È¿À²À» À§ÇØ  
+	vector<Sector>_gameRoomSector;//1ì°¨ì›ë°°ì—´ë¡œ y*height +x í˜•íƒœë¡œ ì“¸ê±°ì„ ìºì‹œ íš¨ìœ¨ì„ ìœ„í•´  
 	//Sector=>vector<Creature*>
 	const int32 SECTOR_HEIGHT = 5;
 	const int32 SECTOR_WIDTH = 7;

@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Monster.h"
 #include "GameRoom.h"
 #include "Player.h"
@@ -13,7 +13,7 @@ Monster::Monster()
 	info.set_hp(100);
 	info.set_maxhp(100);
 	info.set_attack(1);
-	info.set_defence(0); //³ªÁß¿£ data sheetÀ¸·Î ÀĞ¾î¿À´Â ¹æ½Ä
+	info.set_defence(0); //ë‚˜ì¤‘ì—” data sheetìœ¼ë¡œ ì½ì–´ì˜¤ëŠ” ë°©ì‹
 
 	item.SetAliveState(false);
 
@@ -30,9 +30,9 @@ void Monster::Init()
 
 }
 
-void Monster::Update()//¾îÂ÷ÇÇ ¸ŞÀÎ½º·¹µå ·ÎÁ÷ÀÌ¶ó lock½Å°æX, sendµµ ¸ŞÀÎÀÌ ÇØµµµÇ±äÇÔ
+void Monster::Update()//ì–´ì°¨í”¼ ë©”ì¸ìŠ¤ë ˆë“œ ë¡œì§ì´ë¼ lockì‹ ê²½X, sendë„ ë©”ì¸ì´ í•´ë„ë˜ê¸´í•¨
 {
-	//¿©±â¼­ È£ÃâÇÏ´Â ·ÎÁ÷Àº JobÀ¸·Î Ã³¸®¾ÈÇØµµµÊ ¸ŞÀÎ½º·¹µå°¡ ÇÔ
+	//ì—¬ê¸°ì„œ í˜¸ì¶œí•˜ëŠ” ë¡œì§ì€ Jobìœ¼ë¡œ ì²˜ë¦¬ì•ˆí•´ë„ë¨ ë©”ì¸ìŠ¤ë ˆë“œê°€ í•¨
 	Super::Update();
 }
 
@@ -41,27 +41,27 @@ void Monster::Update()//¾îÂ÷ÇÇ ¸ŞÀÎ½º·¹µå ·ÎÁ÷ÀÌ¶ó lock½Å°æX, sendµµ ¸ŞÀÎÀÌ ÇØµµ
 //
 //	if (!room) return;
 //
-//	// Å¸°Ù ¾øÀ¸¸é »õ·Î Å½»ö
+//	// íƒ€ê²Ÿ ì—†ìœ¼ë©´ ìƒˆë¡œ íƒìƒ‰
 //	if (_target.lock() == nullptr)
 //		_target = room->FindClosestPlayer(GetCellPos());
 //	shared_ptr<Player> player = _target.lock();
 //	if (!player) return;
 //
 //	// =============================
-//	// 1) °ø°İ ¹üÀ§ ÆÇÁ¤
+//	// 1) ê³µê²© ë²”ìœ„ íŒì •
 //	// =============================
 //	Vec2Int d = player->GetCellPos() - GetCellPos();
 //	int dist = abs(d.x) + abs(d.y);
-//	if (dist <= 1) // ºÙ¾îÀÖÀ¸¸é ¹Ù·Î °ø°İ
+//	if (dist <= 1) // ë¶™ì–´ìˆìœ¼ë©´ ë°”ë¡œ ê³µê²©
 //	{
 //		SetDir(GetLookAtDir(player->GetCellPos()));
 //		SetState(SKILL, true);
-//		_waitUntil = GetTickCount64() + 1000; // °ø°İ Äğ´Ù¿î
+//		_waitUntil = GetTickCount64() + 1000; // ê³µê²© ì¿¨ë‹¤ìš´
 //		return;
 //	}
 //
 //	// =============================
-//	// 2) °æ·Î Å½»ö (Äğ´Ù¿î Àû¿ë)
+//	// 2) ê²½ë¡œ íƒìƒ‰ (ì¿¨ë‹¤ìš´ ì ìš©)
 //	// =============================
 //	uint64 now = GetTickCount64();
 //	if (now > _lastPathUpdate + _pathUpdateInterval)
@@ -74,7 +74,7 @@ void Monster::Update()//¾îÂ÷ÇÇ ¸ŞÀÎ½º·¹µå ·ÎÁ÷ÀÌ¶ó lock½Å°æX, sendµµ ¸ŞÀÎÀÌ ÇØµµ
 //	}
 //
 //	// =============================
-//	// 3) °æ·Î µû¶ó°¡±â
+//	// 3) ê²½ë¡œ ë”°ë¼ê°€ê¸°
 //	// =============================
 //	if (_path.size() > 1)
 //	{
@@ -84,8 +84,8 @@ void Monster::Update()//¾îÂ÷ÇÇ ¸ŞÀÎ½º·¹µå ·ÎÁ÷ÀÌ¶ó lock½Å°æX, sendµµ ¸ŞÀÎÀÌ ÇØµµ
 //			SetDir(GetLookAtDir(nextPos));
 //			SetCellPos(nextPos);
 //			SetState(MOVE, true);
-//			_waitUntil = now + 200; // ÀÌµ¿ ÅÒ
-//			_path.erase(_path.begin()); // Ã¹ Ä­ ¼Òºñ
+//			_waitUntil = now + 200; // ì´ë™ í…€
+//			_path.erase(_path.begin()); // ì²« ì¹¸ ì†Œë¹„
 //		}
 //	}
 //}
@@ -114,7 +114,7 @@ void Monster::UpdateIdle()
 			SetDir(GetLookAtDir(_target->GetCellPos()));
 			SetState(SKILL);
 			BroadcastMoveBySector();
-			//_waitUntil = GetTickCount64() + 500; //+1ÃÊ
+			//_waitUntil = GetTickCount64() + 500; //+1ì´ˆ
 		}
 		else
 		{
@@ -139,7 +139,7 @@ void Monster::UpdateIdle()
 							Sector* sector = room->GetSectorAt(sectorPos);
 							if (sector) {
 								for (Player* pl : sector->_sectorPlayers) {
-									if (pl && pl != _target) {//Å¸°ÙÀÌ¸é ÀÌ¹Ì ¸¶ÁÖÃÄ¼­ »ı¼ºµÊ ÇÃ·¹ÀÌ¾î C_MoveÃ³¸®¿¡¼­ Ãß°¡¸®½ºÆ®¿¡ Ãß°¡
+									if (pl && pl != _target) {//íƒ€ê²Ÿì´ë©´ ì´ë¯¸ ë§ˆì£¼ì³ì„œ ìƒì„±ë¨ í”Œë ˆì´ì–´ C_Moveì²˜ë¦¬ì—ì„œ ì¶”ê°€ë¦¬ìŠ¤íŠ¸ì— ì¶”ê°€
 
 										Protocol::S_AddObject pkt;
 										*pkt.add_objects() = info;
@@ -168,20 +168,20 @@ void Monster::UpdateIdle()
 						};
 
 						if(!isSameSector(room->GetSectorPos(nextPos.x,nextPos.y))){
-							//¸ó½ºÅÍ°¡ ´Ù¸¥ ÇÃ·¹ÀÌ¾î ÃßÀûÇÏ¸é¼­ ´Ù¸¥ ¼½ÅÍ·Î °¬À»¶§ ´Ù¸¥ ÇÃ·¹ÀÌ¾î ´«¿¡µµ µé¾î°¡¾ßÇÏ´Ï±î
+							//ëª¬ìŠ¤í„°ê°€ ë‹¤ë¥¸ í”Œë ˆì´ì–´ ì¶”ì í•˜ë©´ì„œ ë‹¤ë¥¸ ì„¹í„°ë¡œ ê°”ì„ë•Œ ë‹¤ë¥¸ í”Œë ˆì´ì–´ ëˆˆì—ë„ ë“¤ì–´ê°€ì•¼í•˜ë‹ˆê¹Œ
 							room->InsertAtSector(room->GetSectorPos(nextPos.x, nextPos.y), static_cast<GameObject*>(shared_from_this().get()));
 							SetCurSectorPos(room->GetSectorPos(nextPos.x, nextPos.y));
 							room->DoSomethingCrossingSectors(nextPos, curPos, AddMeForNewSectorPlayers, RemoveMeFromLastSectorPlayers);
 			
 						}
 
-						_waitUntil = GetTickCount64() + 500; //+1ÃÊ
+						_waitUntil = GetTickCount64() + 500; //+1ì´ˆ
 						SetState(MOVE);
 						BroadcastMoveBySector();
 					}
 				}
-				else {//Á¦ÀÚ¸®ÀÏ¶§ -> ÀÌ°Å ³ªÁß¿¡ astarºĞ¼®ÇÏ°í ¼öÁ¤
-					// Á¦¹Ì³ªÀÌ´Â ÀÌ ÄÚµå ¿ÀÈ÷·Á ¿À·ùÀ¯¹ß -> ºÒÇÊ¿äÇÏ¹Ç·Î targetÀÌ³ª ¾ø¾Ö¶ó
+				else {//ì œìë¦¬ì¼ë•Œ -> ì´ê±° ë‚˜ì¤‘ì— astarë¶„ì„í•˜ê³  ìˆ˜ì •
+					// ì œë¯¸ë‚˜ì´ëŠ” ì´ ì½”ë“œ ì˜¤íˆë ¤ ì˜¤ë¥˜ìœ ë°œ -> ë¶ˆí•„ìš”í•˜ë¯€ë¡œ targetì´ë‚˜ ì—†ì• ë¼
 					//SetCellPos(path[0]);
 					//room->InsertAtSector(room->GetSectorPos(path[0].x, path[0].y), static_cast<GameObject*>(shared_from_this().get()));
 					//SetCurSectorPos(room->GetSectorPos(path[0].x, path[0].y));
@@ -226,10 +226,10 @@ void Monster::UpdateSkill()
 	//	creature->OnDamaged(dynamic_pointer_cast<Creature>(shared_from_this()));
 	//	_waitUntil = GetTickCount64() + 1000;
 	//	creature->SetState(HIT, true);
-	//	//ÇÃ·¹ÀÌ¾î ¸Â¾ÒÀ» ¶§ º¸·ù
+	//	//í”Œë ˆì´ì–´ ë§ì•˜ì„ ë•Œ ë³´ë¥˜
 	//}
 
-	//SetState(IDLE,true);//Â÷ÀÌ?
+	//SetState(IDLE,true);//ì°¨ì´?
 	SetState(IDLE);
 	BroadcastMoveBySector();
 }
@@ -248,7 +248,7 @@ void Monster::UpdateHit()
 
 void Monster::ApplyHitStun(uint32 ms) {
 	const uint64 now = GetTickCount64();
-	// ÀçÇÇ°İ ½Ã HIT ¿¬Àå: max »ç¿ë (¸®¼Â ¿øÇÏ¸é ±×³É ´ëÀÔ)
+	// ì¬í”¼ê²© ì‹œ HIT ì—°ì¥: max ì‚¬ìš© (ë¦¬ì…‹ ì›í•˜ë©´ ê·¸ëƒ¥ ëŒ€ì…)
 	_waitUntil = std::max<uint64>(_waitUntil, now + static_cast<uint64>(ms));
 
 	//SetState(HIT, true);
@@ -259,10 +259,10 @@ void Monster::ApplyHitStun(uint32 ms) {
 bool Monster::OnDamaged(shared_ptr<Creature> attacker)
 {
 	shared_ptr<Monster>life_guard = static_pointer_cast<Monster>(shared_from_this());
-	//»ı¸í´Ã¸®°í ÀÌÈÄ OnDamagedÀÇ ¼ö¸íÁÖ±â ÄÁÅ×ÀÌ³Ê¿¡¼­ »èÁ¦ÇÏ°í ->³ª¸ÓÁö ¾ÆÀÌÅÛ ·ÎÁ÷ ¼öÇàÈÄ ÀÌ ÇÔ¼ö³¡³ª¸é ¼ö¸í 0
-	//Super::OnDamaged¿¡¼­ ÇÇ¸¦±ğ¾Æ¾ß ¿©±â ·ÎÁ÷¿¡¼­ Hp==0ÀÌ ¼öÇàµÇ¾î ¾ÆÀÌÅÛ »ı¼ºµÇ´Ï±î ÀÌ°Ô ÃÖ¼±
+	//ìƒëª…ëŠ˜ë¦¬ê³  ì´í›„ OnDamagedì˜ ìˆ˜ëª…ì£¼ê¸° ì»¨í…Œì´ë„ˆì—ì„œ ì‚­ì œí•˜ê³  ->ë‚˜ë¨¸ì§€ ì•„ì´í…œ ë¡œì§ ìˆ˜í–‰í›„ ì´ í•¨ìˆ˜ëë‚˜ë©´ ìˆ˜ëª… 0
+	//Super::OnDamagedì—ì„œ í”¼ë¥¼ê¹ì•„ì•¼ ì—¬ê¸° ë¡œì§ì—ì„œ Hp==0ì´ ìˆ˜í–‰ë˜ì–´ ì•„ì´í…œ ìƒì„±ë˜ë‹ˆê¹Œ ì´ê²Œ ìµœì„ 
 	bool isalive = Super::OnDamaged(attacker);
-	//¿©±â¼­ Á¦°ÅÇÏ¸é ¹Ì¸® »èÁ¦µÈ »óÅÂ·Î ´ÙÀ½ GetObjectHp¿¡¼­ null crash
+	//ì—¬ê¸°ì„œ ì œê±°í•˜ë©´ ë¯¸ë¦¬ ì‚­ì œëœ ìƒíƒœë¡œ ë‹¤ìŒ GetObjectHpì—ì„œ null crash
 	
 
 	if (attacker == nullptr)
@@ -282,10 +282,10 @@ bool Monster::OnDamaged(shared_ptr<Creature> attacker)
 			}
 			item.SetItemType(Item::GetRandomItemType());
 			item.SetPos(GetPos());
-		//ÆĞÅ¶ Àü´Ş
+		//íŒ¨í‚· ì „ë‹¬
    			
 			Protocol::S_ITEM pkt;
-			Protocol::ItemInfo* iteminfo = pkt.mutable_iteminfo(); //message±¸¼ºÇÏ´Â struct pointer¹İÈ¯
+			Protocol::ItemInfo* iteminfo = pkt.mutable_iteminfo(); //messageêµ¬ì„±í•˜ëŠ” struct pointerë°˜í™˜
 			*iteminfo = item.itemInfo;
 
 			GRoom->AddItem(item);

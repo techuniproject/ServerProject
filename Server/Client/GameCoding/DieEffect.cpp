@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "DieEffect.h"
 #include "GameInstance.h"
 #include "ResourceManager.h"

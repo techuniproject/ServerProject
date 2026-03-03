@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 class GameObject : public enable_shared_from_this<GameObject>
 {
@@ -49,7 +49,7 @@ public:
 	bool isSameSector(Vec2Int sectorpos);
 public:
 	Protocol::ObjectInfo info;
-	shared_ptr<class GameRoom> room; //¼øÈ¯ÂüÁ¶ »ı±æ¼öµµ ¼ø¼­ Àß ¾ÈÁöÅ°¸é
+	shared_ptr<class GameRoom> room; //ìˆœí™˜ì°¸ì¡° ìƒê¸¸ìˆ˜ë„ ìˆœì„œ ì˜ ì•ˆì§€í‚¤ë©´
 	uint64 _lastMoveTime = 0;
 	//weak_ptr<class GameRoom>room;
 private:

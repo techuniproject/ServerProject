@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "GameInstance.h"
 #include "ClientPacketHandler.h"
 #include "BufferReader.h"
@@ -45,14 +45,14 @@ PacketHandlerFunc g_packet_handler[HANDLER_MAX];
 
 bool ClientPacketHandler::HandlePacket(ServerSessionRef session, BYTE* buffer, int32 length)
 {
-    // 1) Çì´õ ÀĞ±â
+    // 1) í—¤ë” ì½ê¸°
     PacketHeader* header = reinterpret_cast<PacketHeader*>(buffer);
 
-    // 2) id ¹üÀ§ Ã¼Å©
+    // 2) id ë²”ìœ„ ì²´í¬
     if (header->id >= HANDLER_MAX)
         return false;
 
-    // 3) µî·ÏµÈ ÇÚµé·¯ ½ÇÇà
+    // 3) ë“±ë¡ëœ í•¸ë“¤ëŸ¬ ì‹¤í–‰
     return g_packet_handler[header->id](session, buffer, length);
 }
 
@@ -184,7 +184,7 @@ bool Handle_S_Move(ServerSessionRef& session, Protocol::S_Move& pkt)
         {
             GET_SINGLE(GameInstance)->GetMyPlayer()->SetMaxHp(info.maxhp());
             GET_SINGLE(GameInstance)->GetMyPlayer()->SetHp(info.hp());
-            GET_SINGLE(GameInstance)->GetMyPlayer()->SetCellPos(Vec2Int(info.posx(), info.posy()),false);//º¸Á¤¿ëµµ
+            GET_SINGLE(GameInstance)->GetMyPlayer()->SetCellPos(Vec2Int(info.posx(), info.posy()),false);//ë³´ì •ìš©ë„
             GET_SINGLE(GameInstance)->GetMyPlayer()->SetDefence(info.defence());
             GET_SINGLE(GameInstance)->GetMyPlayer()->SetAttackSpeed(info.attackspeed());
             GET_SINGLE(GameInstance)->GetMyPlayer()->SetMoveSpeed(info.movespeed());
@@ -194,7 +194,7 @@ bool Handle_S_Move(ServerSessionRef& session, Protocol::S_Move& pkt)
  
  		shared_ptr<GameObject> gameObject=scene->GetGameObject(info.objectid());
  		if (gameObject) {
-            //¾ê³×´Â dirtyflagÄÑÁø´Ù°í ¼­¹ö Åëº¸¾ÈÇÔ ¼­¹ö Åëº¸·ÎÁ÷Àº myplayer¿¡ ÀÖÁö player¿£ ¾øÀ½
+            //ì–˜ë„¤ëŠ” dirtyflagì¼œì§„ë‹¤ê³  ì„œë²„ í†µë³´ì•ˆí•¨ ì„œë²„ í†µë³´ë¡œì§ì€ myplayerì— ìˆì§€ playerì—” ì—†ìŒ
             gameObject->SetAttackSpeed(info.attackspeed());
             gameObject->SetMoveSpeed(info.movespeed());
             gameObject->SetState(info.state());
@@ -211,7 +211,7 @@ bool Handle_S_Move(ServerSessionRef& session, Protocol::S_Move& pkt)
             }*/
             if (info.objecttype() == Protocol::OBJECT_TYPE_PLAYER) {
                 static_pointer_cast<Player>(gameObject)->SetWeaponType(info.weapontype());
-           }//RTTI ºñ¿ë ÁÙÀÌ±â
+           }//RTTI ë¹„ìš© ì¤„ì´ê¸°
             return true;
  		}
  	    
@@ -227,7 +227,7 @@ bool Handle_S_CHAT(ServerSessionRef& session, Protocol::S_CHAT& pkt)
     MultiByteToWideChar(CP_UTF8, 0, pkt.msg().c_str(), -1, &(*wmsg)[0], wlen);
     std::wstring formatted = std::format(L"Player {} : {}", pkt.playerid(), *wmsg);
 
-    // ¸ŞÀÎ À©µµ¿ì¿¡ ¸Ş½ÃÁö Àü´Ş
+    // ë©”ì¸ ìœˆë„ìš°ì— ë©”ì‹œì§€ ì „ë‹¬
     PostMessage(g_hWnd, WM_CHATMSG, (WPARAM)pkt.playerid(), (LPARAM)new std::wstring(formatted));
     return true;
 }
@@ -313,7 +313,7 @@ bool Handle_S_BROADCAST(ServerSessionRef& session, Protocol::S_BROADCAST& pkt)
         for (int32 i = 0; i < removesize; ++i) {
             const Protocol::ObjectInfo& info = pkt.removeobjects(i);
             if (GET_SINGLE(GameInstance)->GetMyPlayerId() == info.objectid())continue;
-            //¼­¹ö¿¡¼­µµ °ËÁõÇØ¼­ ¾Èº¸³»±äÇÔ
+            //ì„œë²„ì—ì„œë„ ê²€ì¦í•´ì„œ ì•ˆë³´ë‚´ê¸´í•¨
           
              shared_ptr<GameObject> obj = scene->GetGameObject(info.objectid());
              if(obj)
@@ -324,7 +324,7 @@ bool Handle_S_BROADCAST(ServerSessionRef& session, Protocol::S_BROADCAST& pkt)
         for (int32 i = 0; i < addsize; ++i) {
             const Protocol::ObjectInfo& info = pkt.addobjects(i);
             if (GET_SINGLE(GameInstance)->GetMyPlayerId() == info.objectid())continue;
-            //ÀÏ´Ü ³» ÇÃ·¹ÀÌ¾î Á¤º¸´Â µ¿±âÈ­ x¾îÂ÷ÇÇ ´ÙÀ½ moveÆĞÅ¶À¸·Î ¹Ş¾Æ¿È
+            //ì¼ë‹¨ ë‚´ í”Œë ˆì´ì–´ ì •ë³´ëŠ” ë™ê¸°í™” xì–´ì°¨í”¼ ë‹¤ìŒ moveíŒ¨í‚·ìœ¼ë¡œ ë°›ì•„ì˜´
 
             if (info.objecttype() == Protocol::OBJECT_TYPE_PLAYER)
             {

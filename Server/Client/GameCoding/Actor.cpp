@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Actor.h"
 #include "Component.h"
 
@@ -42,7 +42,7 @@ void Actor::AddComponent(shared_ptr<Component> component)
 	if (component == nullptr)
 		return;
 
-	//»ý¼ºÀÚ¿¡¼­ shared_from_this¾²¸é ¾ÈµÊ ÄÁÆ®·Ï ºí·Ï°ú ¿¬°á ÀüÀÓ
+	//ìƒì„±ìžì—ì„œ shared_from_thisì“°ë©´ ì•ˆë¨ ì»¨íŠ¸ë¡ ë¸”ë¡ê³¼ ì—°ê²° ì „ìž„
 	component->SetOwner(weak_from_this());
 	_components.push_back(component);
 }

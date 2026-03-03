@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Creature.h"
 
 class Arrow : public Creature

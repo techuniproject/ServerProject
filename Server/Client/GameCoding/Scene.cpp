@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "GameInstance.h"
 #include "Scene.h"
 #include "Actor.h"
@@ -40,7 +40,7 @@ void Scene::Update()
 {
 	float deltaTime = GET_SINGLE(GameInstance)->GetDeltaTime();
 
-	// º¹»ç
+	// ë³µì‚¬
 	for (const vector<shared_ptr<Actor>> actors : _actors)
 		for (shared_ptr<Actor> actor : actors)
 			actor->Tick();

@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "AIWorker.h"
 #include <winhttp.h>
 #include "json.hpp"
@@ -23,14 +23,14 @@ static const wchar_t* kHost = L"api.openai.com";
 static const wchar_t* kPath = L"/v1/responses";
 static const char* kModel = "gpt-4.1-mini";
 
-// --- °£´Ü ·Î°Å: VS Output + ai.log ---
+// --- ê°„ë‹¨ ë¡œê±°: VS Output + ai.log ---
 static void AILog(const std::string& s) {
     ::OutputDebugStringA((s + "\n").c_str());
     FILE* f = nullptr;
     if (fopen_s(&f, "ai.log", "a") == 0 && f) { fwrite(s.data(), 1, s.size(), f); fputc('\n', f); fclose(f); }
 }
 
-// ---------- UTF-8 À¯Æ¿ ----------
+// ---------- UTF-8 ìœ í‹¸ ----------
 static std::string EnsureUtf8(const std::string& s) {
     if (s.empty()) return s;
     int w = ::MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, s.data(), (int)s.size(), nullptr, 0);
@@ -53,7 +53,7 @@ static std::wstring U8ToW(const std::string& s) {
     return out;
 }
 
-// data: ¶óÀÎ¿¡¼­ payload ÃßÃâ
+// data: ë¼ì¸ì—ì„œ payload ì¶”ì¶œ
 static bool ExtractDataLine(const std::string& line, std::string& out) {
     if (line.compare(0, 5, "data:") != 0) return false;
     size_t i = 5;
@@ -62,7 +62,7 @@ static bool ExtractDataLine(const std::string& line, std::string& out) {
     return true;
 }
 
-// data payload(JSON) Ã³¸® ¡æ µ¨Å¸´Â ´©Àû, ¿Ï·á¿¡¼­ ÇÑ ¹ø¸¸ ¹æ¼Û
+// data payload(JSON) ì²˜ë¦¬ â†’ ë¸íƒ€ëŠ” ëˆ„ì , ì™„ë£Œì—ì„œ í•œ ë²ˆë§Œ ë°©ì†¡
 static void ProcessDataJson(const std::string& payload, const AIRequest& req, std::string& accum) {
     if (payload == "[DONE]" || payload == "[DONE]\n" || payload == "[DONE]\r\n") {
         AILog("[AI] DONE");
@@ -74,17 +74,17 @@ static void ProcessDataJson(const std::string& payload, const AIRequest& req, st
     try {
         nlohmann::json j = nlohmann::json::parse(payload);
 
-        // ÃÖ½Å Responses SSE
+        // ìµœì‹  Responses SSE
         if (j.contains("type") && j["type"].is_string()) {
             std::string t = j["type"].get<std::string>();
 
-            // µ¨Å¸ ¡æ ´©Àû¸¸
+            // ë¸íƒ€ â†’ ëˆ„ì ë§Œ
             if ((t == "response.output_text.delta" || t == "response.output.delta") && j.contains("delta") && j["delta"].is_string()) {
                 accum += j["delta"].get<std::string>();
                 return;
             }
 
-            // ¿Ï·á ¡æ Áö±İ±îÁö ´©Àûº» ÇÑ ¹ø¿¡ ¹æ¼Û
+            // ì™„ë£Œ â†’ ì§€ê¸ˆê¹Œì§€ ëˆ„ì ë³¸ í•œ ë²ˆì— ë°©ì†¡
             if (t == "response.completed") {
                 if (!accum.empty()) {
                     if (auto room = req.room.lock()) {
@@ -98,9 +98,9 @@ static void ProcessDataJson(const std::string& payload, const AIRequest& req, st
                 return;
             }
 
-            // ¿¡·¯ ÀÌº¥Æ® ¡æ À¯Àú¿¡°Ô ¾È³»
+            // ì—ëŸ¬ ì´ë²¤íŠ¸ â†’ ìœ ì €ì—ê²Œ ì•ˆë‚´
             if (t == "error") {
-                std::string msg = "AI ¿¡·¯";
+                std::string msg = "AI ì—ëŸ¬";
                 if (j.contains("error") && j["error"].contains("type")) msg += " (" + j["error"]["type"].get<std::string>() + ")";
                 if (auto room = req.room.lock()) {
                     room->PushJob([room, text = msg]() {
@@ -112,7 +112,7 @@ static void ProcessDataJson(const std::string& payload, const AIRequest& req, st
             }
         }
 
-        // ºñ½ºÆ®¸®¹Ö/È£È¯ °æ·Î: ÇÑ ¹ø¿¡ ¿Â ÅØ½ºÆ® Áï½Ã ¹æ¼Û
+        // ë¹„ìŠ¤íŠ¸ë¦¬ë°/í˜¸í™˜ ê²½ë¡œ: í•œ ë²ˆì— ì˜¨ í…ìŠ¤íŠ¸ ì¦‰ì‹œ ë°©ì†¡
         std::string once;
         if (j.contains("output_text")) once += j["output_text"].get<std::string>();
         if (j.contains("message") && j["message"].contains("content"))
@@ -138,7 +138,7 @@ static void ProcessDataJson(const std::string& payload, const AIRequest& req, st
     }
 }
 
-// ---------- ¿öÄ¿ Ç® ----------
+// ---------- ì›Œì»¤ í’€ ----------
 void AIWorkerPool::Start(int workers, AIQueue* q) {
     if (_running.exchange(true)) return;
     _queue = q;
@@ -173,7 +173,7 @@ void AIWorkerPool::WorkerMain() {
                     if (hc) { ::WinHttpCloseHandle(hc); hc = nullptr; }
                     };
 
-                // ----- ¿äÃ» º»¹® ±¸¼º (´ÜÀÏ ¹®ÀÚ¿­ input) -----
+                // ----- ìš”ì²­ ë³¸ë¬¸ êµ¬ì„± (ë‹¨ì¼ ë¬¸ìì—´ input) -----
                 std::string sys = EnsureUtf8(req.systemPrompt);
                 std::string user = EnsureUtf8(req.userText);
                 std::string ctx = EnsureUtf8(req.contextJson);
@@ -205,7 +205,7 @@ void AIWorkerPool::WorkerMain() {
                     (DWORD)bodyStr.size(), 0)
                     && ::WinHttpReceiveResponse(hr, nullptr)) {
 
-                    // ----- »óÅÂÄÚµå/¿¡·¯¹Ùµğ ·Î±ë -----
+                    // ----- ìƒíƒœì½”ë“œ/ì—ëŸ¬ë°”ë”” ë¡œê¹… -----
                     DWORD status = 0; DWORD sz = sizeof(status);
                     if (::WinHttpQueryHeaders(hr,
                         WINHTTP_QUERY_STATUS_CODE | WINHTTP_QUERY_FLAG_NUMBER,
@@ -227,9 +227,9 @@ void AIWorkerPool::WorkerMain() {
                         continue;
                     }
 
-                    // ----- SSE ¼ö½Å -----
+                    // ----- SSE ìˆ˜ì‹  -----
                     std::string chunk; chunk.reserve(16 * 1024);
-                    std::string accum; // ¡ç ´©Àû ¹öÆÛ
+                    std::string accum; // â† ëˆ„ì  ë²„í¼
 
                     for (;;) {
                         DWORD avail = 0;
@@ -257,12 +257,12 @@ void AIWorkerPool::WorkerMain() {
                             if (!line.empty() && line.back() == '\r') line.pop_back();
                             pos = nl + 1;
 
-                            if (line.empty()) continue; // ÀÌº¥Æ® °æ°è
+                            if (line.empty()) continue; // ì´ë²¤íŠ¸ ê²½ê³„
 
                             std::string payload;
                             if (ExtractDataLine(line, payload)) {
                                 AILog("[AI] data: " + payload.substr(0, std::min<size_t>(payload.size(), 80)));
-                                ProcessDataJson(payload, req, accum); // ¡ç ´©Àû Ã³¸®
+                                ProcessDataJson(payload, req, accum); // â† ëˆ„ì  ì²˜ë¦¬
                             }
                             else {
                                 AILog("[AI] line: " + line.substr(0, std::min<size_t>(line.size(), 80)));
@@ -270,7 +270,7 @@ void AIWorkerPool::WorkerMain() {
                         }
                     }
 
-                    // ½ºÆ®¸²ÀÌ ºñÁ¤»ó Á¾·áµÅµµ ³²Àº ´©ÀûºĞÀÌ ÀÖÀ¸¸é ÇÑ ¹ø ´õ ¹æ¼Û
+                    // ìŠ¤íŠ¸ë¦¼ì´ ë¹„ì •ìƒ ì¢…ë£Œë¼ë„ ë‚¨ì€ ëˆ„ì ë¶„ì´ ìˆìœ¼ë©´ í•œ ë²ˆ ë” ë°©ì†¡
                     if (!accum.empty()) {
                         if (auto room = req.room.lock()) {
                             std::string text = accum; accum.clear();

@@ -1,4 +1,4 @@
-#include "Panel.h"
+﻿#include "Panel.h"
 
 class TestPanel : public Panel
 {

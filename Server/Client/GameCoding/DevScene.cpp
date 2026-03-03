@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "GameInstance.h"
 #include "DevScene.h"
 #include "Utils.h"
@@ -488,9 +488,9 @@ shared_ptr<Player> DevScene::FindClosestPlayer(Vec2Int pos)
 bool DevScene::FindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int32 maxDepth)
 {
 	// F = G + H
-	// F = ÃÖÁ¾ Á¡¼ö(ÀÛÀ» ¼ö·Ï ÁÁÀ½)
-	// G = ½ÃÀÛÁ¡¿¡¼­ ÇØ´ç ÁÂÇ¥±îÁö ÀÌµ¿ÇÏ´Âµ¥ µå´Â ºñ¿ë
-	// H = ¸ñÀûÁö¿¡¼­ ÇØ´ç ÁÂÇ¥±îÁö ÀÌµ¿ÇÏ´Âµ¥ µå´Â ºñ¿ë
+	// F = ìµœì¢… ì ìˆ˜(ì‘ì„ ìˆ˜ë¡ ì¢‹ìŒ)
+	// G = ì‹œì‘ì ì—ì„œ í•´ë‹¹ ì¢Œí‘œê¹Œì§€ ì´ë™í•˜ëŠ”ë° ë“œëŠ” ë¹„ìš©
+	// H = ëª©ì ì§€ì—ì„œ í•´ë‹¹ ì¢Œí‘œê¹Œì§€ ì´ë™í•˜ëŠ”ë° ë“œëŠ” ë¹„ìš©
 	int32 depth = abs(src.y - dest.y) + abs(src.x - dest.x);
 	if (depth >= maxDepth)
 		return false;
@@ -499,7 +499,7 @@ bool DevScene::FindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int32 
 	map<Vec2Int, int32> best;
 	map<Vec2Int, Vec2Int> parent;
 
-	// ÃÊ±â°ª
+	// ì´ˆê¸°ê°’
 	{
 		int32 cost = abs(dest.y - src.y) + abs(dest.x - src.x);
 
@@ -520,22 +520,22 @@ bool DevScene::FindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int32 
 
 	while (pq.empty() == false)
 	{
-		// Á¦ÀÏ ÁÁÀº ÈÄº¸¸¦ Ã£´Â´Ù
+		// ì œì¼ ì¢‹ì€ í›„ë³´ë¥¼ ì°¾ëŠ”ë‹¤
 		PQNode node = pq.top();
 		pq.pop();
 
-		// ´õ ÂªÀº °æ·Î¸¦ µÚ´Ê°Ô Ã£¾Ò´Ù¸é ½ºÅµ
+		// ë” ì§§ì€ ê²½ë¡œë¥¼ ë’¤ëŠ¦ê²Œ ì°¾ì•˜ë‹¤ë©´ ìŠ¤í‚µ
 		if (best[node.pos] < node.cost)
 			continue;
 
-		// ¸ñÀûÁö¿¡ µµÂøÇßÀ¸¸é ¹Ù·Î Á¾·á
+		// ëª©ì ì§€ì— ë„ì°©í–ˆìœ¼ë©´ ë°”ë¡œ ì¢…ë£Œ
 		if (node.pos == dest)
 		{
 			found = true;
 			break;
 		}
 
-		// ¹æ¹®
+		// ë°©ë¬¸
 		for (int32 dir = 0; dir < 4; dir++)
 		{
 			Vec2Int nextPos = node.pos + front[dir];
@@ -551,12 +551,12 @@ bool DevScene::FindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int32 
 			int32 bestValue = best[nextPos];
 			if (bestValue != 0)
 			{
-				// ´Ù¸¥ °æ·Î¿¡¼­ ´õ ºü¸¥ ±æÀ» Ã£¾ÒÀ¸¸é ½ºÅµ
+				// ë‹¤ë¥¸ ê²½ë¡œì—ì„œ ë” ë¹ ë¥¸ ê¸¸ì„ ì°¾ì•˜ìœ¼ë©´ ìŠ¤í‚µ
 				if (bestValue <= cost)
 					continue;
 			}
 
-			// ¿¹¾à ÁøÇà
+			// ì˜ˆì•½ ì§„í–‰
 			best[nextPos] = cost;
 			pq.push(PQNode(cost, nextPos));
 			parent[nextPos] = node.pos;
@@ -572,7 +572,7 @@ bool DevScene::FindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int32 
 			Vec2Int pos = item.first;
 			int32 score = item.second;
 
-			// µ¿Á¡ÀÌ¶ó¸é, ÃÖÃÊ À§Ä¡¿¡¼­ °¡Àå ´ú ÀÌµ¿ÇÏ´Â ÂÊÀ¸·Î
+			// ë™ì ì´ë¼ë©´, ìµœì´ˆ ìœ„ì¹˜ì—ì„œ ê°€ì¥ ëœ ì´ë™í•˜ëŠ” ìª½ìœ¼ë¡œ
 			if (bestScore == score)
 			{
 				int32 dist1 = abs(dest.x - src.x) + abs(dest.y - src.y);
@@ -595,7 +595,7 @@ bool DevScene::FindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int32 
 	{
 		path.push_back(pos);
 
-		// ½ÃÀÛÁ¡
+		// ì‹œì‘ì 
 		if (pos == parent[pos])
 			break;
 
@@ -619,7 +619,7 @@ bool DevScene::CanGo(Vec2Int cellPos)
 	if (tile == nullptr)
 		return false;
 
-	// ¸ó½ºÅÍ Ãæµ¹?
+	// ëª¬ìŠ¤í„° ì¶©ëŒ?
 	if (GetCreatureAt(cellPos) != nullptr)
 		return false;
 
@@ -659,7 +659,7 @@ Vec2Int DevScene::GetRandomEmptyCellPos()
 
 	Vec2Int size = tm->GetMapSize();
 
-	// ¸î ¹ø ½Ãµµ?
+	// ëª‡ ë²ˆ ì‹œë„?
 	while (true)
 	{
 		int32 x = rand() % size.x;
@@ -673,7 +673,7 @@ Vec2Int DevScene::GetRandomEmptyCellPos()
 
 void DevScene::TickMonsterSpawn()
 {
-	return;//¼­¹ö·Î ÀÌÀü
+	return;//ì„œë²„ë¡œ ì´ì „
 
 	if (_monsterCount < DESIRED_COUNT)
 		SpawnObjectAtRandomPos<Monster>();

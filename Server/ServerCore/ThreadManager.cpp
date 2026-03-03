@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "ThreadManager.h"
 #include "CoreTLS.h"
 #include "CoreGlobal.h"
@@ -20,7 +20,7 @@ ThreadManager::~ThreadManager()
 
 void ThreadManager::Launch(function<void(void)> callback)
 {  
-	LockGuard guard(_lock); // °øÀ¯µÈ vector¿¡¼­ push_back¶§¹®¿¡ ¶ô
+	LockGuard guard(_lock); // ê³µìœ ëœ vectorì—ì„œ push_backë•Œë¬¸ì— ë½
 
 	_threads.push_back(thread([=]()
 		{
@@ -43,11 +43,11 @@ void ThreadManager::Join()
 void ThreadManager::InitTLS()
 {
 	static Atomic<uint32> SThreadId = 1;
-	// ÇØ´ç º¯¼ö´Â ¸ğµç ½º·¹µå°¡ °øÀ¯ÇÏ´Â Àü¿ª º¯¼öÀÌ¹Ç·Î atomicÀ¸·Î ¼±¾ğ
+	// í•´ë‹¹ ë³€ìˆ˜ëŠ” ëª¨ë“  ìŠ¤ë ˆë“œê°€ ê³µìœ í•˜ëŠ” ì „ì—­ ë³€ìˆ˜ì´ë¯€ë¡œ atomicìœ¼ë¡œ ì„ ì–¸
 
 	LThreadId = SThreadId.fetch_add(1);
-	// fetch_add´Â ¿øÀÚÀûÀ¸·Î ¿¬»ê ¼öÇà, ³»ºÎ¿¡ CAS ¶Ç´Â lock¹æ½ÄÀ» ÅëÇØ ÇÏµå¿ş¾î ¼öÁØ¿¡¼­ ¿øÀÚÀûÀ¸·Î ¿¬»ê º¸Àå
-	// °á°úÀûÀ¸·Î ¿©·¯ ½º·¹µå µ¿½Ã Á¢±ÙÇØµµ ÇÑ¹ø¿¡ ÇÏ³ª¾¿ ¼öÇà, °¢ ½º·¹µå´Â ¼­·Î ´Ù¸¥ °íÀ¯ ID¸¦ Á¤È®ÇÏ°Ô ºÎ¿©¹ŞÀ½
+	// fetch_addëŠ” ì›ìì ìœ¼ë¡œ ì—°ì‚° ìˆ˜í–‰, ë‚´ë¶€ì— CAS ë˜ëŠ” lockë°©ì‹ì„ í†µí•´ í•˜ë“œì›¨ì–´ ìˆ˜ì¤€ì—ì„œ ì›ìì ìœ¼ë¡œ ì—°ì‚° ë³´ì¥
+	// ê²°ê³¼ì ìœ¼ë¡œ ì—¬ëŸ¬ ìŠ¤ë ˆë“œ ë™ì‹œ ì ‘ê·¼í•´ë„ í•œë²ˆì— í•˜ë‚˜ì”© ìˆ˜í–‰, ê° ìŠ¤ë ˆë“œëŠ” ì„œë¡œ ë‹¤ë¥¸ ê³ ìœ  IDë¥¼ ì •í™•í•˜ê²Œ ë¶€ì—¬ë°›ìŒ
 }
 
 void ThreadManager::DestroyTLS()

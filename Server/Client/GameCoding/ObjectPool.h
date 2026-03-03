@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 class MemoryPool
 {
 
@@ -12,7 +12,7 @@ public:
 	~MemoryPool()
 	{
 		for (void* block : chuncks) {
-			::operator delete(block);//¼Ò¸êÀÚ È£Ãâ x ¸Ş¸ğ¸® ¹İÈ¯¸¸
+			::operator delete(block);//ì†Œë©¸ì í˜¸ì¶œ x ë©”ëª¨ë¦¬ ë°˜í™˜ë§Œ
 		}
 	}
 
@@ -37,7 +37,7 @@ public:
 private:
 	void Expand() {
 		size_t blockSize = objectSize * chunckCnt;
-		void* block = ::operator new(blockSize);//¸Ş¸ğ¸® ÇÒ´ç¸¸, »ı¼ºÀÚ È£Ãâx
+		void* block = ::operator new(blockSize);//ë©”ëª¨ë¦¬ í• ë‹¹ë§Œ, ìƒì„±ì í˜¸ì¶œx
 		chuncks.push_back(block);
 
 		char* start = static_cast<char*>(block);
@@ -55,13 +55,13 @@ private:
 	size_t chunckCnt;
 };
 
-// [2] Å©±âº° Ç®À» °ü¸®ÇÏ´Â Áß¾Ó ¸Å´ÏÀú (Singleton)
+// [2] í¬ê¸°ë³„ í’€ì„ ê´€ë¦¬í•˜ëŠ” ì¤‘ì•™ ë§¤ë‹ˆì € (Singleton)
 class PoolManager
 {
-	// ¸Ş¸ğ¸® ¾Õ¿¡ ºÙÀÏ Çì´õ (¹İ³³ÇÒ ¶§ Å©±â¸¦ ¾Ë±â À§ÇØ)
+	// ë©”ëª¨ë¦¬ ì•ì— ë¶™ì¼ í—¤ë” (ë°˜ë‚©í•  ë•Œ í¬ê¸°ë¥¼ ì•Œê¸° ìœ„í•´)
 	struct MemoryHeader
 	{
-		size_t allocSize; // ³»°¡ ¾î´À Ç® Ãâ½ÅÀÎÁö ±â·Ï
+		size_t allocSize; // ë‚´ê°€ ì–´ëŠ í’€ ì¶œì‹ ì¸ì§€ ê¸°ë¡
 	};
 
 public:
@@ -70,39 +70,39 @@ public:
 		return instance;
 	}
 
-	// Å©±â¿¡ ¸Â´Â Ç®À» Ã£¾Æ¼­ ÇÒ´ç
+	// í¬ê¸°ì— ë§ëŠ” í’€ì„ ì°¾ì•„ì„œ í• ë‹¹
 	void* Allocate(size_t size)
 	{
-		// Çì´õ Å©±â¸¸Å­ ´õÇØ¼­ ÇÒ´çÇØ¾ß ÇÔ
+		// í—¤ë” í¬ê¸°ë§Œí¼ ë”í•´ì„œ í• ë‹¹í•´ì•¼ í•¨
 		size_t totalSize = size + sizeof(MemoryHeader);
 
 		void* ptr = nullptr;
 		size_t allocSize = 0;
 
-		// Å©±âº° ºĞ±â (¿øÇÏ´Â ´ÜÀ§·Î ÂÉ°³¼¼¿ä)
+		// í¬ê¸°ë³„ ë¶„ê¸° (ì›í•˜ëŠ” ë‹¨ìœ„ë¡œ ìª¼ê°œì„¸ìš”)
 		if (totalSize <= 32) { ptr = _pool32.Allocate(); allocSize = 32; }
 		else if (totalSize <= 64) { ptr = _pool64.Allocate(); allocSize = 64; }
 		else if (totalSize <= 128) { ptr = _pool128.Allocate(); allocSize = 128; }
 		else if (totalSize <= 256) { ptr = _pool256.Allocate(); allocSize = 256; }
 		else
 		{
-			// Ç® ¹üÀ§¸¦ ¹ş¾î³ª¸é ±×³É ½Ã½ºÅÛ ÇÒ´ç (Fallback)
+			// í’€ ë²”ìœ„ë¥¼ ë²—ì–´ë‚˜ë©´ ê·¸ëƒ¥ ì‹œìŠ¤í…œ í• ë‹¹ (Fallback)
 			ptr = ::operator new(totalSize);
 			allocSize = totalSize;
 		}
 
-		// Çì´õ¿¡ Å©±â Á¤º¸ ±â·Ï
+		// í—¤ë”ì— í¬ê¸° ì •ë³´ ê¸°ë¡
 		MemoryHeader* header = static_cast<MemoryHeader*>(ptr);
 		header->allocSize = allocSize;
 
-		// ½ÇÁ¦ À¯Àú°¡ ¾µ ¸Ş¸ğ¸® ÁÖ¼Ò´Â Çì´õ µÚÂÊ
+		// ì‹¤ì œ ìœ ì €ê°€ ì“¸ ë©”ëª¨ë¦¬ ì£¼ì†ŒëŠ” í—¤ë” ë’¤ìª½
 		return static_cast<char*>(ptr) + sizeof(MemoryHeader);
 	}
 
-	// ¸Ş¸ğ¸® ¹İ³³ (Å©±â¸¦ ¸ô¶óµµ Çì´õ º¸°í ¾Ë¾Æ¼­ ¹İ³³)
+	// ë©”ëª¨ë¦¬ ë°˜ë‚© (í¬ê¸°ë¥¼ ëª°ë¼ë„ í—¤ë” ë³´ê³  ì•Œì•„ì„œ ë°˜ë‚©)
 	void Deallocate(void* ptr)
 	{
-		// À¯Àú Æ÷ÀÎÅÍ¿¡¼­ Çì´õ À§Ä¡·Î ¹éÆ®·¡Å·
+		// ìœ ì € í¬ì¸í„°ì—ì„œ í—¤ë” ìœ„ì¹˜ë¡œ ë°±íŠ¸ë˜í‚¹
 		char* headerPos = static_cast<char*>(ptr) - sizeof(MemoryHeader);
 		MemoryHeader* header = reinterpret_cast<MemoryHeader*>(headerPos);
 		size_t allocSize = header->allocSize;
@@ -115,7 +115,7 @@ public:
 	}
 
 private:
-	// »ı¼ºÀÚ¿¡¼­ ¹Ì¸® ÇÒ´çÇÏÁö ¾Ê°í Lazy Init ÇÏ°Å³ª, ¿©±â¼­ »çÀÌÁî ÁöÁ¤
+	// ìƒì„±ìì—ì„œ ë¯¸ë¦¬ í• ë‹¹í•˜ì§€ ì•Šê³  Lazy Init í•˜ê±°ë‚˜, ì—¬ê¸°ì„œ ì‚¬ì´ì¦ˆ ì§€ì •
 	MemoryPool _pool32{ 32, 2000 };
 	MemoryPool _pool64{ 64, 1000 };
 	MemoryPool _pool128{ 128, 500 };
@@ -127,19 +127,19 @@ template<typename T>
 class ObjectPool
 {
 public:
-	// shared_ptr ¹İÈ¯ (Ä¿½ºÅÒ »èÁ¦ÀÚ Æ÷ÇÔ)
+	// shared_ptr ë°˜í™˜ (ì»¤ìŠ¤í…€ ì‚­ì œì í¬í•¨)
 	static std::shared_ptr<T> Pop()
 	{
-		// 1. ¸Ş¸ğ¸® °ø°£ °¡Á®¿À±â (O(1))
+		// 1. ë©”ëª¨ë¦¬ ê³µê°„ ê°€ì ¸ì˜¤ê¸° (O(1))
 		void* ptr = PoolManager::Instance().Allocate(sizeof(T));
 
-		// 2. »ı¼ºÀÚ È£Ãâ (Placement New)
+		// 2. ìƒì„±ì í˜¸ì¶œ (Placement New)
 		T* obj = new(ptr) T();
 
-		// 3. shared_ptr »ı¼º ½Ã '¹İ³³ ·ÎÁ÷(Deleter)' µî·Ï
+		// 3. shared_ptr ìƒì„± ì‹œ 'ë°˜ë‚© ë¡œì§(Deleter)' ë“±ë¡
 		return std::shared_ptr<T>(obj, [](T* p)
 			{
-				// ¼Ò¸êÀÚ È£Ãâ -> ¸Ş¸ğ¸® ¹İ³³
+				// ì†Œë©¸ì í˜¸ì¶œ -> ë©”ëª¨ë¦¬ ë°˜ë‚©
 				p->~T();
 				PoolManager::Instance().Deallocate(p);
 			});

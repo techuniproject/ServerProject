@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Types.h"
 #include "CoreMacro.h"
@@ -27,7 +27,7 @@
 #include <winsock2.h>
 #include <mswsock.h>
 #include <ws2tcpip.h>
-#include <windows.h> // ¼ø¼­ À¯ÀÇ
+#include <windows.h> // ìˆœì„œ ìœ ì˜
 #include <assert.h>
 #include <cctype>
 #include <iostream>

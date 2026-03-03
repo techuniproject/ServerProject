@@ -1,10 +1,10 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include <iostream>
 
-// Å¬¶ó
-// 1) ¼ÒÄÏ »ı¼º
-// 2) ¼­¹ö¿¡ ¿¬°á ¿äÃ»
-// 3) Åë½Å
+// í´ë¼
+// 1) ì†Œì¼“ ìƒì„±
+// 2) ì„œë²„ì— ì—°ê²° ìš”ì²­
+// 3) í†µì‹ 
 
 int main()
 {
@@ -15,7 +15,7 @@ int main()
 	if (clientSocket == INVALID_SOCKET)
 		return 0;
 
-	//³í ºí·ÎÅ·
+	//ë…¼ ë¸”ë¡œí‚¹
 	u_long on = 1;
 	if (::ioctlsocket(clientSocket, FIONBIO, &on) == INVALID_SOCKET)
 		return 0;
@@ -33,8 +33,8 @@ int main()
 			if (::WSAGetLastError() == WSAEWOULDBLOCK)
 				continue;
 
-			//ÀÌ¹Ì ¿¬°áµÈ »óÅÂ¶ó°í º¸°í break
-			if (::WSAGetLastError() == WSAEISCONN)//ÀÌ¹Ì connect¿äÃ»ÇßÀ»¶§ ´Ù½Ã connectÇÏ·Á°í ÇÒ¶§ ¿À·ù
+			//ì´ë¯¸ ì—°ê²°ëœ ìƒíƒœë¼ê³  ë³´ê³  break
+			if (::WSAGetLastError() == WSAEISCONN)//ì´ë¯¸ connectìš”ì²­í–ˆì„ë•Œ ë‹¤ì‹œ connectí•˜ë ¤ê³  í• ë•Œ ì˜¤ë¥˜
 				break;
 		}
 	}

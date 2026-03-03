@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "UI.h"
 
 class Sprite;
@@ -57,7 +57,7 @@ public:
 		};
 	}
 
-	// ÇÔ¼ö Æ÷ÀÎÅÍ + ÇÔ¼ö °´Ã¼
+	// í•¨ìˆ˜ í¬ì¸í„° + í•¨ìˆ˜ ê°ì²´
 	std::function<void(void)> _onClick = nullptr;
 };
 

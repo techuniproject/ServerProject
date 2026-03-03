@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "IocpCore.h"
 #include "IocpEvent.h"
 #include "NetAddress.h"
@@ -26,7 +26,7 @@ public:
 	virtual ~Session();
 
 public:
-	/* ¿ÜºÎ¿¡¼­ »ç¿ë */
+	/* ì™¸ë¶€ì—ì„œ ì‚¬ìš© */
 	//void				Send(BYTE* buffer, int32 len);
 	void				Send(SendBufferRef sendBuffer);
 	bool				Connect();
@@ -36,7 +36,7 @@ public:
 	void				SetService(shared_ptr<Service> service) { _service = service; }
 
 public:
-	/* Á¤º¸ °ü·Ã */
+	/* ì •ë³´ ê´€ë ¨ */
 	void				SetNetAddress(NetAddress address) { _netAddress = address; }
 	NetAddress			GetAddress() { return _netAddress; }
 	SOCKET				GetSocket() { return _socket; }
@@ -44,12 +44,12 @@ public:
 	SessionRef			GetSessionRef() { return static_pointer_cast<Session>(shared_from_this()); }
 
 private:
-	/* ÀÎÅÍÆäÀÌ½º ±¸Çö */
+	/* ì¸í„°í˜ì´ìŠ¤ êµ¬í˜„ */
 	virtual HANDLE		GetHandle() override;
 	virtual void		Dispatch(struct IocpEvent* iocpEvent, int32 numOfBytes = 0) override;
 
 private:
-	/* Àü¼Û °ü·Ã */
+	/* ì „ì†¡ ê´€ë ¨ */
 	bool				RegisterConnect();
 	bool				RegisterDisconnect();
 	void				RegisterRecv();
@@ -65,7 +65,7 @@ private:
 	void				HandleError(int32 errorCode);
 
 protected:
-	/* ÄÁÅÙÃ÷ ÄÚµå¿¡¼­ ÀçÁ¤ÀÇ */
+	/* ì»¨í…ì¸  ì½”ë“œì—ì„œ ì¬ì •ì˜ */
 	virtual void		OnConnected() {}
 	virtual int32		OnRecv(BYTE* buffer, int32 len) { return len; }
 	virtual void		OnSend(int32 len) {}
@@ -86,13 +86,13 @@ private:
 private:
 	USE_LOCK;
 
-	/* ¼ö½Å °ü·Ã */
+	/* ìˆ˜ì‹  ê´€ë ¨ */
 	RecvBuffer _recvBuffer;
-	/* ¼Û½Å °ü·Ã */
+	/* ì†¡ì‹  ê´€ë ¨ */
 	queue<SendBufferRef>	_sendQueue;
 	atomic<bool>			_sendRegistered = false;
 private:
-	/* IocpEvent Àç»ç¿ë */
+	/* IocpEvent ì¬ì‚¬ìš© */
 	IocpEvent		_connectEvent{ EventType::Connect };
 	IocpEvent		_disconnectEvent{ EventType::Disconnect };
 	IocpEvent		_recvEvent{ EventType::Recv };
@@ -106,7 +106,7 @@ private:
 struct PacketHeader
 {
 	uint16 size;
-	uint16 id; // ÇÁ·ÎÅäÄİID (ex. 1=·Î±×ÀÎ, 2=ÀÌµ¿¿äÃ»)
+	uint16 id; // í”„ë¡œí† ì½œID (ex. 1=ë¡œê·¸ì¸, 2=ì´ë™ìš”ì²­)
 };
 
 class PacketSession : public Session
@@ -118,6 +118,6 @@ public:
 	PacketSessionRef	GetPacketSessionRef() { return static_pointer_cast<PacketSession>(shared_from_this()); }
 
 protected:
-	virtual int32		OnRecv(BYTE* buffer, int32 len)override final; //final/sealed->³ª ÀÌÈÄ·Î »ó¼ÓÇÏ´Â °Â´Â ÀÌ°É ´õÀÌ»ó ¸ø¾´´Ù
+	virtual int32		OnRecv(BYTE* buffer, int32 len)override final; //final/sealed->ë‚˜ ì´í›„ë¡œ ìƒì†í•˜ëŠ” ê±”ëŠ” ì´ê±¸ ë”ì´ìƒ ëª»ì“´ë‹¤
 	virtual void		OnRecvPacket(BYTE* buffer, int32 len) = 0;
 };
