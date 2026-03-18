@@ -102,7 +102,8 @@ public:
 	Monster* GetMonsterAtSector(Vec2Int cellPos);
 	Arrow* GetArrowAtSector(Vec2Int cellPos);
 	Creature* GetCreatureAtSector(Vec2Int cellPos);
-	Player* FindClosestPlayerBySector(Vec2Int cellPos);
+	weak_ptr<Player> FindClosestPlayerBySector(Vec2Int cellPos);
+	//댕글링포인터 때문에 rawpointer반환 x
 
 	void DoSomethingCrossingSectors(Vec2Int curCellPos, Vec2Int LastCellPos, function<void(Vec2Int)>add, function<void(Vec2Int)>remove);
 	
@@ -117,7 +118,7 @@ private:
 	vector<uint64>_deletearrowlist;
 public:
 	Tilemap _tilemap;
-	const int32 DESIRED_COUNT = 500;
+	const int32 DESIRED_COUNT = 1;
 	vector<Sector>_gameRoomSector;//1차원배열로 y*height +x 형태로 쓸거임 캐시 효율을 위해  
 	//Sector=>vector<Creature*>
 	const int32 SECTOR_HEIGHT = 5;

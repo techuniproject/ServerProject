@@ -100,7 +100,9 @@ int main()
 	GAIWorkers.Start(2, &GAIQueue);
 	while (true) //메인스레드 Job처리, 게임로직 및 Send/Recv예약(패킷)
 	{
-		GRoom->FlushJobs();
+
+		//FlushJobs에서 disconnected과 같이 섹터 내부 컨테이너나 게임룸 수명 주기 컨테이너에서 제거후 update하므로 rawpointer같은 문제 발생 x
+		GRoom->FlushJobs(); 
 		GRoom->Update();
 		//Job처리후 Update 일관성 고려
 		//Update는 게임로직 수정후 broadcast이므로 큰 제약 없음 메인스레드 jobqueue엔 들어갈게 없음 곧바로 처리가능,.

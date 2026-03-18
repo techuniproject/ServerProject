@@ -34,6 +34,8 @@ private:
 
 	Item item;
 	uint64 _findMaxDist = 10;
-	Player* _target=nullptr; // TEMP
+	//Player* _target=nullptr; // TEMP
+
+	weak_ptr<Player> _target;
 };
 

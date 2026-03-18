@@ -11,7 +11,7 @@ shared_ptr<GameRoom> GRoom = make_shared<GameRoom>();
 
 GameRoom::GameRoom()
 {
-	_deletearrowlist.reserve(100);
+	_deletearrowlist.reserve(1000);
 	_gameRoomSector.resize(SECTOR_HEIGHT * SECTOR_WIDTH);
 }
 
@@ -61,8 +61,13 @@ void GameRoom::TickMonsterSpawn() {
 	if (_monsters.size() < DESIRED_COUNT)
 	{
 
-		shared_ptr<Monster> monster = GameObject::CreateMonster();
 		Vec2Int randPos = gameRoom->GetRandomEmptyCellPos();
+
+		if (randPos == Vec2Int{ -1,-1 })return;
+		//빈공간없으면 spawn x
+
+		shared_ptr<Monster> monster = GameObject::CreateMonster();
+
 		monster->info.set_posx(randPos.x);
 		monster->info.set_posy(randPos.y);
 	
@@ -96,6 +101,7 @@ void GameRoom::DeleteProjectiles()
 	for (uint64 idx : _deletearrowlist) {
 		Leave(idx);
 	}
+	_deletearrowlist.clear();
 }
 
 Sector* GameRoom::GetSectorAt(Vec2Int sectorPos)
@@ -246,7 +252,6 @@ bool GameRoom::CanGoBySector(Vec2Int cellPos)
 
 
 	return tile->value != 1;
-	return false;
 }
 
 Player* GameRoom::GetPlayerAtSector(Vec2Int cellPos)
@@ -334,13 +339,14 @@ Creature* GameRoom::GetCreatureAtSector(Vec2Int cellPos)
 	return nullptr;
 }
 
-Player* GameRoom::FindClosestPlayerBySector(Vec2Int cellPos)
+weak_ptr<Player> GameRoom::FindClosestPlayerBySector(Vec2Int cellPos)
 {
 	Vec2Int curSector = GetSectorPos(cellPos.x, cellPos.y);
 
-	if (curSector == Vec2Int(-1, -1))return nullptr;
+	weak_ptr<Player>ret;
 
-	Player* ret = nullptr;
+	if (curSector == Vec2Int(-1, -1))return ret;
+
 	float best = FLT_MAX;
 
 
@@ -352,7 +358,7 @@ Player* GameRoom::FindClosestPlayerBySector(Vec2Int cellPos)
 				float dist = Vec2Int(pl->GetCellPos() - cellPos).LengthSquared();
 				if (dist < best) {
 					best = dist;
-					ret = pl;
+					ret = static_pointer_cast<Player>(pl->shared_from_this());
 				}
 			}
 		}
@@ -931,8 +937,7 @@ Vec2Int  GameRoom::GetRandomEmptyCellPos() {
 	Vec2Int size = _tilemap.GetMapSize();
 
 	// 몇 번 시도?
-	while (true)
-	{
+	for (int i = 0; i < 1000; ++i) {
 		int32 x = rand() % size.x;
 		int32 y = rand() % size.y;
 		Vec2Int cellPos{ x, y };
@@ -940,6 +945,7 @@ Vec2Int  GameRoom::GetRandomEmptyCellPos() {
 		if (CanGoBySector(cellPos))
 			return cellPos;
 	}
+	return ret;
 }
 
 shared_ptr<GameObject>  GameRoom::GetGameObjectAt(Vec2Int cellPos) {

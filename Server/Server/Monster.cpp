@@ -100,18 +100,18 @@ void Monster::UpdateIdle()
 
 	
 	// Find Player
-	if (_target == nullptr)
+	if (_target.expired())
 		_target = room->FindClosestPlayerBySector(GetCellPos());
 
-	//shared_ptr<Player> player = _target.lock();
+	shared_ptr<Player> player = _target.lock();
 
-	if (_target)
+	if (player)
 	{
-		Vec2Int dir = _target->GetCellPos() - GetCellPos();
+		Vec2Int dir = player->GetCellPos() - GetCellPos();
 		int32 dist = abs(dir.x) + abs(dir.y);
 		if (dist == 1)
 		{
-			SetDir(GetLookAtDir(_target->GetCellPos()));
+			SetDir(GetLookAtDir(player->GetCellPos()));
 			SetState(SKILL);
 			BroadcastMoveBySector();
 			//_waitUntil = GetTickCount64() + 500; //+1초
@@ -119,11 +119,11 @@ void Monster::UpdateIdle()
 		else
 		{
 			if (dist >= _findMaxDist) {
-				_target = nullptr;
+				player.reset();
 				return;
 			}
 			vector<Vec2Int> path;
-			if (room->FindPath(GetCellPos(), _target->GetCellPos(), OUT path,_findMaxDist))
+			if (room->FindPath(GetCellPos(), player->GetCellPos(), OUT path,_findMaxDist))
 			{
 				if (path.size() > 1)
 				{
@@ -139,7 +139,7 @@ void Monster::UpdateIdle()
 							Sector* sector = room->GetSectorAt(sectorPos);
 							if (sector) {
 								for (Player* pl : sector->_sectorPlayers) {
-									if (pl && pl != _target) {//타겟이면 이미 마주쳐서 생성됨 플레이어 C_Move처리에서 추가리스트에 추가
+									if (pl && pl != player.get()) {//타겟이면 이미 마주쳐서 생성됨 플레이어 C_Move처리에서 추가리스트에 추가
 
 										Protocol::S_AddObject pkt;
 										*pkt.add_objects() = info;
@@ -155,7 +155,7 @@ void Monster::UpdateIdle()
 							Sector* sector = room->GetSectorAt(sectorPos);
 							if (sector) {
 								for (Player* pl : sector->_sectorPlayers) {
-									if (pl && pl != _target) {
+									if (pl && pl != player.get()) {
 
 										Protocol::S_RemoveObject pkt;
 										pkt.add_ids(GetObjectID());
@@ -170,7 +170,8 @@ void Monster::UpdateIdle()
 						if(!isSameSector(room->GetSectorPos(nextPos.x,nextPos.y))){
 							//몬스터가 다른 플레이어 추적하면서 다른 섹터로 갔을때 다른 플레이어 눈에도 들어가야하니까
 							room->InsertAtSector(room->GetSectorPos(nextPos.x, nextPos.y), static_cast<GameObject*>(shared_from_this().get()));
-							SetCurSectorPos(room->GetSectorPos(nextPos.x, nextPos.y));
+							//InsertAtSector내부에 있음
+							//SetCurSectorPos(room->GetSectorPos(nextPos.x, nextPos.y));
 							room->DoSomethingCrossingSectors(nextPos, curPos, AddMeForNewSectorPlayers, RemoveMeFromLastSectorPlayers);
 			
 						}
@@ -185,7 +186,7 @@ void Monster::UpdateIdle()
 					//SetCellPos(path[0]);
 					//room->InsertAtSector(room->GetSectorPos(path[0].x, path[0].y), static_cast<GameObject*>(shared_from_this().get()));
 					//SetCurSectorPos(room->GetSectorPos(path[0].x, path[0].y));
-					_target = nullptr;
+					player.reset();
 					SetState(IDLE);
 				}
 			}
@@ -214,10 +215,12 @@ void Monster::UpdateSkill()
 
 	Player* pl = GRoom->GetPlayerAtSector(GetFrontCellPos());
 	if (pl) {
-		pl->OnDamaged(static_pointer_cast<Creature>(shared_from_this()));
+		if(pl->OnDamaged(static_pointer_cast<Creature>(shared_from_this())));
+			pl->SetState(HIT);
+
 		_waitUntil = GetTickCount64() + 1000;
 		//pl->SetState(HIT, true);
-		pl->SetState(HIT);
+		
 		BroadcastMoveBySector();
 	}
 	//shared_ptr<Creature> creature=GRoom->GetCreatureAt(GetFrontCellPos());

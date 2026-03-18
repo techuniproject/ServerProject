@@ -139,7 +139,7 @@ void GameSession::OnDisconnected()
 		pkt.add_ids(id);
 		SendBufferRef sendBuf = ServerPacketHandler::Make_S_RemoveObject(pkt);
 		//room->PushBroadcastJob(sendBuf);
-		room->Broadcast(sendBuf);
+		room->BroadcastBySector(sendBuf,player->GetCurSectorPos());
 
 		});
 	
