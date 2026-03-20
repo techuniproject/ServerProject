@@ -92,6 +92,13 @@ void DevScene::Init()
 	LoadEffect();
 	LoadTilemap();
 	LoadUI();
+
+	// Object Pool Warmup
+	// Monster/Player/Arrow ctor가 GetFlipbook()을 호출하므로
+	// 반드시 Load* 함수들 이후에 호출해야 함
+	ObjectPool<Monster>::Warmup(10);
+	ObjectPool<Player>::Warmup(5);
+	ObjectPool<Arrow>::Warmup(20);
 	
 	GET_SINGLE(GameInstance)->LoadSound(L"BGM", L"Sound\\BGM.wav");
 	GET_SINGLE(GameInstance)->LoadSound(L"Attack", L"Sound\\Sword.wav");
@@ -400,6 +407,7 @@ void DevScene::Handle_S_AddObject(Protocol::S_AddObject& pkt)
 		if (info.objecttype() == Protocol::OBJECT_TYPE_PLAYER)
 		{
 			shared_ptr<Player> player = SpawnObject<Player>(Vec2Int(info.posx(), info.posy()));
+			//shared_ptr<Player> player = SpawnPooledObject<Player>(Vec2Int(info.posx(), info.posy()));
 			player->SetDir(info.dir());
 			player->SetState(info.state());
 			player->info = info;
@@ -407,6 +415,7 @@ void DevScene::Handle_S_AddObject(Protocol::S_AddObject& pkt)
 		else if (info.objecttype() == Protocol::OBJECT_TYPE_MONSTER)
 		{
 			shared_ptr<Monster> monster = SpawnObject<Monster>(Vec2Int(info.posx(), info.posy()));
+		//	shared_ptr<Monster> monster = SpawnPooledObject<Monster>(Vec2Int(info.posx(), info.posy()));
 			monster->SetDir(info.dir());
 			monster->SetState(info.state());
 			monster->info = info;
@@ -414,6 +423,7 @@ void DevScene::Handle_S_AddObject(Protocol::S_AddObject& pkt)
 		else if (info.objecttype() == Protocol::OBJECT_TYPE_PROJECTILE)
 		{
 			shared_ptr<Arrow> arrow = SpawnObject<Arrow>(Vec2Int(info.posx(), info.posy()));
+			//shared_ptr<Arrow> arrow = SpawnPooledObject<Arrow>(Vec2Int(info.posx(), info.posy()));
 			arrow->SetDir(info.dir());
 			arrow->SetState(info.state());
 			arrow->info = info;
@@ -429,12 +439,13 @@ void DevScene::Handle_S_RemoveObject(Protocol::S_RemoveObject& pkt)
 		int32 id = pkt.ids(i);
 
 		shared_ptr<GameObject> object = GetGameObject(id);
+		if (object == nullptr)
+			continue;
 
-		if(object->info.objecttype()!=Protocol::OBJECT_TYPE_PROJECTILE)
-		SpawnObject<DieEffect>(object->GetCellPos());
+		if (object->info.objecttype() != Protocol::OBJECT_TYPE_PROJECTILE)
+			SpawnObject<DieEffect>(object->GetCellPos());
 
-		if (object)
-			RemoveActor(object);
+		RemoveActor(object);
 	}
 }
 

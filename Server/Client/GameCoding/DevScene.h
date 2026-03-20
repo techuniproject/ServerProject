@@ -57,6 +57,23 @@ public:
 		return ret;
 	} 
 
+	// ObjectPool에서 오브젝트를 꺼내 씬에 배치
+	// S_AddObject / S_BROADCAST 수신 시 Monster, Player, Arrow에 사용
+	// RemoveActor() 호출 시 shared_ptr ref=0이 되면 deleter가 Pool에 자동 반납
+	template<typename T>
+	shared_ptr<T> SpawnPooledObject(Vec2Int pos)
+	{
+		static_assert(std::is_convertible_v<T*, GameObject*>,
+			"SpawnPooledObject: T must derive from GameObject");
+
+		shared_ptr<T> ret = ObjectPool<T>::Pop(); // PoolReset() 내부 호출
+		ret->SetCellPos(pos, false, true);
+		AddActor(ret);
+		ret->AttatchDefaultComponent();
+		ret->BeginPlay();
+		return ret;
+	}
+
 	template<typename T>
 	shared_ptr<T> SpawnObjectAtRandomPos()
 	{

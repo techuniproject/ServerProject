@@ -17,6 +17,7 @@ public:
 	virtual void TickMove() override;
 
 	virtual void UpdateAnimation() override;
+	virtual void PoolReset() override;
 
 	void SyncToServer();
 	

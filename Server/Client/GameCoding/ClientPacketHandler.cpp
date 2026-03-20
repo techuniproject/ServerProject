@@ -329,12 +329,14 @@ bool Handle_S_BROADCAST(ServerSessionRef& session, Protocol::S_BROADCAST& pkt)
             if (info.objecttype() == Protocol::OBJECT_TYPE_PLAYER)
             {
                 shared_ptr<Player> player = scene->SpawnObject<Player>(Vec2Int(info.posx(), info.posy()));
+               // shared_ptr<Player> player = scene->SpawnPooledObject<Player>(Vec2Int(info.posx(), info.posy()));
                 player->SetDir(info.dir());
-                player->SetState(info.state());          
-                player->info = info;            
+                player->SetState(info.state());
+                player->info = info;
             }
             else if (info.objecttype() == Protocol::OBJECT_TYPE_MONSTER) {
                 shared_ptr<Monster> monster = scene->SpawnObject<Monster>(Vec2Int(info.posx(), info.posy()));
+               // shared_ptr<Monster> monster = scene->SpawnPooledObject<Monster>(Vec2Int(info.posx(), info.posy()));
                 monster->SetDir(info.dir());
                 monster->SetState(info.state());
                 monster->info = info;

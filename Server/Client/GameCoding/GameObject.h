@@ -14,6 +14,10 @@ public:
 	
 	virtual void AttatchDefaultComponent() {};
 
+	// ObjectPool 재사용 시 상태 초기화 (ctor/dtor 대신 호출)
+	// 하위 클래스에서 override해 추가 상태를 초기화
+	virtual void PoolReset();
+
 	virtual void TickIdle() {}
 	virtual void TickMove() {}
 	virtual void TickSkill() {}

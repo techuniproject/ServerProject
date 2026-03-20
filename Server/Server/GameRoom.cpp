@@ -75,24 +75,8 @@ void GameRoom::TickMonsterSpawn() {
 
 		Protocol::S_AddObject AddedMonster;
 		*AddedMonster.add_objects() = monster->info;
-
 		SendBufferRef sendBuf = ServerPacketHandler::Make_S_AddObject(AddedMonster);
-		gameRoom->Broadcast(sendBuf);
-
-		//PushJob([gameRoom]() {
-		//	shared_ptr<Monster> monster = GameObject::CreateMonster();
-		//	Vec2Int randPos = gameRoom->GetRandomEmptyCellPos();
-		//	monster->info.set_posx(randPos.x);
-		//	monster->info.set_posy(randPos.y);
-		//	gameRoom->Enter(monster);
-
-		//	Protocol::S_AddObject AddedMonster;
-		//	*AddedMonster.add_objects() = monster->info;
-
-		//	SendBufferRef sendBuf = ServerPacketHandler::Make_S_AddObject(AddedMonster);
-		//	gameRoom->Broadcast(sendBuf);
-		//	//gameRoom->PushBroadcastJob(sendBuf);
-		//	});
+		gameRoom->BroadcastBySector(sendBuf, gameRoom->GetSectorPos(monster->info.posx(), monster->info.posy()));
 	}
 }
 

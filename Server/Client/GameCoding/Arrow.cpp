@@ -153,6 +153,13 @@ void Arrow::TickMove()
 	}*/
 }
 
+void Arrow::PoolReset()
+{
+	Super::PoolReset();
+	belongingId = 0;
+	// _flipbookMove[] : ctor에서 세팅된 포인터이므로 유지
+}
+
 void Arrow::UpdateAnimation()
 {
 	SetFlipbook(_flipbookMove[info.dir()]);

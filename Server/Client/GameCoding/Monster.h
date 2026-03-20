@@ -18,7 +18,7 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick() override;
 	virtual void Render(HDC hdc) override;
-
+	virtual void PoolReset() override;
 private:
 	virtual void TickIdle() override;
 	virtual void TickMove() override;
@@ -26,6 +26,7 @@ private:
 	virtual void TickHit() override;
 
 	virtual void UpdateAnimation() override;
+	
 
 private:
 	shared_ptr<Flipbook> _flipbookMove[4] = {};

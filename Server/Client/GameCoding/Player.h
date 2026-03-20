@@ -17,7 +17,7 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick() override;
 	virtual void Render(HDC hdc) override;
-
+	virtual void PoolReset() override;
 	virtual void AttatchDefaultComponent()override;
 protected:
 	virtual void TickIdle() override;
@@ -26,6 +26,7 @@ protected:
 	virtual void TickHit() override;
 
 	virtual void UpdateAnimation() override;
+
 public:
 	void SetWeaponType(Protocol::WEAPON_TYPE weaponType, bool dirtyflag=true);
 	Protocol::WEAPON_TYPE GetWeaponType() { return info.weapontype(); }

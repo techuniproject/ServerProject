@@ -77,7 +77,7 @@ void Player::UpdateSkill()
 		*AddedArrow.add_objects() = arrow->info;
 
 		SendBufferRef sendBuf = ServerPacketHandler::Make_S_AddObject(AddedArrow);
-		gameRoom->Broadcast(sendBuf);
+		gameRoom->BroadcastBySector(sendBuf, gameRoom->GetSectorPos(arrow->info.posx(), arrow->info.posy()));
 	
 	}
 	

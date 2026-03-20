@@ -10,8 +10,8 @@
 Monster::Monster()
 {
 	info.set_name("MonsterName");
-	info.set_hp(100);
-	info.set_maxhp(100);
+	info.set_hp(1);
+	info.set_maxhp(1);
 	info.set_attack(1);
 	info.set_defence(0); //나중엔 data sheet으로 읽어오는 방식
 
@@ -105,93 +105,93 @@ void Monster::UpdateIdle()
 
 	shared_ptr<Player> player = _target.lock();
 
-	if (player)
-	{
-		Vec2Int dir = player->GetCellPos() - GetCellPos();
-		int32 dist = abs(dir.x) + abs(dir.y);
-		if (dist == 1)
-		{
-			SetDir(GetLookAtDir(player->GetCellPos()));
-			SetState(SKILL);
-			BroadcastMoveBySector();
-			//_waitUntil = GetTickCount64() + 500; //+1초
-		}
-		else
-		{
-			if (dist >= _findMaxDist) {
-				player.reset();
-				return;
-			}
-			vector<Vec2Int> path;
-			if (room->FindPath(GetCellPos(), player->GetCellPos(), OUT path,_findMaxDist))
-			{
-				if (path.size() > 1)
-				{
-					Vec2Int nextPos = path[1];
-					Vec2Int curPos = Vec2Int(info.posx(), info.posy());
-					if (room->CanGoBySector(nextPos))
-					{
-						SetDir(GetLookAtDir(nextPos));
-						SetCellPos(nextPos);
-						
-						
-						auto AddMeForNewSectorPlayers = [&](Vec2Int sectorPos) {
-							Sector* sector = room->GetSectorAt(sectorPos);
-							if (sector) {
-								for (Player* pl : sector->_sectorPlayers) {
-									if (pl && pl != player.get()) {//타겟이면 이미 마주쳐서 생성됨 플레이어 C_Move처리에서 추가리스트에 추가
-
-										Protocol::S_AddObject pkt;
-										*pkt.add_objects() = info;
-										SendBufferRef AddMeToOtherBuffer = ServerPacketHandler::Make_S_AddObject(pkt);
-										pl->session->Send(AddMeToOtherBuffer);
-									}
-								}
-								
-							}
-							};
-
-						auto RemoveMeFromLastSectorPlayers = [&](Vec2Int sectorPos) {
-							Sector* sector = room->GetSectorAt(sectorPos);
-							if (sector) {
-								for (Player* pl : sector->_sectorPlayers) {
-									if (pl && pl != player.get()) {
-
-										Protocol::S_RemoveObject pkt;
-										pkt.add_ids(GetObjectID());
-										SendBufferRef RemoveMeToOtherBuffer = ServerPacketHandler::Make_S_RemoveObject(pkt);
-										pl->session->Send(RemoveMeToOtherBuffer);
-									}
-								}
-								
-							}
-						};
-
-						if(!isSameSector(room->GetSectorPos(nextPos.x,nextPos.y))){
-							//몬스터가 다른 플레이어 추적하면서 다른 섹터로 갔을때 다른 플레이어 눈에도 들어가야하니까
-							room->InsertAtSector(room->GetSectorPos(nextPos.x, nextPos.y), static_cast<GameObject*>(shared_from_this().get()));
-							//InsertAtSector내부에 있음
-							//SetCurSectorPos(room->GetSectorPos(nextPos.x, nextPos.y));
-							room->DoSomethingCrossingSectors(nextPos, curPos, AddMeForNewSectorPlayers, RemoveMeFromLastSectorPlayers);
-			
-						}
-
-						_waitUntil = GetTickCount64() + 500; //+1초
-						SetState(MOVE);
-						BroadcastMoveBySector();
-					}
-				}
-				else {//제자리일때 -> 이거 나중에 astar분석하고 수정
-					// 제미나이는 이 코드 오히려 오류유발 -> 불필요하므로 target이나 없애라
-					//SetCellPos(path[0]);
-					//room->InsertAtSector(room->GetSectorPos(path[0].x, path[0].y), static_cast<GameObject*>(shared_from_this().get()));
-					//SetCurSectorPos(room->GetSectorPos(path[0].x, path[0].y));
-					player.reset();
-					SetState(IDLE);
-				}
-			}
-		}
-	}
+	//if (player)
+	//{
+	//	Vec2Int dir = player->GetCellPos() - GetCellPos();
+	//	int32 dist = abs(dir.x) + abs(dir.y);
+	//	if (dist == 1)
+	//	{
+	//		SetDir(GetLookAtDir(player->GetCellPos()));
+	//		SetState(SKILL);
+	//		BroadcastMoveBySector();
+	//		//_waitUntil = GetTickCount64() + 500; //+1초
+	//	}
+	//	else
+	//	{
+	//		if (dist >= _findMaxDist) {
+	//			player.reset();
+	//			return;
+	//		}
+	//		vector<Vec2Int> path;
+	//		if (room->FindPath(GetCellPos(), player->GetCellPos(), OUT path,_findMaxDist))
+	//		{
+	//			if (path.size() > 1)
+	//			{
+	//				Vec2Int nextPos = path[1];
+	//				Vec2Int curPos = Vec2Int(info.posx(), info.posy());
+	//				if (room->CanGoBySector(nextPos))
+	//				{
+	//					SetDir(GetLookAtDir(nextPos));
+	//					SetCellPos(nextPos);
+	//					
+	//					
+	//					auto AddMeForNewSectorPlayers = [&](Vec2Int sectorPos) {
+	//						Sector* sector = room->GetSectorAt(sectorPos);
+	//						if (sector) {
+	//							for (Player* pl : sector->_sectorPlayers) {
+	//								if (pl && pl != player.get()) {//타겟이면 이미 마주쳐서 생성됨 플레이어 C_Move처리에서 추가리스트에 추가
+	//
+	//									Protocol::S_AddObject pkt;
+	//									*pkt.add_objects() = info;
+	//									SendBufferRef AddMeToOtherBuffer = ServerPacketHandler::Make_S_AddObject(pkt);
+	//									pl->session->Send(AddMeToOtherBuffer);
+	//								}
+	//							}
+	//							
+	//						}
+	//						};
+	//
+	//					auto RemoveMeFromLastSectorPlayers = [&](Vec2Int sectorPos) {
+	//						Sector* sector = room->GetSectorAt(sectorPos);
+	//						if (sector) {
+	//							for (Player* pl : sector->_sectorPlayers) {
+	//								if (pl && pl != player.get()) {
+	//
+	//									Protocol::S_RemoveObject pkt;
+	//									pkt.add_ids(GetObjectID());
+	//									SendBufferRef RemoveMeToOtherBuffer = ServerPacketHandler::Make_S_RemoveObject(pkt);
+	//									pl->session->Send(RemoveMeToOtherBuffer);
+	//								}
+	//							}
+	//							
+	//						}
+	//					};
+	//
+	//					if(!isSameSector(room->GetSectorPos(nextPos.x,nextPos.y))){
+	//						//몬스터가 다른 플레이어 추적하면서 다른 섹터로 갔을때 다른 플레이어 눈에도 들어가야하니까
+	//						room->InsertAtSector(room->GetSectorPos(nextPos.x, nextPos.y), static_cast<GameObject*>(shared_from_this().get()));
+	//						//InsertAtSector내부에 있음
+	//						//SetCurSectorPos(room->GetSectorPos(nextPos.x, nextPos.y));
+	//						room->DoSomethingCrossingSectors(nextPos, curPos, AddMeForNewSectorPlayers, RemoveMeFromLastSectorPlayers);
+	//		
+	//					}
+	//
+	//					_waitUntil = GetTickCount64() + 500; //+1초
+	//					SetState(MOVE);
+	//					BroadcastMoveBySector();
+	//				}
+	//			}
+	//			else {//제자리일때 -> 이거 나중에 astar분석하고 수정
+	//				// 제미나이는 이 코드 오히려 오류유발 -> 불필요하므로 target이나 없애라
+	//				//SetCellPos(path[0]);
+	//				//room->InsertAtSector(room->GetSectorPos(path[0].x, path[0].y), static_cast<GameObject*>(shared_from_this().get()));
+	//				//SetCurSectorPos(room->GetSectorPos(path[0].x, path[0].y));
+	//				player.reset();
+	//				SetState(IDLE);
+	//			}
+	//		}
+	//	}
+	//}
 }
 
 void Monster::UpdateMove()
@@ -215,7 +215,7 @@ void Monster::UpdateSkill()
 
 	Player* pl = GRoom->GetPlayerAtSector(GetFrontCellPos());
 	if (pl) {
-		if(pl->OnDamaged(static_pointer_cast<Creature>(shared_from_this())));
+		if(pl->OnDamaged(static_pointer_cast<Creature>(shared_from_this())))
 			pl->SetState(HIT);
 
 		_waitUntil = GetTickCount64() + 1000;
@@ -264,12 +264,15 @@ bool Monster::OnDamaged(shared_ptr<Creature> attacker)
 	shared_ptr<Monster>life_guard = static_pointer_cast<Monster>(shared_from_this());
 	//생명늘리고 이후 OnDamaged의 수명주기 컨테이너에서 삭제하고 ->나머지 아이템 로직 수행후 이 함수끝나면 수명 0
 	//Super::OnDamaged에서 피를깎아야 여기 로직에서 Hp==0이 수행되어 아이템 생성되니까 이게 최선
+
+	if (attacker == nullptr)
+		return false;
+
 	bool isalive = Super::OnDamaged(attacker);
 	//여기서 제거하면 미리 삭제된 상태로 다음 GetObjectHp에서 null crash
 	
 
-	if (attacker == nullptr)
-		return false;
+	
 
       	if (GetObjectHp() == 0) {
 		if (GRoom) {

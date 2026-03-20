@@ -21,6 +21,25 @@ GameObject::~GameObject()
 
 }
 
+void GameObject::PoolReset()
+{
+	// Actor 상태 초기화
+	_pos    = { 0.f, 0.f };
+	_destPos = { 0.f, 0.f };
+	_components.clear();
+
+	// FlipbookActor 상태 초기화
+	// _flipbookMove[] 등 서브클래스의 플립북 배열은 건드리지 않음
+	// (ctor에서 1회 세팅된 GameInstance 리소스 포인터 유지)
+	_flipbook = nullptr;
+	_sumTime  = 0.f;
+	_idx      = 0;
+
+	// GameObject 상태 초기화
+	info.Clear(); // Protobuf 필드 초기화 (재사용 전 외부에서 info = newInfo 로 덮어씀)
+	_dirtyFlag = false;
+}
+
 void GameObject::BeginPlay()
 {
 	Super::BeginPlay();
@@ -48,6 +67,9 @@ void GameObject::Tick()
 		break;
 	case SKILL:
 		TickSkill();
+		break;
+	case HIT:
+		TickHit();
 		break;
 	default:
 		break;

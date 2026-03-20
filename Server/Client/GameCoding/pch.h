@@ -12,6 +12,7 @@
 #include "Struct.pb.h"
 #include <assert.h>
 #include "ClientPacketHandler.h"
+#include "ObjectPool.h"
 
 #include <assert.h>
 

@@ -52,6 +52,13 @@ Player::~Player()
 
 }
 
+void Player::PoolReset()
+{
+	Super::PoolReset();
+	_keyPressed = false;
+	// _flipbookIdle/Move/Attack/Bow/Staff[] : ctor에서 세팅된 포인터이므로 유지
+}
+
 void Player::AttatchDefaultComponent()
 {	/*
 	shared_from_this()는 이미 이 객체를 소유하고 있는 shared_ptr이 존재한다는 전제 하에서만 동작합니다.

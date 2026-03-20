@@ -140,6 +140,7 @@ void GameSession::OnDisconnected()
 		SendBufferRef sendBuf = ServerPacketHandler::Make_S_RemoveObject(pkt);
 		//room->PushBroadcastJob(sendBuf);
 		room->BroadcastBySector(sendBuf,player->GetCurSectorPos());
+		//플레이어가 죽은건데 다른 섹터에 있더라도 알려야하지 않나?
 
 		});
 	

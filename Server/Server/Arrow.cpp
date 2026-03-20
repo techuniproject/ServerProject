@@ -75,7 +75,14 @@ void Arrow::UpdateIdle()
 			Protocol::S_RemoveObject pkt;
 			pkt.add_ids(GetObjectID());
 			SendBufferRef sendBuf = ServerPacketHandler::Make_S_RemoveObject(pkt);
-			GRoom->Broadcast(sendBuf);
+			GRoom->BroadcastBySector(sendBuf, GRoom->GetSectorPos(info.posx(), info.posy()));
+			//GRoom->Broadcast(sendBuf);
+
+			//현 구조에서 Broadcast로 해야 화살이 sector경계간 통신이 끊기지 않고 제거까지 됨
+			// Sector기반으로하면 결국 쏜 사람은 화살이 만약 다른 통신범위아닌 섹터까지 가면 생존여부알수없어 클라에선 끊긴 자리에 머무름
+			// 하지만, 화살자체는 서버에서 관리하니까 제거되긴함 밑에 list에 넣음으로서
+			//근데 Leave되는곳에서 섹터에서 제거할진 또 고려해야함.
+
 			//room->Leave(info.objectid());
 			room->AddDeleteProjectiletoList(info.objectid());
 		}

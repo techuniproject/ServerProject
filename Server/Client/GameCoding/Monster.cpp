@@ -185,6 +185,14 @@ void Monster::TickHit()
 	//}
 }
 
+void Monster::PoolReset()
+{
+	Super::PoolReset();
+	_target      = nullptr;
+	_waitSeconds = 0.f;
+	// _flipbookMove[], _flipbookHit[] : ctor에서 세팅된 포인터이므로 유지
+}
+
 void Monster::UpdateAnimation()
 {
 	if (info.state()==HIT) {
