@@ -3,6 +3,7 @@
 #include "GameRoom.h"
 #include "Monster.h"
 #include "Player.h"
+#include "GameSession.h"
 
 Arrow::Arrow()
 {
@@ -30,17 +31,48 @@ void Arrow::UpdateIdle()
 		return;
 
 	Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
+	Vec2Int curPos = GetCellPos();
 	Vec2Int nextPos = GetCellPos() + deltaXY[info.dir()];
 
 	if (CanGoBySector(nextPos))
 	{
 		SetCellPos(nextPos); //상태바꾸는true기준 스냅샷으로 전달함
-		float moveTimeInSec = 48.0f / info.movespeed();
+
+		auto AddMeForNewSectors = [&](Vec2Int sectorPos) {
+			Sector* sector = room->GetSectorAt(sectorPos);
+			if (sector) {
+				for (Player* pl : sector->_sectorPlayers) {
+					if (pl) {
+						Protocol::S_AddObject pkt;
+						*pkt.add_objects() = info;
+						SendBufferRef AddMeToOtherBuffer = ServerPacketHandler::Make_S_AddObject(pkt);
+						pl->session->Send(AddMeToOtherBuffer);
+					}
+				}
+			}
+			};
+		auto RemoveMeFromLastSectors = [&](Vec2Int sectorPos) {
+			Sector* sector = room->GetSectorAt(sectorPos);
+			if (sector) {
+				for (Player* pl : sector->_sectorPlayers) {
+					if (pl) {
+						Protocol::S_RemoveObject pkt;
+						pkt.add_ids(info.objectid());
+						SendBufferRef RemoveMeToOtherBuffer = ServerPacketHandler::Make_S_RemoveObject(pkt);
+						pl->session->Send(RemoveMeToOtherBuffer);
+					}
+				}
+			}
+			};
+		room->DoSomethingCrossingSectors(nextPos, curPos, AddMeForNewSectors, RemoveMeFromLastSectors);
+
+
+		float moveTimeInSec = 48.0f / info.movespeed();//타일길이를 속도로 나눠 한 타일 이동시간 구한것
 		long long moveTick = (long long)(moveTimeInSec * 1000);
 		_waitUntil = GetTickCount64() + moveTick;
 		//SetState(MOVE, true);
 		SetState(MOVE);
-		BroadcastMoveBySector();
+		//BroadcastMoveBySector();
 		//BroadcastMove();
 	}
 	else

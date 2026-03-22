@@ -41,31 +41,31 @@ void Arrow::Tick()
 
 	case DIR_UP:
 		_pos.y -= info.movespeed() * deltaTime;
-		if (_pos.y <= _destPos.y) {
-			_pos = _destPos;
-			
-		}
+		//if (_pos.y <= _destPos.y) {
+		//	_pos = _destPos;
+		//	
+		//}
 		break;
 	case DIR_DOWN:
 		_pos.y += info.movespeed() * deltaTime;
-		if (_pos.y >= _destPos.y) {
-			_pos = _destPos;
-			
-		}
+		//if (_pos.y >= _destPos.y) {
+		//	_pos = _destPos;
+		//	
+		//}
 		break;
 	case DIR_LEFT:
 		_pos.x -= info.movespeed() * deltaTime;
-		if (_pos.x <= _destPos.x) {
-			_pos = _destPos;
-			
-		}
+		//if (_pos.x <= _destPos.x) {
+		//	_pos = _destPos;
+		//	
+		//}
 		break;
 	case DIR_RIGHT:
 		_pos.x += info.movespeed() * deltaTime;
-		if (_pos.x >= _destPos.x) {
-			_pos = _destPos;
-			
-		}
+		//if (_pos.x >= _destPos.x) {
+		//	_pos = _destPos;
+		//	
+		//}
 		break;
 	}
 }
