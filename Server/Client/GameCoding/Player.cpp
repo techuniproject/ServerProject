@@ -185,7 +185,8 @@ void Player::TickSkill()
 {
 	if (_flipbook == nullptr)
 		return;
-	
+
+
 	// TODO : Damage?
 	if (IsAnimationEnded())
 	{
@@ -231,15 +232,14 @@ void Player::UpdateAnimation()
 		/*if (_keyPressed)
 			SetFlipbook(_flipbookMove[info.dir()]);
 		else*/
-		_speed = info.movespeed()/100-1;
 			SetFlipbook(_flipbookIdle[info.dir()]);
 		break;
 	case MOVE:
-		_speed = info.movespeed() / 100 - 1;
+		_durationbyspeed = 48.f/info.movespeed();
 		SetFlipbook(_flipbookMove[info.dir()]);
 		break;
 	case SKILL:
-		_speed = info.attackspeed();
+		_durationbyspeed = info.attackspeed(); //서버에서 공격속도(공격지속시간)받아 그대로 사용
 		switch (info.weapontype()) {
 		case SWORD:
 			SetFlipbook(_flipbookAttack[info.dir()]);

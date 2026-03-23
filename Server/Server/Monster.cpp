@@ -105,93 +105,93 @@ void Monster::UpdateIdle()
 
 	shared_ptr<Player> player = _target.lock();
 
-	//if (player)
-	//{
-	//	Vec2Int dir = player->GetCellPos() - GetCellPos();
-	//	int32 dist = abs(dir.x) + abs(dir.y);
-	//	if (dist == 1)
-	//	{
-	//		SetDir(GetLookAtDir(player->GetCellPos()));
-	//		SetState(SKILL);
-	//		BroadcastMoveBySector();
-	//		//_waitUntil = GetTickCount64() + 500; //+1초
-	//	}
-	//	else
-	//	{
-	//		if (dist >= _findMaxDist) {
-	//			player.reset();
-	//			return;
-	//		}
-	//		vector<Vec2Int> path;
-	//		if (room->FindPath(GetCellPos(), player->GetCellPos(), OUT path,_findMaxDist))
-	//		{
-	//			if (path.size() > 1)
-	//			{
-	//				Vec2Int nextPos = path[1];
-	//				Vec2Int curPos = Vec2Int(info.posx(), info.posy());
-	//				if (room->CanGoBySector(nextPos))
-	//				{
-	//					SetDir(GetLookAtDir(nextPos));
-	//					SetCellPos(nextPos);
-	//					
-	//					
-	//					auto AddMeForNewSectorPlayers = [&](Vec2Int sectorPos) {
-	//						Sector* sector = room->GetSectorAt(sectorPos);
-	//						if (sector) {
-	//							for (Player* pl : sector->_sectorPlayers) {
-	//								if (pl && pl != player.get()) {//타겟이면 이미 마주쳐서 생성됨 플레이어 C_Move처리에서 추가리스트에 추가
-	//
-	//									Protocol::S_AddObject pkt;
-	//									*pkt.add_objects() = info;
-	//									SendBufferRef AddMeToOtherBuffer = ServerPacketHandler::Make_S_AddObject(pkt);
-	//									pl->session->Send(AddMeToOtherBuffer);
-	//								}
-	//							}
-	//							
-	//						}
-	//						};
-	//
-	//					auto RemoveMeFromLastSectorPlayers = [&](Vec2Int sectorPos) {
-	//						Sector* sector = room->GetSectorAt(sectorPos);
-	//						if (sector) {
-	//							for (Player* pl : sector->_sectorPlayers) {
-	//								if (pl && pl != player.get()) {
-	//
-	//									Protocol::S_RemoveObject pkt;
-	//									pkt.add_ids(GetObjectID());
-	//									SendBufferRef RemoveMeToOtherBuffer = ServerPacketHandler::Make_S_RemoveObject(pkt);
-	//									pl->session->Send(RemoveMeToOtherBuffer);
-	//								}
-	//							}
-	//							
-	//						}
-	//					};
-	//
-	//					if(!isSameSector(room->GetSectorPos(nextPos.x,nextPos.y))){
-	//						//몬스터가 다른 플레이어 추적하면서 다른 섹터로 갔을때 다른 플레이어 눈에도 들어가야하니까
-	//						room->InsertAtSector(room->GetSectorPos(nextPos.x, nextPos.y), static_cast<GameObject*>(shared_from_this().get()));
-	//						//InsertAtSector내부에 있음
-	//						//SetCurSectorPos(room->GetSectorPos(nextPos.x, nextPos.y));
-	//						room->DoSomethingCrossingSectors(nextPos, curPos, AddMeForNewSectorPlayers, RemoveMeFromLastSectorPlayers);
-	//		
-	//					}
-	//
-	//					_waitUntil = GetTickCount64() + 500; //+1초
-	//					SetState(MOVE);
-	//					BroadcastMoveBySector();
-	//				}
-	//			}
-	//			else {//제자리일때 -> 이거 나중에 astar분석하고 수정
-	//				// 제미나이는 이 코드 오히려 오류유발 -> 불필요하므로 target이나 없애라
-	//				//SetCellPos(path[0]);
-	//				//room->InsertAtSector(room->GetSectorPos(path[0].x, path[0].y), static_cast<GameObject*>(shared_from_this().get()));
-	//				//SetCurSectorPos(room->GetSectorPos(path[0].x, path[0].y));
-	//				player.reset();
-	//				SetState(IDLE);
-	//			}
-	//		}
-	//	}
-	//}
+	if (player)
+	{
+		Vec2Int dir = player->GetCellPos() - GetCellPos();
+		int32 dist = abs(dir.x) + abs(dir.y);
+		if (dist == 1)
+		{
+			SetDir(GetLookAtDir(player->GetCellPos()));
+			SetState(SKILL);
+			BroadcastMoveBySector();
+			//_waitUntil = GetTickCount64() + 500; //+1초
+		}
+		else
+		{
+			if (dist >= _findMaxDist) {
+				player.reset();
+				return;
+			}
+			vector<Vec2Int> path;
+			if (room->FindPath(GetCellPos(), player->GetCellPos(), OUT path,_findMaxDist))
+			{
+				if (path.size() > 1)
+				{
+					Vec2Int nextPos = path[1];
+					Vec2Int curPos = Vec2Int(info.posx(), info.posy());
+					if (room->CanGoBySector(nextPos))
+					{
+						SetDir(GetLookAtDir(nextPos));
+						SetCellPos(nextPos);
+						
+						
+						auto AddMeForNewSectorPlayers = [&](Vec2Int sectorPos) {
+							Sector* sector = room->GetSectorAt(sectorPos);
+							if (sector) {
+								for (Player* pl : sector->_sectorPlayers) {
+									if (pl && pl != player.get()) {//타겟이면 이미 마주쳐서 생성됨 플레이어 C_Move처리에서 추가리스트에 추가
+	
+										Protocol::S_AddObject pkt;
+										*pkt.add_objects() = info;
+										SendBufferRef AddMeToOtherBuffer = ServerPacketHandler::Make_S_AddObject(pkt);
+										pl->session->Send(AddMeToOtherBuffer);
+									}
+								}
+								
+							}
+							};
+	
+						auto RemoveMeFromLastSectorPlayers = [&](Vec2Int sectorPos) {
+							Sector* sector = room->GetSectorAt(sectorPos);
+							if (sector) {
+								for (Player* pl : sector->_sectorPlayers) {
+									if (pl && pl != player.get()) {
+	
+										Protocol::S_RemoveObject pkt;
+										pkt.add_ids(GetObjectID());
+										SendBufferRef RemoveMeToOtherBuffer = ServerPacketHandler::Make_S_RemoveObject(pkt);
+										pl->session->Send(RemoveMeToOtherBuffer);
+									}
+								}
+								
+							}
+						};
+	
+						if(!isSameSector(room->GetSectorPos(nextPos.x,nextPos.y))){
+							//몬스터가 다른 플레이어 추적하면서 다른 섹터로 갔을때 다른 플레이어 눈에도 들어가야하니까
+							room->InsertAtSector(room->GetSectorPos(nextPos.x, nextPos.y), static_cast<GameObject*>(shared_from_this().get()));
+							//InsertAtSector내부에 있음
+							//SetCurSectorPos(room->GetSectorPos(nextPos.x, nextPos.y));
+							room->DoSomethingCrossingSectors(nextPos, curPos, AddMeForNewSectorPlayers, RemoveMeFromLastSectorPlayers);
+			
+						}
+	
+						_waitUntil = GetTickCount64() + 500; //+1초
+						SetState(MOVE);
+						BroadcastMoveBySector();
+					}
+				}
+				else {//제자리일때 -> 이거 나중에 astar분석하고 수정
+					// 제미나이는 이 코드 오히려 오류유발 -> 불필요하므로 target이나 없애라
+					//SetCellPos(path[0]);
+					//room->InsertAtSector(room->GetSectorPos(path[0].x, path[0].y), static_cast<GameObject*>(shared_from_this().get()));
+					//SetCurSectorPos(room->GetSectorPos(path[0].x, path[0].y));
+					player.reset();
+					SetState(IDLE);
+				}
+			}
+		}
+	}
 }
 
 void Monster::UpdateMove()
@@ -221,7 +221,8 @@ void Monster::UpdateSkill()
 		_waitUntil = GetTickCount64() + 1000;
 		//pl->SetState(HIT, true);
 		
-		BroadcastMoveBySector();
+		//pl->BroadcastMoveBySector();
+		//클라 Player Hit 등 아무 로직없어서 통보 필요없음
 	}
 	//shared_ptr<Creature> creature=GRoom->GetCreatureAt(GetFrontCellPos());
 	//

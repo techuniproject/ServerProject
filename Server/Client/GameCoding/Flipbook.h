@@ -13,6 +13,7 @@ struct FlipbookInfo
 	int32 line = 0;
 	float duration = 1.f;
 	bool loop = true;
+	bool durationbyspeed = false;
 };
 
 class Flipbook : public ResourceBase

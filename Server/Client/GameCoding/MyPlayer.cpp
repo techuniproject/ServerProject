@@ -94,7 +94,7 @@ void MyPlayer::TickInput()
 
 	if (pressed&& now >= _nextSkillAt) {
 		SetState(SKILL);    
-		_nextSkillAt = now + SKILL_CD/GetAttackSpeed();    //공격 애니메이션 다 0.5초   
+		_nextSkillAt = now + GetAttackSpeed();    //공격 애니메이션 다 0.5초   
 	}
  }
 //Myplayer은 지금 클라에서 미리 움직이고, 서버에 통보하고 나머지 클라에 broadcast

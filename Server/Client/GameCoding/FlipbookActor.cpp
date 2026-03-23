@@ -39,17 +39,24 @@ void FlipbookActor::Tick()
 
 	float deltaTime = GET_SINGLE(GameInstance)->GetDeltaTime();
 
-	_sumTime += deltaTime*_speed;
+	_sumTime += deltaTime; //2026-03-23 _sumTime+= deltaTime*_speed 제거
 
 	int32 frameCount = (info.end - info.start + 1);
 	float delta = info.duration / frameCount;
+	if (info.durationbyspeed) {
+		delta = _durationbyspeed / frameCount;
+	}
+	
+
+	//만약 duration이 0.5초이고 framecount가 10개면 delta는 0.05
+	// 그럼 0.05초마다 다음 스프라이트로 넘어가는 절대적기준임.
 
 	if (_sumTime >= delta)
 	{
 		//delta는 원하는 애니메이션 지속시간을 스프라이트 개수만큼 나눈값을 경계지점
 		//그 경계 판단 기준은 sumtime인데 이건 speed를 dt에 곱하니까 speed를 늘리면 빠르게 가능
 		//speed로 제어가능한 영역이 어느순간 의미없어짐 무조건 delta보다 커지니까
-
+		//2026-03-23 speed제거
 		_sumTime = 0.f;
 		_idx = (_idx + 1) % frameCount;
 	}
@@ -97,6 +104,8 @@ void FlipbookActor::Reset()
 	_sumTime = 0.f;
 	_idx = 0;
 }
+
+
 
 bool FlipbookActor::IntersectsWithCamRect(RECT CamRect)
 {

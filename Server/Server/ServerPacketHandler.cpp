@@ -165,10 +165,12 @@ bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move& pkt)
                             *iteminfo = item.itemInfo;
                             switch (iteminfo->itemtype()) {
                             case Protocol::ITEM_TYPE::ITEM_TYPE_ATTACK:
-                                curSessionPlayer->info.set_attackspeed(curSessionPlayer->info.attackspeed() + 1);
-                                break;
+								if (curSessionPlayer->info.attackspeed() > 0.1f) {
+									curSessionPlayer->info.set_attackspeed(curSessionPlayer->info.attackspeed() - 0.1f);
+								}
+								break;
                             case Protocol::ITEM_TYPE::ITEM_TYPE_MOVE:
-                                curSessionPlayer->info.set_movespeed(curSessionPlayer->info.movespeed() + 100);
+                                curSessionPlayer->info.set_movespeed(curSessionPlayer->info.movespeed() + 48);
                                 break;
                             case Protocol::ITEM_TYPE::ITEM_TYPE_HEAL:
                                 curSessionPlayer->info.set_hp(curSessionPlayer->info.hp() + 20);
