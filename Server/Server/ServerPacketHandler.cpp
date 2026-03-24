@@ -165,7 +165,7 @@ bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move& pkt)
                             *iteminfo = item.itemInfo;
                             switch (iteminfo->itemtype()) {
                             case Protocol::ITEM_TYPE::ITEM_TYPE_ATTACK:
-								if (curSessionPlayer->info.attackspeed() > 0.1f) {
+								if (curSessionPlayer->info.attackspeed() > 0.2f-0.0001f) {
 									curSessionPlayer->info.set_attackspeed(curSessionPlayer->info.attackspeed() - 0.1f);
 								}
 								break;

@@ -44,8 +44,8 @@ void GameSession::OnConnected()
 		curPlayer->info.set_hp(100);
 		curPlayer->info.set_attack(5);
 		curPlayer->info.set_weapontype(Protocol::WEAPON_TYPE_SWORD);
-		curPlayer->info.set_attackspeed(1.f);
-		curPlayer->info.set_movespeed(96);
+		curPlayer->info.set_attackspeed(0.5f-0.3f);
+		curPlayer->info.set_movespeed(96*4);
 		room->Enter(curPlayer);
 
 		{

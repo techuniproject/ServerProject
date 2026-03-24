@@ -38,36 +38,50 @@ void Arrow::UpdateIdle()
 	{
 		SetCellPos(nextPos); //상태바꾸는true기준 스냅샷으로 전달함
 
-		auto AddMeForNewSectors = [&](Vec2Int sectorPos) {
-			Sector* sector = room->GetSectorAt(sectorPos);
-			if (sector) {
-				for (Player* pl : sector->_sectorPlayers) {
-					if (pl) {
-						Protocol::S_AddObject pkt;
-						*pkt.add_objects() = info;
-						SendBufferRef AddMeToOtherBuffer = ServerPacketHandler::Make_S_AddObject(pkt);
-						pl->session->Send(AddMeToOtherBuffer);
-					}
+		if (_ifSpawned) {
+			_ifSpawned = false;
+			Protocol::S_AddObject AddedArrow;
+			*AddedArrow.add_objects() = info;
+
+			SendBufferRef sendBuf = ServerPacketHandler::Make_S_AddObject(AddedArrow);
+			room->BroadcastBySector(sendBuf, room->GetSectorPos(info.posx(), info.posy()));
+		}
+		else {
+			if (room->CheckValidSectorPos(room->GetSectorPos(nextPos.x, nextPos.y))) {
+				if (!room->IsSameSector(curPos, nextPos)) {
+					auto AddMeForNewSectors = [&](Vec2Int sectorPos) {
+						Sector* sector = room->GetSectorAt(sectorPos);
+						if (sector) {
+							for (Player* pl : sector->_sectorPlayers) {
+								if (pl) {
+									if (!pl->GetObjectID() == _belongingId) {
+										Protocol::S_AddObject pkt;
+										*pkt.add_objects() = info;
+										SendBufferRef AddMeToOtherBuffer = ServerPacketHandler::Make_S_AddObject(pkt);
+										pl->session->Send(AddMeToOtherBuffer);
+									}
+								}
+							}
+						}
+						};
+					auto RemoveMeFromLastSectors = [&](Vec2Int sectorPos) {
+						Sector* sector = room->GetSectorAt(sectorPos);
+						if (sector) {
+							for (Player* pl : sector->_sectorPlayers) {
+								if (pl) {
+									Protocol::S_RemoveObject pkt;
+									pkt.add_ids(info.objectid());
+									SendBufferRef RemoveMeToOtherBuffer = ServerPacketHandler::Make_S_RemoveObject(pkt);
+									pl->session->Send(RemoveMeToOtherBuffer);
+								}
+							}
+						}
+						};
+					room->DoSomethingCrossingSectors(nextPos, curPos, AddMeForNewSectors, RemoveMeFromLastSectors);
 				}
 			}
-			};
-		auto RemoveMeFromLastSectors = [&](Vec2Int sectorPos) {
-			Sector* sector = room->GetSectorAt(sectorPos);
-			if (sector) {
-				for (Player* pl : sector->_sectorPlayers) {
-					if (pl) {
-						Protocol::S_RemoveObject pkt;
-						pkt.add_ids(info.objectid());
-						SendBufferRef RemoveMeToOtherBuffer = ServerPacketHandler::Make_S_RemoveObject(pkt);
-						pl->session->Send(RemoveMeToOtherBuffer);
-					}
-				}
-			}
-			};
-		room->DoSomethingCrossingSectors(nextPos, curPos, AddMeForNewSectors, RemoveMeFromLastSectors);
-
-
-		float moveTimeInSec = 48.0f / info.movespeed();//타일길이를 속도로 나눠 한 타일 이동시간 구한것
+		}
+		float moveTimeInSec = 48 / info.movespeed();//타일길이를 속도로 나눠 한 타일 이동시간 구한것
 		long long moveTick = (long long)(moveTimeInSec * 1000);
 		_waitUntil = GetTickCount64() + moveTick;
 		//SetState(MOVE, true);

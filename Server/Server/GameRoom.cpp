@@ -225,6 +225,19 @@ bool GameRoom::CheckValidSectorPos(Vec2Int sectorPos)
 }
 
 
+bool GameRoom::IsSameSector(Vec2Int FirstCellPos, Vec2Int SecondCellPos)
+{
+	Vec2Int FirstSectorPos = GetSectorPos(FirstCellPos.x, FirstCellPos.y);
+	Vec2Int SecondSectorPos = GetSectorPos(SecondCellPos.x, SecondCellPos.y);
+
+	if (FirstSectorPos == Vec2Int(-1, -1) || SecondSectorPos == Vec2Int(-1, -1))return false;
+
+	if (FirstSectorPos == SecondSectorPos)return true;
+
+
+	return false;
+}
+
 bool GameRoom::CanGoBySector(Vec2Int cellPos)
 {
 	Tile* tile = _tilemap.GetTileAt(cellPos);
@@ -387,14 +400,15 @@ void GameRoom::Update()
 	{
 		item.second->Update();
 	}
-	for (auto& item : _monsters)
-	{
-		item.second->Update();
-	}
 	for (auto& item : _arrows)
 	{
 		item.second->Update();
 	}
+	for (auto& item : _monsters)
+	{
+		item.second->Update();
+	}
+	
 	TickMonsterSpawn();
 	DeleteProjectiles();
 	

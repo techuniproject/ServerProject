@@ -7,7 +7,12 @@
 
 Player::Player()
 {
+	_waitUntil = GetTickCount64();
 
+	// 희박한 버그 방지용 -> 만약 클라가 접속과 동시 스킬을 활로 쏘면,
+	// waitUntil이 초기값 0인상태로 활을 쏴 클라 애니메이션 종료 시간 기다리기도 전에
+	// 서버에선 화살을 쏜 판정을 하여 클라에 부자연스러운 연출과 판정이 들어감
+	// 하지만 그럴수가 없다 거의 
 }
 
 Player::~Player()
@@ -27,9 +32,12 @@ void Player::Update()//어차피 메인스레드 로직이라 lock신경X, send�
 
 void Player::UpdateIdle()
 {
-	float moveTimeInSec = 48.0f / info.movespeed();
-	long long moveTick = (long long)(moveTimeInSec * 1000);
-	_waitUntil = GetTickCount64() + moveTick;
+	//float moveTimeInSec = 48.0f / info.movespeed();
+	//long long moveTick = (long long)(moveTimeInSec * 1000);
+	//_waitUntil = GetTickCount64() + moveTick;
+	_waitUntil = GetTickCount64() + info.attackspeed() * 850;
+	//이건 클라에서 attackspeed가 애니메이션 지속시간이기도 하니까, 물론 스킬 쿨타임과도 연동되어있고,
+	//서버에서도 화살을 이 시간 기다렸다가 쏘는게 정상.
 }
 
 void Player::UpdateMove()
@@ -58,27 +66,31 @@ void Player::UpdateSkill()
 	}
 	else if (info.weapontype() == Protocol::WEAPON_TYPE_BOW)
 	{
-		if (_waitUntil > now)
+		if (_waitUntil > now) {
 			return;
+		}
 		shared_ptr<GameRoom>gameRoom = room;
 		
 		shared_ptr<Arrow>arrow = GameObject::CreateArrow();
 		arrow->info.set_posx(info.posx());
 		arrow->info.set_posy(info.posy());
 		arrow->info.set_dir(info.dir());
+		arrow->info.set_state(IDLE);
 		arrow->info.set_attack(info.attack());
 		
 		float speed = info.attackspeed();
-		speed *= 600;
+		speed = 480 + 96 * (1-info.attackspeed()*2);
+		//player attackspeed이젠 0.5에서 -> 0.1로 감소 
 		arrow->SetBelongingId(info.objectid());
 		arrow->info.set_movespeed(speed);
 		gameRoom->Enter(arrow);
-		Protocol::S_AddObject AddedArrow;
+
+		/*Protocol::S_AddObject AddedArrow;
 		*AddedArrow.add_objects() = arrow->info;
 
 		SendBufferRef sendBuf = ServerPacketHandler::Make_S_AddObject(AddedArrow);
-		gameRoom->BroadcastBySector(sendBuf, gameRoom->GetSectorPos(arrow->info.posx(), arrow->info.posy()));
-	
+		gameRoom->BroadcastBySector(sendBuf, gameRoom->GetSectorPos(arrow->info.posx(), arrow->info.posy()));*/
+		arrow->SetIfSpawned(true);
 	}
 	
 	SetState(IDLE);

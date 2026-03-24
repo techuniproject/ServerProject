@@ -95,7 +95,7 @@ public:
 	void DeleteFromSector(GameObject* creature);
 	bool CheckValidSectorPos(Vec2Int sectorPos);
 
-
+	bool IsSameSector(Vec2Int firstcellpos, Vec2Int secondCellPos);
 	bool CanGoBySector(Vec2Int cellPos);
 	//목적 : 정확히 그 위치에 있는지 
 	Player* GetPlayerAtSector(Vec2Int cellPos);

@@ -229,12 +229,12 @@ void DevScene::LoadPlayer()
 	{
 		shared_ptr<Texture> texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerUp");
 		shared_ptr<Flipbook> fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_BowUp");
-		fb->SetInfo({ texture, L"FB_BowUp", {200, 200}, 0, 8, 5, 0.5f, false,true });
+		fb->SetInfo({ texture, L"FB_BowUp", {200, 200}, 0, 9, 5, 0.5f, false,true });
 	}
 	{
 		shared_ptr<Texture> texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerDown");
 		shared_ptr<Flipbook> fb = GET_SINGLE(GameInstance)->CreateFlipbook(L"FB_BowDown");
-		fb->SetInfo({ texture, L"FB_BowDown", {200, 200}, 0, 8, 5, 0.5f, false,true });
+		fb->SetInfo({ texture, L"FB_BowDown", {200, 200}, 0, 10, 5, 0.5f, false,true });
 	}
 	{
 		shared_ptr<Texture> texture = GET_SINGLE(GameInstance)->GetTexture(L"PlayerLeft");

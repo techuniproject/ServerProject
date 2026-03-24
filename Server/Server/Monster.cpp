@@ -10,8 +10,8 @@
 Monster::Monster()
 {
 	info.set_name("MonsterName");
-	info.set_hp(1);
-	info.set_maxhp(1);
+	info.set_hp(200);
+	info.set_maxhp(200);
 	info.set_attack(1);
 	info.set_defence(0); //나중엔 data sheet으로 읽어오는 방식
 
