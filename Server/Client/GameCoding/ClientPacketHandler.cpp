@@ -9,6 +9,7 @@
 #include "ItemActor.h"
 #include "HitEffect.h"
 #include "Monster.h"
+#include "Arrow.h"
 
 extern HWND g_hWnd;
 PacketHandlerFunc g_packet_handler[HANDLER_MAX];
@@ -325,22 +326,30 @@ bool Handle_S_BROADCAST(ServerSessionRef& session, Protocol::S_BROADCAST& pkt)
             const Protocol::ObjectInfo& info = pkt.addobjects(i);
             if (GET_SINGLE(GameInstance)->GetMyPlayerId() == info.objectid())continue;
             //일단 내 플레이어 정보는 동기화 x어차피 다음 move패킷으로 받아옴
-
-            if (info.objecttype() == Protocol::OBJECT_TYPE_PLAYER)
-            {
-                shared_ptr<Player> player = scene->SpawnObject<Player>(Vec2Int(info.posx(), info.posy()));
-               // shared_ptr<Player> player = scene->SpawnPooledObject<Player>(Vec2Int(info.posx(), info.posy()));
-                player->SetDir(info.dir());
-                player->SetState(info.state());
-                player->info = info;
-            }
-            else if (info.objecttype() == Protocol::OBJECT_TYPE_MONSTER) {
-                shared_ptr<Monster> monster = scene->SpawnObject<Monster>(Vec2Int(info.posx(), info.posy()));
-               // shared_ptr<Monster> monster = scene->SpawnPooledObject<Monster>(Vec2Int(info.posx(), info.posy()));
-                monster->SetDir(info.dir());
-                monster->SetState(info.state());
-                monster->info = info;
-            }
+			if (scene->GetGameObject(info.objectid()) == nullptr) {
+				if (info.objecttype() == Protocol::OBJECT_TYPE_PLAYER)
+				{
+					shared_ptr<Player> player = scene->SpawnObject<Player>(Vec2Int(info.posx(), info.posy()));
+					// shared_ptr<Player> player = scene->SpawnPooledObject<Player>(Vec2Int(info.posx(), info.posy()));
+						player->SetDir(info.dir());
+						player->SetState(info.state());
+						player->info = info;
+				}
+				else if (info.objecttype() == Protocol::OBJECT_TYPE_MONSTER) {
+					shared_ptr<Monster> monster = scene->SpawnObject<Monster>(Vec2Int(info.posx(), info.posy()));
+					// shared_ptr<Monster> monster = scene->SpawnPooledObject<Monster>(Vec2Int(info.posx(), info.posy()));
+						monster->SetDir(info.dir());
+					monster->SetState(info.state());
+					monster->info = info;
+				}
+				else if (info.objecttype() == Protocol::OBJECT_TYPE_PROJECTILE) {
+					shared_ptr<Arrow> arrow = scene->SpawnObject<Arrow>(Vec2Int(info.posx(), info.posy()));
+					//shared_ptr<Arrow> arrow = SpawnPooledObject<Arrow>(Vec2Int(info.posx(), info.posy()));
+					arrow->SetDir(info.dir());
+					arrow->SetState(info.state());
+					arrow->info = info;
+				}
+			}
         }
         
     }

@@ -79,7 +79,7 @@ void Player::UpdateSkill()
 		arrow->info.set_attack(info.attack());
 		
 		float speed = info.attackspeed();
-		speed = 480 + 96 * (1-info.attackspeed()*2);
+		speed = 96 + 96 * (1-info.attackspeed()*2);
 		//player attackspeed이젠 0.5에서 -> 0.1로 감소 
 		arrow->SetBelongingId(info.objectid());
 		arrow->info.set_movespeed(speed);

@@ -11,8 +11,11 @@ shared_ptr<GameRoom> GRoom = make_shared<GameRoom>();
 
 GameRoom::GameRoom()
 {
-	_deletearrowlist.reserve(1000);
+	_deletearrowlist.reserve(63*43);
 	_gameRoomSector.resize(SECTOR_HEIGHT * SECTOR_WIDTH);
+	for (int i = 0; i < SECTOR_HEIGHT * SECTOR_WIDTH; ++i) {
+		_gameRoomSector[i]._sectorArrows.reserve(25);
+	}
 }
 
 GameRoom::~GameRoom()
@@ -470,7 +473,10 @@ void GameRoom::Enter(shared_ptr<GameObject> gameObject)
 		_monsters[id] = static_pointer_cast<Monster>(gameObject);
 		break;
 	case Protocol::OBJECT_TYPE_PROJECTILE:
-		//화살을 섹터로 현재 관리할 필요없어보임 
+		//화살을 섹터로 현재 관리할 필요없어보임-> 섹터로 관리해서 양쪽 플레이어 및 화살 둘다 섹터 이동 시에만 판단하여 비용 감소
+
+		InsertAtSector(GetSectorPos(gameObject->info.posx(), gameObject->info.posy()), static_cast<Creature*>(gameObject.get()));
+		gameObject->SetCurSectorPos(GetSectorPos(gameObject->info.posx(), gameObject->info.posy()));
 		_arrows[id] = static_pointer_cast<Arrow>(gameObject);
 		break;
 	default:
@@ -500,6 +506,7 @@ void GameRoom::Leave(uint64 id)
 		_monsters.erase(id);
 		break;
 	case Protocol::OBJECT_TYPE_PROJECTILE:
+		DeleteFromSector(gameObject.get());
 		_arrows.erase(id);
 		break;
 	default:

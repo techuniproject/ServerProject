@@ -403,30 +403,31 @@ void DevScene::Handle_S_AddObject(Protocol::S_AddObject& pkt)
 		const Protocol::ObjectInfo& info = pkt.objects(i);
 		if (myPlayerId == info.objectid())
 			continue;
-
-		if (info.objecttype() == Protocol::OBJECT_TYPE_PLAYER)
-		{
-			shared_ptr<Player> player = SpawnObject<Player>(Vec2Int(info.posx(), info.posy()));
-			//shared_ptr<Player> player = SpawnPooledObject<Player>(Vec2Int(info.posx(), info.posy()));
-			player->SetDir(info.dir());
-			player->SetState(info.state());
-			player->info = info;
-		}
-		else if (info.objecttype() == Protocol::OBJECT_TYPE_MONSTER)
-		{
-			shared_ptr<Monster> monster = SpawnObject<Monster>(Vec2Int(info.posx(), info.posy()));
-		//	shared_ptr<Monster> monster = SpawnPooledObject<Monster>(Vec2Int(info.posx(), info.posy()));
-			monster->SetDir(info.dir());
-			monster->SetState(info.state());
-			monster->info = info;
-		}
-		else if (info.objecttype() == Protocol::OBJECT_TYPE_PROJECTILE)
-		{
-			shared_ptr<Arrow> arrow = SpawnObject<Arrow>(Vec2Int(info.posx(), info.posy()));
-			//shared_ptr<Arrow> arrow = SpawnPooledObject<Arrow>(Vec2Int(info.posx(), info.posy()));
-			arrow->SetDir(info.dir());
-			arrow->SetState(info.state());
-			arrow->info = info;
+		if (GetGameObject(info.objectid()) == nullptr) {
+			if (info.objecttype() == Protocol::OBJECT_TYPE_PLAYER)
+			{
+				shared_ptr<Player> player = SpawnObject<Player>(Vec2Int(info.posx(), info.posy()));
+				//shared_ptr<Player> player = SpawnPooledObject<Player>(Vec2Int(info.posx(), info.posy()));
+				player->SetDir(info.dir());
+				player->SetState(info.state());
+				player->info = info;
+			}
+			else if (info.objecttype() == Protocol::OBJECT_TYPE_MONSTER)
+			{
+				shared_ptr<Monster> monster = SpawnObject<Monster>(Vec2Int(info.posx(), info.posy()));
+				//	shared_ptr<Monster> monster = SpawnPooledObject<Monster>(Vec2Int(info.posx(), info.posy()));
+				monster->SetDir(info.dir());
+				monster->SetState(info.state());
+				monster->info = info;
+			}
+			else if (info.objecttype() == Protocol::OBJECT_TYPE_PROJECTILE)
+			{
+				shared_ptr<Arrow> arrow = SpawnObject<Arrow>(Vec2Int(info.posx(), info.posy()));
+				//shared_ptr<Arrow> arrow = SpawnPooledObject<Arrow>(Vec2Int(info.posx(), info.posy()));
+				arrow->SetDir(info.dir());
+				arrow->SetState(info.state());
+				arrow->info = info;
+			}
 		}
 	}
 }

@@ -37,7 +37,7 @@ void Arrow::UpdateIdle()
 	if (CanGoBySector(nextPos))
 	{
 		SetCellPos(nextPos); //상태바꾸는true기준 스냅샷으로 전달함
-
+		room->InsertAtSector(room->GetSectorPos(nextPos.x, nextPos.y), this);
 		if (_ifSpawned) {
 			_ifSpawned = false;
 			Protocol::S_AddObject AddedArrow;
@@ -54,12 +54,12 @@ void Arrow::UpdateIdle()
 						if (sector) {
 							for (Player* pl : sector->_sectorPlayers) {
 								if (pl) {
-									if (!pl->GetObjectID() == _belongingId) {
+									//if (!pl->GetObjectID() == _belongingId) { //내 플레이어도 다른 섹터 갔다왔을때 다시 추가해줘야함
 										Protocol::S_AddObject pkt;
 										*pkt.add_objects() = info;
 										SendBufferRef AddMeToOtherBuffer = ServerPacketHandler::Make_S_AddObject(pkt);
 										pl->session->Send(AddMeToOtherBuffer);
-									}
+									//}
 								}
 							}
 						}

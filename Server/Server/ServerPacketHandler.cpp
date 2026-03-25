@@ -8,6 +8,7 @@
 #include "AIQueue.h"
 #include "Monster.h"
 #include "Player.h"
+#include "Arrow.h"
 #include "Sector.h"
 
 extern AIQueue GAIQueue;
@@ -236,7 +237,37 @@ bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move& pkt)
                                     }
                                 }
                               };
-                            gameRoom->DoSomethingCrossingSectors(nextPos, curPos, AddObjectsForNewSectors, RemoveObjectsFromLastSectors);              
+                            gameRoom->DoSomethingCrossingSectors(nextPos, curPos, AddObjectsForNewSectors, RemoveObjectsFromLastSectors);
+
+                            // 화살은 매 틱 이동하므로 delta 3섹터 방식으로는 동일 틱 내 누락 가능
+                            // 플레이어 섹터 이동 시 새 시야 범위 9섹터 전수 스캔으로 보완
+                            Vec2Int newSectorPos = gameRoom->GetSectorPos(nextPos.x, nextPos.y);
+                            Vec2Int oldSectorPos = gameRoom->GetSectorPos(curPos.x, curPos.y);
+                            for (int dy = -1; dy <= 1; dy++) {
+                                for (int dx = -1; dx <= 1; dx++) {
+                                    Vec2Int ns = { newSectorPos.x + dx, newSectorPos.y + dy };
+                                    if (gameRoom->CheckValidSectorPos(ns)) {
+                                        Sector* s = gameRoom->GetSectorAt(ns);
+                                        if (s) {
+                                            for (Arrow* arr : s->_sectorArrows) {
+                                                if (arr) *broadcastRoomPlayers.add_addobjects() = arr->info;
+                                            }
+                                        }
+                                    }
+                                    Vec2Int os = { oldSectorPos.x + dx, oldSectorPos.y + dy };
+                                    if (gameRoom->CheckValidSectorPos(os)) {
+                                        bool isInNew = (abs(os.x - newSectorPos.x) <= 1 && abs(os.y - newSectorPos.y) <= 1);
+                                        if (!isInNew) {
+                                            Sector* s = gameRoom->GetSectorAt(os);
+                                            if (s) {
+                                                for (Arrow* arr : s->_sectorArrows) {
+                                                    if (arr) *broadcastRoomPlayers.add_removeobjects() = arr->info;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }                 
                        //Broadcast는 현재 클라가 새로운 섹터 진입 시 다른 오브젝트들 추가/삭제 여부 알기 위함
                         SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Broadcast(broadcastRoomPlayers);
