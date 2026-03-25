@@ -53,7 +53,9 @@ void GameRoom::Init()
 
 
 	_tilemap.LoadFile(L"C:\\Users\\서정원\\Desktop\\ServerClient\\ServerProject\\Server\\Client\\Resources\\Tilemap\\Tilemap_01.txt");
-//	shared_ptr<Monster> monster = GameObject::CreateMonster();
+
+
+	//	shared_ptr<Monster> monster = GameObject::CreateMonster();
 //	monster->info.set_posx(8);
 //	monster->info.set_posy(8);
 //	AddObject(monster);

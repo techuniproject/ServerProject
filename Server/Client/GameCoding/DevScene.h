@@ -95,6 +95,7 @@ public:
 
 	bool CanGo(Vec2Int cellPos);
 	Vec2 ConvertPos(Vec2Int cellPos);
+	Vec2Int ConvertCellPos(Vec2Int worldPos);
 	Vec2Int GetRandomEmptyCellPos();
 
 private:

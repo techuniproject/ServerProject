@@ -35,44 +35,55 @@ void Arrow::Tick()
 	
 	//SyncToServer();
 	float deltaTime = GET_SINGLE(GameInstance)->GetDeltaTime();
+	
+	// CellPos -> {6,5}이런식 -> _pos는 월드좌표
+	//Vec2Int  CurCellPos = GET_SINGLE(GameInstance)->GetCurrentScene<DevScene>()->ConvertCellPos(Vec2Int(_pos.x, _pos.y));
+		switch (info.dir())
+		{
 
-	switch (info.dir())
-	{
+		case DIR_UP:
+	
+			_pos.y -= info.movespeed() * deltaTime;
+				
+			//if (_pos.y <= _destPos.y) {
+			//	_pos = _destPos;
+			//	
+			//}
+			break;
+		case DIR_DOWN:
 
-	case DIR_UP:
-		_pos.y -= (info.movespeed() -0) * deltaTime;
-		//if (_pos.y <= _destPos.y) {
-		//	_pos = _destPos;
-		//	
-		//}
-		break;
-	case DIR_DOWN:
-		_pos.y += (info.movespeed() - 0) * deltaTime;
-		//if (_pos.y >= _destPos.y) {
-		//	_pos = _destPos;
-		//	
-		//}
-		break;
-	case DIR_LEFT:
-		_pos.x -= (info.movespeed() - 0) * deltaTime;
-		//if (_pos.x <= _destPos.x) {
-		//	_pos = _destPos;
-		//	
-		//}
-		break;
-	case DIR_RIGHT:
-		_pos.x += (info.movespeed() - 0) * deltaTime;
-		//if (_pos.x >= _destPos.x) {
-		//	_pos = _destPos;
-		//	
-		//}
-		break;
-	}
+			_pos.y += info.movespeed() * deltaTime;
+			
+			//if (_pos.y >= _destPos.y) {
+			//	_pos = _destPos;
+			//	
+			//}
+			break;
+		case DIR_LEFT:
+			 
+			_pos.x -= info.movespeed() * deltaTime;
+		
+			//if (_pos.x <= _destPos.x) {
+			//	_pos = _destPos;
+			//	
+			//}
+			break;
+		case DIR_RIGHT:
+			
+			_pos.x += info.movespeed() * deltaTime;
+			
+			//{360,264}
+			//if (_pos.x >= _destPos.x) {
+			//	_pos = _destPos;
+			//	
+			//}
+			break;
+		}
+	
 }
 
 void Arrow::Render(HDC hdc)
 {
-
 	Super::Render(hdc);
 
 

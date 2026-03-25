@@ -74,12 +74,13 @@ void Player::UpdateSkill()
 		shared_ptr<Arrow>arrow = GameObject::CreateArrow();
 		arrow->info.set_posx(info.posx());
 		arrow->info.set_posy(info.posy());
+		arrow->SetInitialPos(Vec2Int(info.posx(), info.posy()));
 		arrow->info.set_dir(info.dir());
 		arrow->info.set_state(IDLE);
 		arrow->info.set_attack(info.attack());
 		
 		float speed = info.attackspeed();
-		speed = 96 + 96 * (1-info.attackspeed()*2);
+		speed = 480 + 96 * (1-info.attackspeed()*2);
 		//player attackspeed이젠 0.5에서 -> 0.1로 감소 
 		arrow->SetBelongingId(info.objectid());
 		arrow->info.set_movespeed(speed);

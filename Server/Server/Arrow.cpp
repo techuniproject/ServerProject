@@ -4,10 +4,12 @@
 #include "Monster.h"
 #include "Player.h"
 #include "GameSession.h"
+#include "Tilemap.h"
 
 Arrow::Arrow()
 {
-
+	if(room)
+		_tileSize=room->_tilemap.GetTileSize();
 }
 
 Arrow::~Arrow()
@@ -39,7 +41,7 @@ void Arrow::UpdateIdle()
 		SetCellPos(nextPos); //상태바꾸는true기준 스냅샷으로 전달함
 		room->InsertAtSector(room->GetSectorPos(nextPos.x, nextPos.y), this);
 		if (_ifSpawned) {
-			_ifSpawned = false;
+			//_ifSpawned = false;
 			Protocol::S_AddObject AddedArrow;
 			*AddedArrow.add_objects() = info;
 
@@ -81,9 +83,20 @@ void Arrow::UpdateIdle()
 				}
 			}
 		}
-		float moveTimeInSec = 48 / info.movespeed();//타일길이를 속도로 나눠 한 타일 이동시간 구한것
+	
+		float moveTimeInSec = (_tileSize)/ info.movespeed();//타일길이를 속도로 나눠 한 타일 이동시간 구한것
 		long long moveTick = (long long)(moveTimeInSec * 1000);
-		_waitUntil = GetTickCount64() + moveTick;
+		if (_ifSpawned) {
+			//클라는 위에서 ifSpawned가 true일때 즉시 addobject패킷 받고 이미 움직이기 시작함.
+			//근데 서버는 만약 아래 코드없다면 한칸이동하는 시간을 기다렸다가 플레이어 다음칸으로 이동함
+			//이건 즉시 없애줘야 정확한 위치가 맞아떨어짐. 이동도 하기전에 한마디로 이동이 0인데 기다렸다가 가는꼴임
+			//첫 타일 이동은 즉시 이뤄져야하므로 waituntil을 기다리지않는 수치로 정한것임.
+			_ifSpawned = false;
+			_waitUntil = GetTickCount64();
+		}
+		else {
+			_waitUntil = GetTickCount64() + moveTick;
+		}
 		//SetState(MOVE, true);
 		SetState(MOVE);
 		//BroadcastMoveBySector();

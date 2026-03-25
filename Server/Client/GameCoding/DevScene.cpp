@@ -658,6 +658,32 @@ Vec2 DevScene::ConvertPos(Vec2Int cellPos)
 	return ret;
 }
 
+Vec2Int DevScene::ConvertCellPos(Vec2Int worldPos)
+{
+	Vec2Int ret = {};
+
+	if (_tilemapActor == nullptr)
+		return ret;
+
+	shared_ptr<Tilemap> tm = _tilemapActor->GetTilemap();
+	if (tm == nullptr)
+		return ret;
+
+	int32 size = tm->GetTileSize();
+	Vec2 pos = _tilemapActor->GetPos(); // 타일맵의 기준점(시작점) 좌표
+
+	// 1. 타일맵 기준점을 빼서 순수 상대 좌표를 구함
+	float relX = worldPos.x - pos.x;
+	float relY = worldPos.y - pos.y;
+
+	// 2. 타일 크기로 나누어 인덱스를 구함
+	// 주의: 음수 좌표(타일맵 왼쪽/위쪽)도 정확히 계산하려면 std::floor로 내림 처리를 해야 합니다.
+	ret.x = static_cast<int32>(std::floor(relX / size));
+	ret.y = static_cast<int32>(std::floor(relY / size));
+
+	return ret;
+}
+
 Vec2Int DevScene::GetRandomEmptyCellPos()
 {
 	Vec2Int ret = {-1, -1};
