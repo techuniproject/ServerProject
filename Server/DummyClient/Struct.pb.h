@@ -666,13 +666,22 @@ class ItemInfo final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kIsAliveFieldNumber = 1,
     kItemIdFieldNumber = 2,
+    kIsAliveFieldNumber = 1,
     kItemTypeFieldNumber = 3,
     kPlayerIdFieldNumber = 4,
     kPosXFieldNumber = 5,
     kPosYFieldNumber = 6,
   };
+  // uint64 itemId = 2;
+  void clear_itemid();
+  uint64_t itemid() const;
+  void set_itemid(uint64_t value);
+  private:
+  uint64_t _internal_itemid() const;
+  void _internal_set_itemid(uint64_t value);
+  public:
+
   // bool isAlive = 1;
   void clear_isalive();
   bool isalive() const;
@@ -680,15 +689,6 @@ class ItemInfo final :
   private:
   bool _internal_isalive() const;
   void _internal_set_isalive(bool value);
-  public:
-
-  // uint32 itemId = 2;
-  void clear_itemid();
-  uint32_t itemid() const;
-  void set_itemid(uint32_t value);
-  private:
-  uint32_t _internal_itemid() const;
-  void _internal_set_itemid(uint32_t value);
   public:
 
   // .Protocol.ITEM_TYPE itemType = 3;
@@ -700,13 +700,13 @@ class ItemInfo final :
   void _internal_set_itemtype(::Protocol::ITEM_TYPE value);
   public:
 
-  // uint32 playerId = 4;
+  // uint64 playerId = 4;
   void clear_playerid();
-  uint32_t playerid() const;
-  void set_playerid(uint32_t value);
+  uint64_t playerid() const;
+  void set_playerid(uint64_t value);
   private:
-  uint32_t _internal_playerid() const;
-  void _internal_set_playerid(uint32_t value);
+  uint64_t _internal_playerid() const;
+  void _internal_set_playerid(uint64_t value);
   public:
 
   // int32 posX = 5;
@@ -735,10 +735,10 @@ class ItemInfo final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
+    uint64_t itemid_;
     bool isalive_;
-    uint32_t itemid_;
     int itemtype_;
-    uint32_t playerid_;
+    uint64_t playerid_;
     int32_t posx_;
     int32_t posy_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
@@ -1182,22 +1182,22 @@ inline void ItemInfo::set_isalive(bool value) {
   // @@protoc_insertion_point(field_set:Protocol.ItemInfo.isAlive)
 }
 
-// uint32 itemId = 2;
+// uint64 itemId = 2;
 inline void ItemInfo::clear_itemid() {
-  _impl_.itemid_ = 0u;
+  _impl_.itemid_ = uint64_t{0u};
 }
-inline uint32_t ItemInfo::_internal_itemid() const {
+inline uint64_t ItemInfo::_internal_itemid() const {
   return _impl_.itemid_;
 }
-inline uint32_t ItemInfo::itemid() const {
+inline uint64_t ItemInfo::itemid() const {
   // @@protoc_insertion_point(field_get:Protocol.ItemInfo.itemId)
   return _internal_itemid();
 }
-inline void ItemInfo::_internal_set_itemid(uint32_t value) {
+inline void ItemInfo::_internal_set_itemid(uint64_t value) {
   
   _impl_.itemid_ = value;
 }
-inline void ItemInfo::set_itemid(uint32_t value) {
+inline void ItemInfo::set_itemid(uint64_t value) {
   _internal_set_itemid(value);
   // @@protoc_insertion_point(field_set:Protocol.ItemInfo.itemId)
 }
@@ -1222,22 +1222,22 @@ inline void ItemInfo::set_itemtype(::Protocol::ITEM_TYPE value) {
   // @@protoc_insertion_point(field_set:Protocol.ItemInfo.itemType)
 }
 
-// uint32 playerId = 4;
+// uint64 playerId = 4;
 inline void ItemInfo::clear_playerid() {
-  _impl_.playerid_ = 0u;
+  _impl_.playerid_ = uint64_t{0u};
 }
-inline uint32_t ItemInfo::_internal_playerid() const {
+inline uint64_t ItemInfo::_internal_playerid() const {
   return _impl_.playerid_;
 }
-inline uint32_t ItemInfo::playerid() const {
+inline uint64_t ItemInfo::playerid() const {
   // @@protoc_insertion_point(field_get:Protocol.ItemInfo.playerId)
   return _internal_playerid();
 }
-inline void ItemInfo::_internal_set_playerid(uint32_t value) {
+inline void ItemInfo::_internal_set_playerid(uint64_t value) {
   
   _impl_.playerid_ = value;
 }
-inline void ItemInfo::set_playerid(uint32_t value) {
+inline void ItemInfo::set_playerid(uint64_t value) {
   _internal_set_playerid(value);
   // @@protoc_insertion_point(field_set:Protocol.ItemInfo.playerId)
 }

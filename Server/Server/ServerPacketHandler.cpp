@@ -200,7 +200,7 @@ bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move& pkt)
                        // const int32 dirY[9] = { 0,1,1,-1,-1,1,0,0,-1 };
                         Protocol::S_BROADCAST broadcastRoomPlayers;
                        
-                        vector<Sector>_gameRoomSector = gameRoom->_gameRoomSector;
+                       // vector<Sector>_gameRoomSector = gameRoom->_gameRoomSector;
 
                         {
                             auto AddObjectsForNewSectors = [&](Vec2Int sectorPos) {

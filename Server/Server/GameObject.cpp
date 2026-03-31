@@ -66,18 +66,18 @@ void GameObject::SetDir(Dir dir) {
 
 bool GameObject::CanGoBySector(Vec2Int cellPos)
 {
-	if (room == nullptr)
+	if (room.expired())
 		return false;
 
-	return room->CanGoBySector(cellPos);
+	return room.lock()->CanGoBySector(cellPos);
 }
 
 bool GameObject::CanGo(Vec2Int cellPos) 
 {
-	if (room == nullptr)
+	if (room.expired())
 		return false;
 
-	return room->CanGo(cellPos);
+	return room.lock()->CanGo(cellPos);
 }
 
 Dir GameObject::GetLookAtDir(Vec2Int cellPos)
@@ -122,19 +122,21 @@ Vec2Int GameObject::GetFrontCellPos() {
 
 void GameObject::BroadcastMove()
 {
-	if (room)
+	auto roomref = room.lock();
+	if (roomref)
 	{
 		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Move(info);
-		room->Broadcast(sendBuffer);
+		roomref->Broadcast(sendBuffer);
 		
 	}
 }
 
 void GameObject::BroadcastMoveBySector()
 {
-	if (room) {
+	auto roomref = room.lock();
+	if (roomref) {
 		SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Move(info);
-		room->BroadcastBySector(sendBuffer,room->GetSectorPos(info.posx(),info.posy()));
+		roomref->BroadcastBySector(sendBuffer, roomref->GetSectorPos(info.posx(),info.posy()));
 	}
 }
 

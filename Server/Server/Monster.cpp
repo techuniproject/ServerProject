@@ -95,13 +95,14 @@ void Monster::Update()//어차피 메인스레드 로직이라 lock신경X, send
 void Monster::UpdateIdle()
 {
 	
-	if (room == nullptr)
+	if (room.expired())
 		return;
 
+	auto roomref = room.lock();
 	
 	// Find Player
 	if (_target.expired())
-		_target = room->FindClosestPlayerBySector(GetCellPos());
+		_target = roomref->FindClosestPlayerBySector(GetCellPos());
 
 	shared_ptr<Player> player = _target.lock();
 
@@ -119,24 +120,24 @@ void Monster::UpdateIdle()
 		else
 		{
 			if (dist >= _findMaxDist) {
-				player.reset();
+				_target.reset();
 				return;
 			}
 			vector<Vec2Int> path;
-			if (room->FindPath(GetCellPos(), player->GetCellPos(), OUT path,_findMaxDist))
+			if (roomref->FindPath(GetCellPos(), player->GetCellPos(), OUT path,_findMaxDist))
 			{
 				if (path.size() > 1)
 				{
 					Vec2Int nextPos = path[1];
 					Vec2Int curPos = Vec2Int(info.posx(), info.posy());
-					if (room->CanGoBySector(nextPos))
+					if (roomref->CanGoBySector(nextPos))
 					{
 						SetDir(GetLookAtDir(nextPos));
 						SetCellPos(nextPos);
 						
 						
 						auto AddMeForNewSectorPlayers = [&](Vec2Int sectorPos) {
-							Sector* sector = room->GetSectorAt(sectorPos);
+							Sector* sector = roomref->GetSectorAt(sectorPos);
 							if (sector) {
 								for (Player* pl : sector->_sectorPlayers) {
 									if (pl && pl != player.get()) {//타겟이면 이미 마주쳐서 생성됨 플레이어 C_Move처리에서 추가리스트에 추가
@@ -152,7 +153,7 @@ void Monster::UpdateIdle()
 							};
 	
 						auto RemoveMeFromLastSectorPlayers = [&](Vec2Int sectorPos) {
-							Sector* sector = room->GetSectorAt(sectorPos);
+							Sector* sector = roomref->GetSectorAt(sectorPos);
 							if (sector) {
 								for (Player* pl : sector->_sectorPlayers) {
 									if (pl && pl != player.get()) {
@@ -167,12 +168,12 @@ void Monster::UpdateIdle()
 							}
 						};
 	
-						if(!isSameSector(room->GetSectorPos(nextPos.x,nextPos.y))){
+						if(!isSameSector(roomref->GetSectorPos(nextPos.x,nextPos.y))){
 							//몬스터가 다른 플레이어 추적하면서 다른 섹터로 갔을때 다른 플레이어 눈에도 들어가야하니까
-							room->InsertAtSector(room->GetSectorPos(nextPos.x, nextPos.y), static_cast<GameObject*>(shared_from_this().get()));
+							roomref->InsertAtSector(roomref->GetSectorPos(nextPos.x, nextPos.y), static_cast<GameObject*>(this));
 							//InsertAtSector내부에 있음
 							//SetCurSectorPos(room->GetSectorPos(nextPos.x, nextPos.y));
-							room->DoSomethingCrossingSectors(nextPos, curPos, AddMeForNewSectorPlayers, RemoveMeFromLastSectorPlayers);
+							roomref->DoSomethingCrossingSectors(nextPos, curPos, AddMeForNewSectorPlayers, RemoveMeFromLastSectorPlayers);
 			
 						}
 	
@@ -209,12 +210,15 @@ void Monster::UpdateMove()
 
 void Monster::UpdateSkill()
 {
+	auto roomref = room.lock();
+	if (!roomref) return;
+
 	int64 now = GetTickCount64();
 
 	if (_waitUntil > now)
 		return;
 
-	Player* pl = GRoom->GetPlayerAtSector(GetFrontCellPos());
+	Player* pl = roomref->GetPlayerAtSector(GetFrontCellPos());
 	if (pl) {
 		if(pl->OnDamaged(static_pointer_cast<Creature>(shared_from_this())))
 			pl->SetState(HIT);
@@ -270,7 +274,8 @@ bool Monster::OnDamaged(shared_ptr<Creature> attacker)
 	
 
       	if (GetObjectHp() == 0) {
-		if (GRoom) {
+		auto roomref = room.lock();
+		if (roomref) {
 			item.SetAliveState(true);
 			//auto ifarrow = dynamic_pointer_cast<Arrow>(attacker);
 			
@@ -289,10 +294,10 @@ bool Monster::OnDamaged(shared_ptr<Creature> attacker)
 			Protocol::ItemInfo* iteminfo = pkt.mutable_iteminfo(); //message구성하는 struct pointer반환
 			*iteminfo = item.itemInfo;
 
-			GRoom->AddItem(item);
+			roomref->AddItem(item);
 
 			SendBufferRef sendBuf = ServerPacketHandler::Make_S_Item(pkt);
-			GRoom->Broadcast(sendBuf);
+			roomref->Broadcast(sendBuf);
 		}
 	}
 		return isalive;

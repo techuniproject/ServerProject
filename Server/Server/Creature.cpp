@@ -55,27 +55,27 @@ bool Creature::OnDamaged(shared_ptr<Creature>  attacker)
 	SetObjectHp(max(0, GetObjectHp() - damage));
 	if (GetObjectHp() == 0)
 	{
-		if (GRoom) {
+		auto roomref = room.lock();
+		if (roomref) {
 
 			Protocol::S_RemoveObject pkt;
 			pkt.add_ids(GetObjectID());
 			SendBufferRef sendBuf = ServerPacketHandler::Make_S_RemoveObject(pkt);
-			GRoom->BroadcastBySector(sendBuf,GRoom->GetSectorPos(info.posx(),info.posy()));
-	
-			//여기서 빼버리면 이제 통신은 아예 이 클라와는 못함 해당 플레이어에게 전송안하기때문
-			GRoom->Leave(GetObjectID());
+			roomref->BroadcastBySector(sendBuf, roomref->GetSectorPos(info.posx(), info.posy()));
 
-			
+			//여기서 빼버리면 이제 통신은 아예 이 클라와는 못함 해당 플레이어에게 전송안하기때문
+			roomref->Leave(GetObjectID());
 		}
 		return false;
 	}
 	else {
-		if (GRoom) {
+		auto roomref = room.lock();
+		if (roomref) {
 			Protocol::S_ATTACK pkt;
 			pkt.set_attackedid(GetObjectID());
 			pkt.set_hp(info.hp());
 			SendBufferRef sendBuf = ServerPacketHandler::Make_S_Attack(pkt);
-			GRoom->BroadcastBySector(sendBuf,GRoom->GetSectorPos(info.posx(),info.posy()));//sector다른곳에 있어도 데미지는 적용해야하니까 모든 클라대상 전송
+			roomref->BroadcastBySector(sendBuf, roomref->GetSectorPos(info.posx(), info.posy()));//sector다른곳에 있어도 데미지는 적용해야하니까 모든 클라대상 전송
 		}
 		return true;
 	}

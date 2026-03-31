@@ -48,13 +48,13 @@ void Player::UpdateMove()
 
 void Player::UpdateSkill()
 {
-	if (room == nullptr)return;
+	auto roomref = room.lock();
+	if (!roomref) return;
 
 	uint64 now = GetTickCount64();
 
-	
 	//if (now < _stateExitAt) return;
-	int a = info.state();
+
 	if (info.weapontype() == Protocol::WEAPON_TYPE_SWORD) {
 		if (auto monster = GRoom->GetMonsterAtSector(GetFrontCellPos())) // 전방 셀 타격
 		{
@@ -72,8 +72,6 @@ void Player::UpdateSkill()
 		if (_waitUntil > now) {
 			return;
 		}
-		shared_ptr<GameRoom>gameRoom = room;
-		
 		shared_ptr<Arrow>arrow = GameObject::CreateArrow();
 		arrow->info.set_posx(info.posx());
 		arrow->info.set_posy(info.posy());
@@ -87,7 +85,7 @@ void Player::UpdateSkill()
 		//player attackspeed이젠 0.5에서 -> 0.1로 감소 
 		arrow->SetBelongingId(info.objectid());
 		arrow->info.set_movespeed(speed);
-		gameRoom->Enter(arrow);
+		roomref->Enter(arrow);
 
 		/*Protocol::S_AddObject AddedArrow;
 		*AddedArrow.add_objects() = arrow->info;

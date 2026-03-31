@@ -8,8 +8,7 @@
 
 Arrow::Arrow()
 {
-	if(room)
-		_tileSize=room->_tilemap.GetTileSize();
+
 }
 
 Arrow::~Arrow()
@@ -29,8 +28,9 @@ void Arrow::Update()
 
 void Arrow::UpdateIdle()
 {
-	if (room == nullptr)
+	if (room.expired())
 		return;
+	auto roomref = room.lock();
 
 	Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
 	Vec2Int curPos = GetCellPos();
@@ -39,20 +39,20 @@ void Arrow::UpdateIdle()
 	if (CanGoBySector(nextPos))
 	{
 		SetCellPos(nextPos); //상태바꾸는true기준 스냅샷으로 전달함
-		room->InsertAtSector(room->GetSectorPos(nextPos.x, nextPos.y), this);
+		roomref->InsertAtSector(roomref->GetSectorPos(nextPos.x, nextPos.y), this);
 		if (_ifSpawned) {
 			//_ifSpawned = false;
 			Protocol::S_AddObject AddedArrow;
 			*AddedArrow.add_objects() = info;
 
 			SendBufferRef sendBuf = ServerPacketHandler::Make_S_AddObject(AddedArrow);
-			room->BroadcastBySector(sendBuf, room->GetSectorPos(info.posx(), info.posy()));
+			roomref->BroadcastBySector(sendBuf, roomref->GetSectorPos(info.posx(), info.posy()));
 		}
 		else {
-			if (room->CheckValidSectorPos(room->GetSectorPos(nextPos.x, nextPos.y))) {
-				if (!room->IsSameSector(curPos, nextPos)) {
-					auto AddMeForNewSectors = [&](Vec2Int sectorPos) {
-						Sector* sector = room->GetSectorAt(sectorPos);
+			if (roomref->CheckValidSectorPos(roomref->GetSectorPos(nextPos.x, nextPos.y))) {
+				if (!roomref->IsSameSector(curPos, nextPos)) {
+					auto AddMeForNewSectors = [=](Vec2Int sectorPos) {
+						Sector* sector = roomref->GetSectorAt(sectorPos);
 						if (sector) {
 							for (Player* pl : sector->_sectorPlayers) {
 								if (pl) {
@@ -66,8 +66,8 @@ void Arrow::UpdateIdle()
 							}
 						}
 						};
-					auto RemoveMeFromLastSectors = [&](Vec2Int sectorPos) {
-						Sector* sector = room->GetSectorAt(sectorPos);
+					auto RemoveMeFromLastSectors = [=](Vec2Int sectorPos) {
+						Sector* sector = roomref->GetSectorAt(sectorPos);
 						if (sector) {
 							for (Player* pl : sector->_sectorPlayers) {
 								if (pl) {
@@ -79,12 +79,12 @@ void Arrow::UpdateIdle()
 							}
 						}
 						};
-					room->DoSomethingCrossingSectors(nextPos, curPos, AddMeForNewSectors, RemoveMeFromLastSectors);
+					roomref->DoSomethingCrossingSectors(nextPos, curPos, AddMeForNewSectors, RemoveMeFromLastSectors);
 				}
 			}
 		}
 	
-		float moveTimeInSec = (_tileSize)/ info.movespeed();//타일길이를 속도로 나눠 한 타일 이동시간 구한것
+		float moveTimeInSec = (roomref->_tilemap.GetTileSize())/ info.movespeed();//타일길이를 속도로 나눠 한 타일 이동시간 구한것
 		long long moveTick = (long long)(moveTimeInSec * 1000);
 		if (_ifSpawned) {
 			//클라는 위에서 ifSpawned가 true일때 즉시 addobject패킷 받고 이미 움직이기 시작함.
@@ -118,8 +118,8 @@ void Arrow::UpdateIdle()
 
 			}
 		}*/
-		Monster* mon = room->GetMonsterAtSector(nextPos);
-		Player* pl = room->GetPlayerAtSector(nextPos);
+		Monster* mon = roomref->GetMonsterAtSector(nextPos);
+		Player* pl = roomref->GetPlayerAtSector(nextPos);
 		if (mon) {
 			//몬스터만 판정 시
 			if (mon->OnDamaged(static_pointer_cast<Creature>(shared_from_this()))) {
@@ -130,11 +130,11 @@ void Arrow::UpdateIdle()
 		else if (pl) {
 			pl->OnDamaged(static_pointer_cast<Creature>(shared_from_this()));
 		}
-		if (room) {
+		if (roomref) {
 			Protocol::S_RemoveObject pkt;
 			pkt.add_ids(GetObjectID());
 			SendBufferRef sendBuf = ServerPacketHandler::Make_S_RemoveObject(pkt);
-			GRoom->BroadcastBySector(sendBuf, GRoom->GetSectorPos(info.posx(), info.posy()));
+			roomref->BroadcastBySector(sendBuf, roomref->GetSectorPos(info.posx(), info.posy()));
 			//GRoom->Broadcast(sendBuf);
 
 			//현 구조에서 Broadcast로 해야 화살이 sector경계간 통신이 끊기지 않고 제거까지 됨
@@ -143,7 +143,7 @@ void Arrow::UpdateIdle()
 			//근데 Leave되는곳에서 섹터에서 제거할진 또 고려해야함.
 
 			//room->Leave(info.objectid());
-			room->AddDeleteProjectiletoList(info.objectid());
+			roomref->AddDeleteProjectiletoList(info.objectid());
 		}
 		
 	}

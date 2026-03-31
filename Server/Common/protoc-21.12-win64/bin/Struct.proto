@@ -13,7 +13,7 @@ message BuffData
 message ObjectInfo
 {
 	uint64 objectId=1;
-	OBJECT_TYPE objectType=2; //ÀÌ µÎ°¡ÁöÁ¤º¸¸¦ ºñÆ®·Î ÂÉ°³¼­ ÀúÀåÇÏ¸é È¿À²Àû
+	OBJECT_TYPE objectType=2; //ï¿½ï¿½ ï¿½Î°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½É°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ È¿ï¿½ï¿½ï¿½ï¿½
 	OBJECT_STATE_TYPE state=3;
 	DIR_TYPE dir=4;
 	string name=5;
@@ -31,9 +31,9 @@ message ObjectInfo
 message ItemInfo
 {
 	bool isAlive=1;
-	uint32 itemId=2;
+	uint64 itemId=2;
 	ITEM_TYPE itemType=3;
-	uint32 playerId=4;
+	uint64 playerId=4;
 	int32 posX=5;
 	int32 posY=6;
 }

@@ -516,7 +516,7 @@ void GameRoom::Leave(uint64 id)
 		return;
 	}
 
-	gameObject->room = nullptr;
+	gameObject->room.reset();
 }
 
 void GameRoom::Broadcast(SendBufferRef sendBuffer)
@@ -534,8 +534,10 @@ void GameRoom::BroadcastBySector(SendBufferRef sendBuffer, Vec2Int SectorPos)
 		Vec2Int nextFindSectorPos{ SectorPos.x + dirX[i],SectorPos.y + dirY[i] };
 		if (CheckValidSectorPos(nextFindSectorPos)) {
 			Sector* nextFindSector = GetSectorAt(nextFindSectorPos);
-			for (Player* pl : nextFindSector->_sectorPlayers) {
-				pl->session->Send(sendBuffer);			
+			if (nextFindSector) {
+				for (Player* pl : nextFindSector->_sectorPlayers) {
+					pl->session->Send(sendBuffer);
+				}
 			}
 		}
 	}

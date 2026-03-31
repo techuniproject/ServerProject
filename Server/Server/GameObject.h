@@ -25,8 +25,8 @@ public:
 	void BroadcastMove();
 	void BroadcastMoveBySector();
 
-	int64 GetObjectID() { return info.objectid(); }
-	void SetObjectID(int64 id) { info.set_objectid(id); }
+	uint64 GetObjectID() { return info.objectid(); }
+	void SetObjectID(uint64 id) { info.set_objectid(id); }
 	int32 GetObjectMaxHp() { return info.maxhp(); }
 	int32 GetObjectHp() { return info.hp(); }
 	int32 GetObjectAttack() { return info.attack(); }
@@ -49,7 +49,7 @@ public:
 	bool isSameSector(Vec2Int sectorpos);
 public:
 	Protocol::ObjectInfo info;
-	shared_ptr<class GameRoom> room; //순환참조 생길수도 순서 잘 안지키면
+	weak_ptr<class GameRoom> room; //순환참조 생길수도 순서 잘 안지키면
 	uint64 _lastMoveTime = 0;
 	//weak_ptr<class GameRoom>room;
 private:
