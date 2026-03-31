@@ -356,11 +356,13 @@ weak_ptr<Player> GameRoom::FindClosestPlayerBySector(Vec2Int cellPos)
 		Vec2Int nextFindSectorPos{ curSector.x + dirX[i],curSector.y + dirY[i] };
 		if (CheckValidSectorPos(nextFindSectorPos)) {
 			Sector* nextFindSector = GetSectorAt(nextFindSectorPos);
-			for (Player* pl : nextFindSector->_sectorPlayers) {
-				float dist = Vec2Int(pl->GetCellPos() - cellPos).LengthSquared();
-				if (dist < best) {
-					best = dist;
-					ret = static_pointer_cast<Player>(pl->shared_from_this());
+			if (nextFindSector) {
+				for (Player* pl : nextFindSector->_sectorPlayers) {
+					float dist = Vec2Int(pl->GetCellPos() - cellPos).LengthSquared();
+					if (dist < best) {
+						best = dist;
+						ret = static_pointer_cast<Player>(pl->shared_from_this());
+					}
 				}
 			}
 		}
@@ -405,15 +407,14 @@ void GameRoom::Update()
 	{
 		item.second->Update();
 	}
-	for (auto& item : _arrows)
-	{
-		item.second->Update();
-	}
 	for (auto& item : _monsters)
 	{
 		item.second->Update();
 	}
-	
+	for (auto& item : _arrows)
+	{
+		item.second->Update();
+	}
 	TickMonsterSpawn();
 	DeleteProjectiles();
 	
@@ -942,11 +943,13 @@ Vec2Int  GameRoom::GetRandomEmptyCellPos() {
 	Vec2Int ret = { -1, -1 };
 
 	Vec2Int size = _tilemap.GetMapSize();
-
+	mt19937 rng{ random_device{}() };
+	uniform_int_distribution<int>distX(0, (int)size.x);
+	uniform_int_distribution<int>distY(0, (int)size.y);
 	// 몇 번 시도?
 	for (int i = 0; i < 1000; ++i) {
-		int32 x = rand() % size.x;
-		int32 y = rand() % size.y;
+		int32 x = distX(rng);
+		int32 y = distY(rng);
 		Vec2Int cellPos{ x, y };
 
 		if (CanGoBySector(cellPos))

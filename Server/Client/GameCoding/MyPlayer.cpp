@@ -140,7 +140,9 @@ void MyPlayer::Tick()
 	static int packetSendCountPerFrame = 0;
 	packetSendCountPerFrame = 0;
 	Super::Tick();
+
 	
+
 	//프레임마다 상태 바뀜을 감지하여 서버에 통보 (서버라 매 프레임 보내는게 정석은 아님)
 	SyncToServer(packetSendCountPerFrame);
 	if (packetSendCountPerFrame > 0)
@@ -166,6 +168,7 @@ void MyPlayer::TickIdle()
 void MyPlayer::TickMove()
 {
 	Super::TickMove();
+	
 }
 
 void MyPlayer::TickSkill()

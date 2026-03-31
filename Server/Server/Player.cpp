@@ -60,7 +60,10 @@ void Player::UpdateSkill()
 		{
 			if (monster->OnDamaged(static_pointer_cast<Creature>(shared_from_this()))) {
 				//OnDamaged에서 피가 0이면 Leave를 통해 수명 파기하기때문에 검사해야함
-				monster->ApplyHitStun(505); //플레이어 공격 쿨타임 500이라 같이 500이면 둘다 동시에 때림
+				monster->ApplyHitStun(505);
+				// 몬스터가 맞고나서 idle로 돌아가는 시간을 505ms로 정하면 플레이어 공격 쿨타임 0.5보다 길어
+				// 플레이어가 연달아 공격하는 구조 나옴 -> 하지만 둘다 500ms면 둘다 state가 돌아와서 동시에 때림
+				
 			}
 		}
 	}

@@ -154,35 +154,40 @@ bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move& pkt)
                 if (curSessionPlayer->CanGoBySector(nextPos)) {
                     //TODO Validation 해킹 체킹   
                     curSessionPlayer->SetLastMoveTime(now);
-                    auto optitem = gameRoom->GetItemAt(nextPos);
-                    if (optitem.has_value()) {
-                        //플레이어 이동할때 다음칸 아이템 있으면
-                        Item& item = optitem.value();
-                        if (pkt.info().objectid() == item.itemInfo.playerid()) {
-                            gameRoom->DeleteItem(item.itemInfo.itemid());
-                            item.itemInfo.set_isalive(false);
-                            Protocol::S_ITEM itempkt;
-                            Protocol::ItemInfo* iteminfo = itempkt.mutable_iteminfo(); //message구성하는 struct pointer반환
-                            *iteminfo = item.itemInfo;
-                            switch (iteminfo->itemtype()) {
-                            case Protocol::ITEM_TYPE::ITEM_TYPE_ATTACK:
-								if (curSessionPlayer->info.attackspeed() > 0.2f-0.0001f) {
-									curSessionPlayer->info.set_attackspeed(curSessionPlayer->info.attackspeed() - 0.1f);
+					while (1) {//동시에 해당좌표의 모든 아이템을 먹기위한 순회
+						auto optitem = gameRoom->GetItemAt(nextPos);
+						if (optitem.has_value()) {
+							//플레이어 이동할때 다음칸 아이템 있으면
+							Item& item = optitem.value();
+							if (pkt.info().objectid() == item.itemInfo.playerid()) {
+								gameRoom->DeleteItem(item.itemInfo.itemid());
+								item.itemInfo.set_isalive(false);
+								Protocol::S_ITEM itempkt;
+								Protocol::ItemInfo* iteminfo = itempkt.mutable_iteminfo(); //message구성하는 struct pointer반환
+								*iteminfo = item.itemInfo;
+								switch (iteminfo->itemtype()) {
+								case Protocol::ITEM_TYPE::ITEM_TYPE_ATTACK:
+									if (curSessionPlayer->info.attackspeed() > 0.2f - 0.0001f) {
+										curSessionPlayer->info.set_attackspeed(curSessionPlayer->info.attackspeed() - 0.1f);
+									}
+									break;
+								case Protocol::ITEM_TYPE::ITEM_TYPE_MOVE:
+									curSessionPlayer->info.set_movespeed(curSessionPlayer->info.movespeed() + 48);
+									break;
+								case Protocol::ITEM_TYPE::ITEM_TYPE_HEAL:
+									curSessionPlayer->info.set_hp(curSessionPlayer->info.hp() + 20);
+									break;
+								default:
+									break;
 								}
-								break;
-                            case Protocol::ITEM_TYPE::ITEM_TYPE_MOVE:
-                                curSessionPlayer->info.set_movespeed(curSessionPlayer->info.movespeed() + 48);
-                                break;
-                            case Protocol::ITEM_TYPE::ITEM_TYPE_HEAL:
-                                curSessionPlayer->info.set_hp(curSessionPlayer->info.hp() + 20);
-                                break;
-                            default:
-                                break;
-                            }
-                            SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Item(itempkt);
-                            gameRoom->Broadcast(sendBuffer);
-                        }
-                    }
+								SendBufferRef sendBuffer = ServerPacketHandler::Make_S_Item(itempkt);
+								gameRoom->Broadcast(sendBuffer);
+							}
+						}
+						else {
+							break;
+						}
+					}
                     curSessionPlayer->info.set_posx(pkt.info().posx());
                     curSessionPlayer->info.set_posy(pkt.info().posy());
                     // sector변경되면 갱신후 해당 정보들을 기반으로 동기화
