@@ -71,10 +71,10 @@ public:
 	// 은 피할 수 있지만, 그 상황에서 메인스레드가 작업처리중이면 데이터 불일치 생길 수 있음
 	// 그러므로 워커스레드가 위 두함수를 사용시 데이터 불일치 감안 또는 메인이 다 처리하도록 전달.
 
-	map<uint64, shared_ptr<class Player>>& GetPlayersForJob() { return _players; }
-	map<uint64, shared_ptr<class Monster>>& GetMonstersForJob() { return _monsters; }
-	map<uint64, shared_ptr<class Arrow>>& GetArrowsForJob() { return _arrows; }
-	map<uint32, Item>& GetItemsForJob() { return _items; }
+	unordered_map<uint64, shared_ptr<class Player>>& GetPlayersForJob() { return _players; }
+	unordered_map<uint64, shared_ptr<class Monster>>& GetMonstersForJob() { return _monsters; }
+	unordered_map<uint64, shared_ptr<class Arrow>>& GetArrowsForJob() { return _arrows; }
+	unordered_map<uint32, Item>& GetItemsForJob() { return _items; }
 public:
 	shared_ptr<Player> FindClosestPlayer(Vec2Int pos);
 	bool FindPath(Vec2Int src, Vec2Int dest, vector<Vec2Int>& path, int32 maxDepth = 10);
@@ -111,10 +111,10 @@ private:
 	// 워커스레드가 메인스레드가 호출하도록 넣는 Job
 	JobQueue _jobs;
 private:
-	map<uint64, shared_ptr<Player>> _players;
-	map<uint64, shared_ptr<Monster>> _monsters;
-	map<uint64, shared_ptr<Arrow>> _arrows;
-	map<uint32, Item> _items;
+	unordered_map<uint64, shared_ptr<Player>> _players;
+	unordered_map<uint64, shared_ptr<Monster>> _monsters;
+	unordered_map<uint64, shared_ptr<Arrow>> _arrows;
+	unordered_map<uint32, Item> _items;
 	vector<uint64>_deletearrowlist;
 public:
 	Tilemap _tilemap;
