@@ -32,7 +32,7 @@ void Arrow::UpdateIdle()
 		return;
 	auto roomref = room.lock();
 
-	Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
+	
 	Vec2Int curPos = GetCellPos();
 	Vec2Int nextPos = GetCellPos() + deltaXY[info.dir()];
 
@@ -95,7 +95,7 @@ void Arrow::UpdateIdle()
 			_waitUntil = GetTickCount64();
 		}
 		else {
-			_waitUntil = GetTickCount64() + moveTick;
+			_waitUntil += moveTick;
 		}
 		//SetState(MOVE, true);
 		SetState(MOVE);
@@ -152,6 +152,16 @@ void Arrow::UpdateIdle()
 void Arrow::UpdateMove()
 {
 	uint64 now = GetTickCount64();
+
+	
+	if (!CanGoBySector(GetCellPos())) {
+		auto roomref = room.lock();
+		Vec2Int len = GetCellPos() - InitialPos;
+
+		float moveTimeInSec = (len.Length()) / info.movespeed();//타일길이를 속도로 나눠 한 타일 이동시간 구한것
+		long long moveTick = (long long)(moveTimeInSec * 1000);
+		_waitUntil -= moveTick;
+	}
 
 	if (_waitUntil > now)
 		return;

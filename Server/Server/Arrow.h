@@ -22,6 +22,7 @@ private:
 	uint64 _belongingId = 0;
 	uint64 _tileSize=48;
 	Vec2Int InitialPos = { -1,-1 };
+	const Vec2Int deltaXY[4] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
 	bool _ifSpawned = false;
 };
 
