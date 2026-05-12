@@ -50,11 +50,12 @@ void GameRoom::Init()
 	//	gameRoom->Broadcast(sendBuf);
 	//	//gameRoom->PushBroadcastJob(sendBuf);
 	//	});
-
+	//_tilemap.SetMapSize({ 63, 43 });
+	
 
 	_tilemap.LoadFile(L"C:\\Users\\서정원\\Desktop\\ServerClient\\ServerProject\\Server\\Client\\Resources\\Tilemap\\Tilemap_01.txt");
-
-
+	_tilemap.SetTileSize(48);
+	
 	//	shared_ptr<Monster> monster = GameObject::CreateMonster();
 //	monster->info.set_posx(8);
 //	monster->info.set_posy(8);

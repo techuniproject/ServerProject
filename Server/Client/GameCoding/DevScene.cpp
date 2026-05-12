@@ -425,7 +425,7 @@ void DevScene::Handle_S_AddObject(Protocol::S_AddObject& pkt)
 				shared_ptr<Arrow> arrow = SpawnObject<Arrow>(Vec2Int(info.posx(), info.posy()));
 				//shared_ptr<Arrow> arrow = SpawnPooledObject<Arrow>(Vec2Int(info.posx(), info.posy()));
 				arrow->SetDir(info.dir());
-				arrow->SetState(info.state());
+				//arrow->SetState(info.state());
 				arrow->info = info;
 			}
 		}
@@ -437,7 +437,7 @@ void DevScene::Handle_S_RemoveObject(Protocol::S_RemoveObject& pkt)
 	const int32 size = pkt.ids_size();
 	for (int32 i = 0; i < size; ++i)
 	{
-		int32 id = pkt.ids(i);
+		uint64 id = pkt.ids(i);
 
 		shared_ptr<GameObject> object = GetGameObject(id);
 		if (object == nullptr)
