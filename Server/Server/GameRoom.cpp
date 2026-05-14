@@ -377,6 +377,8 @@ void GameRoom::DoSomethingCrossingSectors(Vec2Int curCellPos, Vec2Int LastCellPo
 	Vec2Int CurSectorPos = GetSectorPos(curCellPos.x, curCellPos.y);
 	Vec2Int LastSectorPos = GetSectorPos(LastCellPos.x, LastCellPos.y);
 
+	if (CurSectorPos == LastSectorPos)return;
+
 	const int32 dirX = CurSectorPos.x - LastSectorPos.x;
 	const int32 dirY = CurSectorPos.y - LastSectorPos.y;
 
@@ -395,7 +397,8 @@ void GameRoom::DoSomethingCrossingSectors(Vec2Int curCellPos, Vec2Int LastCellPo
 			add(Vec2Int(AddSectorMidPos.x+i, AddSectorMidPos.y));
 		}
 	}
-
+	cout << "[SectorCross] " << LastSectorPos.x << "," << LastSectorPos.y
+		<< " -> " << CurSectorPos.x << "," << CurSectorPos.y << endl;
 	
 }
 
