@@ -10,8 +10,8 @@
 Monster::Monster()
 {
 	info.set_name("MonsterName");
-	info.set_hp(1);
-	info.set_maxhp(1);
+	info.set_hp(10);
+	info.set_maxhp(10);
 	info.set_attack(1);
 	info.set_defence(0); //나중엔 data sheet으로 읽어오는 방식
 
@@ -263,7 +263,7 @@ bool Monster::OnDamaged(shared_ptr<Creature> attacker)
 	shared_ptr<Monster>life_guard = static_pointer_cast<Monster>(shared_from_this());
 	//생명늘리고 이후 OnDamaged의 수명주기 컨테이너에서 삭제하고 ->나머지 아이템 로직 수행후 이 함수끝나면 수명 0
 	//Super::OnDamaged에서 피를깎아야 여기 로직에서 Hp==0이 수행되어 아이템 생성되니까 이게 최선
-
+	auto roomref = room.lock();
 	if (attacker == nullptr)
 		return false;
 
@@ -271,10 +271,8 @@ bool Monster::OnDamaged(shared_ptr<Creature> attacker)
 	//여기서 제거하면 미리 삭제된 상태로 다음 GetObjectHp에서 null crash
 	
 
-	
-
       	if (GetObjectHp() == 0) {
-		auto roomref = room.lock();
+		
 		if (roomref) {
 			item.SetAliveState(true);
 			//auto ifarrow = dynamic_pointer_cast<Arrow>(attacker);
