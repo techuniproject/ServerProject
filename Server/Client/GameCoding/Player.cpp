@@ -185,7 +185,7 @@ void Player::TickSkill()
 {
 	if (_flipbook == nullptr)
 		return;
-
+	
 
 	// TODO : Damage?
 	if (IsAnimationEnded())

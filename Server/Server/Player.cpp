@@ -35,7 +35,7 @@ void Player::UpdateIdle()
 	//float moveTimeInSec = 48.0f / info.movespeed();
 	//long long moveTick = (long long)(moveTimeInSec * 1000);
 	//_waitUntil = GetTickCount64() + moveTick;
-	_waitUntil = GetTickCount64() + info.attackspeed() * 850;
+	//_waitUntil = GetTickCount64() + info.attackspeed() * 1000;
 	//이건 클라에서 attackspeed가 애니메이션 지속시간이기도 하니까, 물론 스킬 쿨타임과도 연동되어있고,
 	//서버에서도 화살을 이 시간 기다렸다가 쏘는게 정상.
 }
@@ -53,48 +53,53 @@ void Player::UpdateSkill()
 
 	uint64 now = GetTickCount64();
 
-	//if (now < _stateExitAt) return;
-
 	if (info.weapontype() == Protocol::WEAPON_TYPE_SWORD) {
-		if (auto monster = GRoom->GetMonsterAtSector(GetFrontCellPos())) // 전방 셀 타격
-		{
-			if (monster->OnDamaged(static_pointer_cast<Creature>(shared_from_this()))) {
-				//OnDamaged에서 피가 0이면 Leave를 통해 수명 파기하기때문에 검사해야함
-				monster->ApplyHitStun(505);
-				// 몬스터가 맞고나서 idle로 돌아가는 시간을 505ms로 정하면 플레이어 공격 쿨타임 0.5보다 길어
-				// 플레이어가 연달아 공격하는 구조 나옴 -> 하지만 둘다 500ms면 둘다 state가 돌아와서 동시에 때림
-				
+		if (!GetSwordHitDone()) {
+			if (auto monster = GRoom->GetMonsterAtSector(GetFrontCellPos())) // 전방 셀 타격
+			{
+				if (monster->OnDamaged(static_pointer_cast<Creature>(shared_from_this()))) {
+					//OnDamaged에서 피가 0이면 Leave를 통해 수명 파기하기때문에 검사해야함
+					monster->ApplyHitStun(505);
+					// 몬스터가 맞고나서 idle로 돌아가는 시간을 505ms로 정하면 플레이어 공격 쿨타임 0.5보다 길어
+					// 플레이어가 연달아 공격하는 구조 나옴 -> 하지만 둘다 500ms면 둘다 state가 돌아와서 동시에 때림
+
+				}
 			}
+			if (auto monster = GRoom->GetPlayerAtSector(GetFrontCellPos())) {
+				monster->OnDamaged(static_pointer_cast<Creature>(shared_from_this()));
+			}
+			SetSwordHitDone(true);
 		}
 	}
 	else if (info.weapontype() == Protocol::WEAPON_TYPE_BOW)
 	{
-		if (_waitUntil > now) {
-			return;
+		uint64 bowFireTime = GetStateHitEndTime() - 150;
+		if (now >= bowFireTime && !GetBowHitDone()) {
+			shared_ptr<Arrow>arrow = GameObject::CreateArrow();
+			arrow->info.set_posx(info.posx());
+			arrow->info.set_posy(info.posy());
+			arrow->SetInitialPos(Vec2Int(info.posx(), info.posy()));
+			arrow->info.set_dir(info.dir());
+			arrow->info.set_state(IDLE);
+			arrow->info.set_attack(info.attack());
+
+			float speed = info.attackspeed();
+			speed = 480 + 96 * (1 - info.attackspeed() * 2);
+			//player attackspeed이젠 0.5에서 -> 0.1로 감소 
+			arrow->SetBelongingId(info.objectid());
+			arrow->info.set_movespeed(speed);
+			roomref->Enter(arrow);
+
+			/*Protocol::S_AddObject AddedArrow;
+			*AddedArrow.add_objects() = arrow->info;
+
+			SendBufferRef sendBuf = ServerPacketHandler::Make_S_AddObject(AddedArrow);
+			gameRoom->BroadcastBySector(sendBuf, gameRoom->GetSectorPos(arrow->info.posx(), arrow->info.posy()));*/
+			arrow->SetIfSpawned(true);
+			SetBowHitDone(true);
 		}
-		shared_ptr<Arrow>arrow = GameObject::CreateArrow();
-		arrow->info.set_posx(info.posx());
-		arrow->info.set_posy(info.posy());
-		arrow->SetInitialPos(Vec2Int(info.posx(), info.posy()));
-		arrow->info.set_dir(info.dir());
-		arrow->info.set_state(IDLE);
-		arrow->info.set_attack(info.attack());
-		
-		float speed = info.attackspeed();
-		speed = 480 + 96 * (1-info.attackspeed()*2);
-		//player attackspeed이젠 0.5에서 -> 0.1로 감소 
-		arrow->SetBelongingId(info.objectid());
-		arrow->info.set_movespeed(speed);
-		roomref->Enter(arrow);
-
-		/*Protocol::S_AddObject AddedArrow;
-		*AddedArrow.add_objects() = arrow->info;
-
-		SendBufferRef sendBuf = ServerPacketHandler::Make_S_AddObject(AddedArrow);
-		gameRoom->BroadcastBySector(sendBuf, gameRoom->GetSectorPos(arrow->info.posx(), arrow->info.posy()));*/
-		arrow->SetIfSpawned(true);
 	}
-	
+	if (now >= GetStateHitEndTime())
 	SetState(IDLE);
 }
 

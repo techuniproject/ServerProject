@@ -110,10 +110,25 @@ bool Handle_C_Move(GameSessionRef& session, Protocol::C_Move& pkt)
             if (!curSessionPlayer)return;
 
             if (curSessionPlayer->GetObjectID() != pkt.info().objectid())return;
-           
+			uint64 now = ::GetTickCount64();
             Vec2Int nextPos{ pkt.info().posx(), pkt.info().posy() };
             Vec2Int curPos{ curSessionPlayer->GetCellPos() };
             bool isMove = (nextPos != curPos);
+			if (pkt.info().state() == SKILL) {
+				if (now < curSessionPlayer->GetCoolTime()) {
+					return; 
+				}
+				uint64 cooldown = (uint64)(curSessionPlayer->info.attackspeed() * 1000);
+				curSessionPlayer->SetCoolTime(now + cooldown);
+
+				curSessionPlayer->SetStateHitEndTime(now + cooldown);
+
+				curSessionPlayer->SetBowHitDone(false);
+				curSessionPlayer->SetSwordHitDone(false);
+			}
+
+		
+			
             curSessionPlayer->info.set_state(pkt.info().state());
             curSessionPlayer->info.set_dir(pkt.info().dir());
             curSessionPlayer->info.set_weapontype(pkt.info().weapontype());
