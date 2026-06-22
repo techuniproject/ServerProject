@@ -93,7 +93,12 @@ int main()
 			{
 				while (true)
 				{//워커들은 I/O감지 후, 패킷 직렬 처리 및 작업 넣기.
-					service->GetIocpCore()->Dispatch();
+					for (int i = 0; i < 10000; ++i) {
+						GRoom->PushJob([]() {
+							cout << 1;
+							});
+					}
+					service->GetIocpCore()->Dispatch();	
 				}
 			});
 	}
@@ -102,7 +107,7 @@ int main()
 	{
 
 		//FlushJobs에서 disconnected과 같이 섹터 내부 컨테이너나 게임룸 수명 주기 컨테이너에서 제거후 update하므로 rawpointer같은 문제 발생 x
-		GRoom->FlushJobs(); 
+		GRoom->FlushAllJobs();
 		GRoom->Update();
 		//Job처리후 Update 일관성 고려
 		//Update는 게임로직 수정후 broadcast이므로 큰 제약 없음 메인스레드 jobqueue엔 들어갈게 없음 곧바로 처리가능,.

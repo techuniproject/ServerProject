@@ -429,7 +429,7 @@ void GameRoom::Update()
 
 void GameRoom::PushJob(function<void()> func)
 {
-	_jobs.Push(make_shared<LambdaJob>(move(func)));
+	_jobs.Push(make_unique<LambdaJob>(move(func)));
 }
 
 void GameRoom::FlushJobs()
@@ -440,6 +440,22 @@ void GameRoom::FlushJobs()
         job->Execute();
     }
 }
+
+void GameRoom::FlushAllJobs()
+{
+	queue<unique_ptr<Job>> localJobs;
+
+	_jobs.PopAll(localJobs);
+
+	while (!localJobs.empty())
+	{
+		unique_ptr<Job> job = move(localJobs.front());
+		localJobs.pop();
+
+		job->Execute();
+	}
+}
+
 
 shared_ptr<GameObject> GameRoom::FindObject(uint64 id)
 {

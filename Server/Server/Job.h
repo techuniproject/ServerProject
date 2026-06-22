@@ -18,24 +18,29 @@ private:
 class JobQueue
 {
 public:
-	void Push(shared_ptr<Job> job)
+	void Push(unique_ptr<Job> job)
 	{
 		WRITE_LOCK;
-		_jobs.push(job);
+		_jobs.push(move(job));
 	}
 
-	shared_ptr<Job> Pop()
+	unique_ptr<Job> Pop()
 	{
 		WRITE_LOCK;
 		if (_jobs.empty())
 			return nullptr;
 
-		shared_ptr<Job> ret= _jobs.front();
+		unique_ptr<Job> ret= move(_jobs.front());
 		_jobs.pop();
 		return ret;
 	}
 
+	void PopAll(queue<unique_ptr<Job>>& jobs){
+		WRITE_LOCK;
+		jobs.swap(_jobs);
+	}
+
 private:
 	USE_LOCK;
-	queue<shared_ptr<Job>> _jobs;
+	queue<unique_ptr<Job>> _jobs;
 };

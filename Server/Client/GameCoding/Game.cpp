@@ -72,9 +72,8 @@ void Game::Init(HWND hwnd,HINSTANCE hInstance)
 
 void Game::Update()
 {
-	GET_SINGLE(GameInstance)->Update();
 	
-
+	GET_SINGLE(GameInstance)->Update();
 	
 	//if (GetAsyncKeyState(VK_F1) & 0x0001) // 눌릴 때만
 	//{
