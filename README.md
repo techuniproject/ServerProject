@@ -3,7 +3,7 @@
 > 1인 개인 프로젝트 (2025.10 ~ 2026.01)  
 > Windows IOCP / WinAPI 기반 멀티플레이어 2D 게임
 
-[![YouTube Demo](https://img.shields.io/badge/YouTube-Demo-red?logo=youtube)](https://www.youtube.com/watch?v=ServerClientProject)
+[![YouTube Demo](https://img.shields.io/badge/YouTube-Demo-red?logo=youtube)](https://www.youtube.com/watch?v=g-KI2yB7mIY)
 
 ---
 
