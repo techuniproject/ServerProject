@@ -92,12 +92,7 @@ int main()
 		GThreadManager->Launch([=]()
 			{
 				while (true)
-				{//워커들은 I/O감지 후, 패킷 직렬 처리 및 작업 넣기.
-					for (int i = 0; i < 10000; ++i) {
-						GRoom->PushJob([]() {
-							cout << 1;
-							});
-					}
+				{//워커들은 I/O감지 후, 패킷 직렬 처리 및 작업 넣기.					
 					service->GetIocpCore()->Dispatch();	
 				}
 			});
@@ -113,7 +108,7 @@ int main()
 		//Update는 게임로직 수정후 broadcast이므로 큰 제약 없음 메인스레드 jobqueue엔 들어갈게 없음 곧바로 처리가능,.
 		// 다만 io작업은 워커가 처리하도록 미뤄도 됨 병렬적으로 동작하기 때문.
 		//this_thread::sleep_for(1ms);
-		std::this_thread::yield();
+		//std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}
 
 
