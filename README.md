@@ -3,7 +3,7 @@
 > 1인 개인 프로젝트 (2025.10 ~ 2026.01)  
 > Windows IOCP / WinAPI 기반 멀티플레이어 2D 게임
 
-[![YouTube Demo](https://img.shields.io/badge/YouTube-Demo-red?logo=youtube)](https://www.youtube.com/watch?v=ServerClientProject)
+[![YouTube Demo](https://img.shields.io/badge/YouTube-Demo-red?logo=youtube)](https://www.youtube.com/watch?v=g-KI2yB7mIY)
 
 ---
 
@@ -26,7 +26,7 @@ Sector(섹터) 기반 AOI(Area of Interest) 시스템을 설계하여 네트워�
 
 | 구분 | 내용 |
 |------|------|
-| **강의 기반** (인프런 게임 서버 프로그래밍) | IOCP 프레임워크 (`IocpCore`, `Session`, `Listener`, `Service`, `BufferReader/Writer`), 단일 클라이언트 기본 구조, 패킷 송수신 기반 |
+| **강의 기반**  | IOCP 프레임워크 (`IocpCore`, `Session`, `Listener`, `Service`, `BufferReader/Writer`), 단일 클라이언트 기본 구조, 패킷 송수신 기반 |
 | **직접 설계 · 구현** | `GameRoom` 확장, `Sector` 기반 AOI 설계, `Player` / `Monster` / `Arrow` 게임 로직, 클라 예측 이동 + 서버 검증, 차집합 브로드캐스트, Flickering 방지, Arrow 동기화 3단계 발전, WinAPI 클라이언트 전체 |
 
 ---
